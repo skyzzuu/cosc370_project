@@ -1,4 +1,4 @@
-FROM cosc3700_hpcl_clone:latest
+FROM skyzzuu/cosc370_hpcl_clone:latest
 
 
 RUN mkdir -p /data/project/
