@@ -16,6 +16,6 @@ AesObj::~AesObj() {
 
 
 
-unsigned char * AesObj::encrypt(unsigned char * data, unsigned char * key) {
+unsigned char * AesObj::encrypt(unsigned char * data, unsigned char key[]) {
 
 }
