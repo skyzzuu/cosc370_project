@@ -7,7 +7,10 @@
 
 
 class AesObj {
+    AesObj();
+    ~AesObj();
 
+    unsigned char * encrypt(unsigned char * , unsigned char * );
 };
 
 

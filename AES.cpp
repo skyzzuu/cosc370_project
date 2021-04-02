@@ -5,3 +5,17 @@
 #include "AES.h"
 
 
+AesObj::AesObj() {
+
+}
+
+
+AesObj::~AesObj() {
+
+}
+
+
+
+unsigned char * AesObj::encrypt(unsigned char * data, unsigned char * key) {
+
+}
