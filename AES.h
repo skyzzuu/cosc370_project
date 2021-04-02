@@ -7,20 +7,27 @@
 
 #include <unordered_map>
 
+
 class AesObj {
     AesObj();
     ~AesObj();
 
+//    state table
     unsigned char state[4][4] = {0};
-    unsigned char input[4][4] = {0};
-    unsigned char output[4][4] = {0};
+
+//    original input data
+    unsigned char * input = nullptr;
+
+//    how many bytes are in the input
+    int inputLength = 0;
 
 
-
+//    128 bit key used to encrypt the data
     unsigned char key[16] = {0};
-    unsigned char * data = nullptr;
 
-    const unordered_map<int, int> inv_table  = {
+
+
+    const unordered_map<int, int>   = {
             {0, 0}, {1, 1},{2, 141}, {3, 246},{4, 203}, {5, 82},{6, 123}, {7, 209}, {8, 232}, {9, 79},
             {10, 41}, {11, 192},{12, 176}, {13, 225},{14, 229}, {15, 199},{16, }, {17, }, {18, }, {19, },
             {20, }, {21, },{22, }, {23, },{24, }, {25, },{26, }, {27, }, {28, }, {29, },
@@ -52,8 +59,53 @@ class AesObj {
 
     };
 
+/*
+    return value: unsigned char array containing encrypted bytes
+    parameters:
+      unsigned char * containing the bytes to encrypt
+      int representing how many bytes are in the input
+      unsigned char * containing the encryption key to use
 
-    unsigned char * encrypt(unsigned char * , unsigned char [] );
+    description:
+      takes the bytes from the input date given, uses the bytes from the key given, and returns the encrypted version
+      of the input data.
+
+ */
+    unsigned char * encrypt(unsigned char * , int, unsigned char *);
+
+/*
+
+    return value: none
+    parameters:
+      unsigned char * containing the input
+      int representing how many bytes are in the input
+      unsigned char [] containing the state table
+
+    description:
+      copies the bytes from the input data given and copies the data onto the state table
+*/
+    void copyInputToState(unsigned char * , int, unsigned  char []);
+
+
+/*
+
+    return value: none
+    parameters:
+      unsigned char * containing the input data that needs to be padded
+      int representing how many bytes are in the input
+
+
+    description:
+      This function will pad the input using the PKCS# 7
+      In this standard, you just pad bytes that contain the value of how many bytes were added
+      E.G. If 6 bytes is added to the last block to make it get to 128 bits, you add the bytes
+      06 06 06 06 06 06
+      If the data given is a multiple of the block size, an extra block is added with 16 bytes of 16's
+      so the decrypting algorithm can determine if padding occurred
+*/
+    void padInput(unsigned char *, int);
+
+
 
 
 
