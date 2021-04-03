@@ -7,6 +7,7 @@
 
 #include <unordered_map>
 #include <cstdint>
+#include <vector>
 
 using namespace std;
 
@@ -19,6 +20,9 @@ class AesEncryptObj {
 
 //    original input data
     unsigned char * input = nullptr;
+
+
+
 
 //    how many bytes are in the input
     uint16_t inputLength = 0;
@@ -52,39 +56,38 @@ class AesEncryptObj {
 
 
 /*
-    return value: unsigned char array containing encrypted bytes
+    return value: unsigned char vector containing encrypted bytes
     parameters:
       const unsigned char * containing the bytes to encrypt
-      uint16_t representing how many bytes are in the input
+      unsigned integer representing how many bytes are in the input
       const unsigned char array containing the encryption key to use
 
     description:
-      takes the bytes from the input date given, uses the bytes from the key given, and returns the encrypted version
-      of the input data.
+      takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
+      of the input data in the form of an unsigned char vector.
+      encrypts using the cipher block chaining mode of operation.
 
  */
-    unsigned char * encrypt(const unsigned char * , uint16_t, const unsigned char [16]);
+   vector<unsigned char> encrypt(const unsigned char * , uint16_t , const unsigned char [16]);
 
 /*
 
     return value: none
     parameters:
-      const unsigned char * containing the input
-      uint16_t representing how many bytes are in the input
+      const unsigned char array containing the input block to copy onto the state
       2d unsigned char array containing the state table
 
     description:
       copies the bytes from the input data given and copies the data onto the state table
 */
-    void copyInputToState(const unsigned char * , uint16_t, unsigned char [4][4]);
+    void copyInputToState(const unsigned char [16], unsigned char [4][4]);
 
 
 /*
 
     return value: none
     parameters:
-      unsigned char * containing the input data that needs to be padded
-      uint16_t representing how many bytes are in the input
+      unsigned char vector containing the input data that needs to be padded
 
 
     description:
@@ -93,9 +96,10 @@ class AesEncryptObj {
       In this standard, you just pad bytes that contain the value of how many bytes were added
       E.G. If 6 bytes are added to the last block to make it get to 128 bits, you add the bytes
       06 06 06 06 06 06
-      If the data given is a multiple of the block size, an extra block is added with 16 bytes of 16's
+      If the data given is a multiple of the block size, an extra block is added with 16 bytes of 16's.
+
 */
-    void padInput(unsigned char *, uint16_t &);
+    static void padInput(vector<unsigned char > &);
 
 /*
 
