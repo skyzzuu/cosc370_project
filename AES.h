@@ -21,14 +21,15 @@ class AesObj {
     unsigned char * input = nullptr;
 
 //    how many bytes are in the input
-    int inputLength = 0;
+//    using 64 bits to represent the input length so that nearly any length of input can be handled
+    uint64_t inputLength = 0;
 
 
 //    128 bit key used to encrypt the data
     unsigned char key[16] = {0};
 
 
-
+//    sBox, can pass in the number you have, and it will give you the number that it should be substituted with in the SubBytes section
     const unordered_map<uint8_t , uint8_t> sBox = {
             {0x00, 0x63}, {0x01, 0x7c},{0x02, 0x77}, {0x03, 0x7b},{0x04, 0xf2}, {0x05, 0x6b},{0x06, 0x6f}, {0x07, 0xc5}, {0x08, 0x30}, {0x09, 0x01},
             {0x0a, 0x67}, {0x0b , 0x2b}, {0x0c , 0xfe}, {0x0d , 0xd7},  {0x0e , 0xab}, {0x0f , 0x76}, {0x10 , 0xca}, {0x11 , 0x82}, {0x12 , 0xc9}, {0x13 , 0x7d},
@@ -56,9 +57,6 @@ class AesObj {
             {0xe7 ,0x94 }, {0xe8 ,0x9b }, {0xe9 ,0x1e }, {0xea ,0x87 },  {0xeb ,0xe9 }, {0xec ,0xce }, {0xed ,0x55 }, {0xee ,0x28 }, {0xef ,0xdf }, {0xf0 ,0x8c },
             {0xf1 ,0xa1 }, {0xf2 ,0x89 }, {0xf3 ,0x0d }, {0xf4 ,0xbf },  {0xf5 ,0xe6 }, {0xf6 ,0x42 }, {0xf7 ,0x68 }, {0xf8 ,0x41 }, {0xf9 ,0x99 }, {0xfa ,0x2d },
             {0xfb ,0x0f }, {0xfc ,0xb0 }, {0xfd ,0x54 }, {0xfe ,0xbb },  {0xff ,0x16 }
-
-
-
     };
 
 /*
@@ -107,8 +105,86 @@ class AesObj {
 */
     void padInput(unsigned char *, int);
 
+/*
+
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+      unordered map with uint8_t mapped to uint8_t (should always be the sBox that is passed in)
 
 
+    description:
+      This function takes the state that you pass in and will perform the SubBytes transformation on the table.
+      This will substitute each of the bytes in the table according to the method that NIST specifies.
+      The pre-made sBox is passed in instead of calculating the substitution in the function to speed up the encryption process.
+*/
+    void SubBytes(unsigned char [4][4], const unordered_map<uint8_t , uint8_t> &);
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function takes the state and shifts the rows within it according to the schema identified by NIST.
+      The top row will not be shifted.
+      The second row will be shifted to the left 1 space.
+      The third row will be shifted to the left 2 spaces.
+      The fourth row will be shifted to the left 3 spaces.
+
+*/
+    void ShiftRows(unsigned char [4][4]);
+
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
+      The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
+*/
+    void MixColumns(unsigned char [4][4]);
+
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+      4 element unsigned char array that should contain the 4 words from the key schedule that represent the current round key
+
+    description:
+      This function will take the round key passed in and perform a bitwise XOR on the state, essentially performing
+      an addition within a Galois Field.
+*/
+    void AddRoundKey(unsigned char [4][4], const unsigned char [4]);
+
+
+
+//  key schedule containing 44 4-byte words that will be generated in the KeyExpansion function
+//  each row represents a 4-byte word
+    unsigned char KeySched[44][4] = {0};
+
+
+
+/*
+    return value: none
+    parameters:
+      16 element unsigned char array that should always be the cipher key that was passed in for encryption.
+      44 row, 4 column unsigned char array that should always be the KeySched 2d array.
+
+    description:
+      This function takes the original cipher key passed in for encryption and the empty key schedule array and
+      performs the KeyExpansion operation to generate the round keys that will be needed for the AddRoundKey transformation
+      and puts them into the KeySched array.
+*/
+    void KeyExpansion(unsigned char [16], unsigned char [44][4]);
 
 
 
