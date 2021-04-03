@@ -2,17 +2,17 @@
 // Created by guy on 3/29/21.
 //
 
-#ifndef COSC370_PROJECT_AESOBJ_H
-#define COSC370_PROJECT_AESOBJ_H
+#ifndef COSC370_PROJECT_AesEncryptObj_H
+#define COSC370_PROJECT_AesEncryptObj_H
 
 #include <unordered_map>
 #include <cstdint>
 
 using namespace std;
 
-class AesObj {
-    AesObj();
-    ~AesObj();
+class AesEncryptObj {
+    AesEncryptObj();
+    ~AesEncryptObj();
 
 //    state table
     unsigned char state[4][4] = {0};
@@ -21,8 +21,7 @@ class AesObj {
     unsigned char * input = nullptr;
 
 //    how many bytes are in the input
-//    using 64 bits to represent the input length so that nearly any length of input can be handled
-    uint64_t inputLength = 0;
+    unsigned int inputLength = 0;
 
 
 //    128 bit key used to encrypt the data
@@ -59,6 +58,9 @@ class AesObj {
             {0xfb ,0x0f }, {0xfc ,0xb0 }, {0xfd ,0x54 }, {0xfe ,0xbb },  {0xff ,0x16 }
     };
 
+
+
+
 /*
     return value: unsigned char array containing encrypted bytes
     parameters:
@@ -71,7 +73,7 @@ class AesObj {
       of the input data.
 
  */
-    unsigned char * encrypt(unsigned char * , int, unsigned char *);
+    unsigned char * encrypt(unsigned char * , unsigned int, unsigned char *);
 
 /*
 
@@ -84,7 +86,7 @@ class AesObj {
     description:
       copies the bytes from the input data given and copies the data onto the state table
 */
-    void copyInputToState(unsigned char * , int, unsigned  char []);
+    void copyInputToState(unsigned char * , unsigned int, unsigned  char []);
 
 
 /*
@@ -191,4 +193,4 @@ class AesObj {
 };
 
 
-#endif //COSC370_PROJECT_AESOBJ_H
+#endif //COSC370_PROJECT_AesEncryptObj_H
