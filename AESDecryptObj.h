@@ -19,7 +19,7 @@ class AESDecryptObj {
     unsigned char * input = nullptr;
 
 //    how many bytes are in the input
-    unsigned int inputLength = 0;
+    uint16_t inputLength = 0;
 
 
 //    128 bit key used to decrypt the data
@@ -60,7 +60,7 @@ class AESDecryptObj {
       of the input data.
 
  */
-    unsigned char * decrypt(unsigned char * , unsigned int, unsigned char *);
+    unsigned char * decrypt(unsigned char * , uint16_t, unsigned char *);
 
 
 /*
@@ -74,7 +74,7 @@ class AESDecryptObj {
     description:
       copies the bytes from the input data given and copies the data onto the state table
 */
-    void copyInputToState(unsigned char * , unsigned int, unsigned  char []);
+    void copyInputToState(unsigned char * , uint16_t, unsigned  char []);
 
 /*
 

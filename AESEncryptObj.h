@@ -21,7 +21,7 @@ class AesEncryptObj {
     unsigned char * input = nullptr;
 
 //    how many bytes are in the input
-    unsigned int inputLength = 0;
+    uint16_t inputLength = 0;
 
 
 //    128 bit key used to encrypt the data
@@ -54,29 +54,29 @@ class AesEncryptObj {
 /*
     return value: unsigned char array containing encrypted bytes
     parameters:
-      unsigned char * containing the bytes to encrypt
-      int representing how many bytes are in the input
-      unsigned char * containing the encryption key to use
+      const unsigned char * containing the bytes to encrypt
+      uint16_t representing how many bytes are in the input
+      const unsigned char array containing the encryption key to use
 
     description:
       takes the bytes from the input date given, uses the bytes from the key given, and returns the encrypted version
       of the input data.
 
  */
-    unsigned char * encrypt(unsigned char * , unsigned int, unsigned char *);
+    unsigned char * encrypt(const unsigned char * , uint16_t, const unsigned char [16]);
 
 /*
 
     return value: none
     parameters:
-      unsigned char * containing the input
-      int representing how many bytes are in the input
-      unsigned char [] containing the state table
+      const unsigned char * containing the input
+      uint16_t representing how many bytes are in the input
+      2d unsigned char array containing the state table
 
     description:
       copies the bytes from the input data given and copies the data onto the state table
 */
-    void copyInputToState(unsigned char * , unsigned int, unsigned  char []);
+    void copyInputToState(const unsigned char * , uint16_t, unsigned char [4][4]);
 
 
 /*
@@ -84,17 +84,18 @@ class AesEncryptObj {
     return value: none
     parameters:
       unsigned char * containing the input data that needs to be padded
-      int representing how many bytes are in the input
+      uint16_t representing how many bytes are in the input
 
 
     description:
-      This function will pad the input using the PKCS# 7
+      This function will pad the input using the PKCS# 7 and change the inputLength variable to reflect the
+      new length after padding.
       In this standard, you just pad bytes that contain the value of how many bytes were added
-      E.G. If 6 bytes is added to the last block to make it get to 128 bits, you add the bytes
+      E.G. If 6 bytes are added to the last block to make it get to 128 bits, you add the bytes
       06 06 06 06 06 06
       If the data given is a multiple of the block size, an extra block is added with 16 bytes of 16's
 */
-    void padInput(unsigned char *, int);
+    void padInput(unsigned char *, uint16_t &);
 
 /*
 
