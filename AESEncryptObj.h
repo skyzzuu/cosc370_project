@@ -95,7 +95,7 @@ class AesEncryptObj {
      takes the data from the input vector and splits it into blocks of 16 bytes each as a 16 element vector within the 2d vector
      each 16 element vector represents a block of 128 bits
 */
-    void splitStateIntoBlocks(vector<vector<unsigned char>> &, const vector<unsigned char> &);
+    void splitInputIntoBlocks(unsigned char [][16], uint16_t , const vector<unsigned char> &);
 
 
 

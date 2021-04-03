@@ -19,6 +19,7 @@ AesEncryptObj::~AesEncryptObj() {
 
 vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_t inputLength, const unsigned char key[16])
 {
+
 //    unsigned char vector containing all the input data
     vector<unsigned char > inputVector;
     inputVector.clear();
@@ -29,14 +30,26 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_
         inputVector.push_back(data[i]);
     }
 
+//    pad up to nearest block (or full block)
     padInput(inputVector);
 
+    uint16_t numBlocks = inputVector.size() / 16;
+
+//    make a 2d array with the number of rows set to however many blocks there are in the padded input
+    unsigned char blockArray[numBlocks][16];
+
+//    take the blocks from the inputVector and copy the blocks into the blockArray
+    splitInputIntoBlocks(blockArray, numBlocks, inputVector);
+
+//    inputVector not needed after this point
+    inputVector.clear();
 
 
-    unsigned char blockVector[16][inputVector.size() / 16];
 
 
-    ~inputVector();
+
+
+
 
 
     return inputVector;
@@ -104,9 +117,26 @@ void AesEncryptObj::padInput(vector<unsigned char> & inputVector)
      takes the data from the input vector and splits it into blocks of 16 bytes each as a 16 element vector within the 2d vector
      each 16 element vector represents a block of 128 bits
 */
-void AesEncryptObj::splitStateIntoBlocks(vector <vector<unsigned char>> & blockVector, const vector<unsigned char> & inputVector)
+void splitInputIntoBlocks(unsigned char blockArray[][16], uint16_t numBlocks, const vector<unsigned char> & inputVector)
 {
-    blockVector.clear();
+    for(uint16_t curBlock = 0; curBlock < numBlocks; curBlock++)
+    {
+//        index position where current block begins
+        uint16_t startOfBlock = curBlock * 16;
 
+//        index position where current block ends
+        uint16_t endOfBlock = ((curBlock + 1) * 16);
+
+//        current index within the block being added
+        uint16_t columnIndex = 0;
+
+//        for each byte in the current block, add the byte to the 2d array
+        for(uint16_t curIndex = startOfBlock; curIndex < endOfBlock; curIndex++)
+        {
+            blockArray[curBlock][columnIndex] = inputVector[curIndex];
+            columnIndex++;
+        }
+
+    }
 
 }
