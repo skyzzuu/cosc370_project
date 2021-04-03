@@ -93,7 +93,6 @@ class AesEncryptObj {
       E.G. If 6 bytes is added to the last block to make it get to 128 bits, you add the bytes
       06 06 06 06 06 06
       If the data given is a multiple of the block size, an extra block is added with 16 bytes of 16's
-      so the decrypting algorithm can determine if padding occurred
 */
     void padInput(unsigned char *, int);
 

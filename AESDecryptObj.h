@@ -8,10 +8,22 @@
 
 class AESDecryptObj {
 
+    AESDecryptObj();
+    ~AESDecryptObj();
 
 
+//    state table
+    unsigned char state[4][4] = {0};
+
+//    original input data
+    unsigned char * input = nullptr;
+
+//    how many bytes are in the input
+    unsigned int inputLength = 0;
 
 
+//    128 bit key used to decrypt the data
+    unsigned char key[16] = {0};
 
 
 
@@ -34,6 +46,135 @@ class AESDecryptObj {
             {0xe0, 0xa0}, {0xe1, 0xe0}, {0xe2, 0x3b}, {0xe3, 0x4d}, {0xe4, 0xae}, {0xe5, 0x2a}, {0xe6, 0xf5}, {0xe7, 0xb0}, {0xe8, 0xc8}, {0xe9, 0xeb}, {0xea, 0xbb}, {0xeb, 0x3c}, {0xec, 0x83}, {0xed, 0x53}, {0xee, 0x99}, {0xef, 0x61},
             {0xf0, 0x17}, {0xf1, 0x2b}, {0xf2, 0x04}, {0xf3, 0x7e}, {0xf4, 0xba}, {0xf5, 0x77}, {0xf6, 0xd6}, {0xf7, 0x26}, {0xf8, 0xe1}, {0xf9, 0x69}, {0xfa, 0x14}, {0xfb, 0x63}, {0xfc, 0x55}, {0xfd, 0x21}, {0xfe, 0x0c}, {0xff, 07dx}
     };
+
+
+    /*
+    return value: unsigned char array containing decrypted bytes
+    parameters:
+      unsigned char * containing the bytes to decrypt
+      int representing how many bytes are in the input
+      unsigned char * containing the decryption key to use
+
+    description:
+      takes the bytes from the input date given, uses the bytes from the key given, and returns the decrypted version
+      of the input data.
+
+ */
+    unsigned char * decrypt(unsigned char * , unsigned int, unsigned char *);
+
+
+/*
+
+    return value: none
+    parameters:
+      unsigned char * containing the input
+      int representing how many bytes are in the input
+      unsigned char [] containing the state table
+
+    description:
+      copies the bytes from the input data given and copies the data onto the state table
+*/
+    void copyInputToState(unsigned char * , unsigned int, unsigned  char []);
+
+/*
+
+    return value: none
+    parameters:
+      unsigned char * containing the input data that needs to be padded
+      int representing how many bytes are in the input
+
+
+    description:
+      This function will remove the padding from the input using the PKCS# 7
+      In this standard, you just pad bytes that contain the value of how many bytes were added
+      E.G. If 6 bytes is added to the last block to make it get to 128 bits, you add the bytes
+      06 06 06 06 06 06
+      If the data given is a multiple of the block size, an extra block exists with 16 bytes of 16's
+*/
+
+    void removePadding(unsigned char *, int);
+
+
+
+/*
+
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+      unordered map with uint8_t mapped to uint8_t (should always be the InvSBox that is passed in)
+
+
+    description:
+      This function takes the state that you pass in and will perform the InvSubBytes transformation on the table.
+      This will substitute each of the bytes in the table according to the method that NIST specifies.
+      The pre-made InvSBox is passed in instead of calculating the substitution in the function to speed up the decryption process.
+*/
+    void InvSubBytes(unsigned char [4][4], const unordered_map<uint8_t , uint8_t> &);
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function takes the state and shifts the rows within it according to the schema identified by NIST.
+      The top row will not be shifted.
+      The second row will be shifted to the right 1 space.
+      The third row will be shifted to the right 2 spaces.
+      The fourth row will be shifted to the right 3 spaces.
+
+*/
+    void InvShiftRows(unsigned char [4][4]);
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
+      The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
+*/
+    void InvMixColumns(unsigned char [4][4]);
+
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+      4 element unsigned char array that should contain the 4 words from the key schedule that represent the current round key
+
+    description:
+      This function will take the round key passed in and perform a bitwise XOR on the state, essentially performing
+      an addition within a Galois Field.
+*/
+    void AddRoundKey(unsigned char [4][4], const unsigned char [4]);
+
+
+
+//  key schedule containing 44 4-byte words that will be generated in the KeyExpansion function
+//  each row represents a 4-byte word
+    unsigned char KeySched[44][4] = {0};
+
+/*
+    return value: none
+    parameters:
+      16 element unsigned char array that should always be the cipher key that was passed in for decryption.
+      44 row, 4 column unsigned char array that should always be the KeySched 2d array.
+
+    description:
+      This function takes the original cipher key passed in for decryption and the empty key schedule array and
+      performs the KeyExpansion operation to generate the round keys that will be needed for the AddRoundKey transformation
+      and puts them into the KeySched array.
+*/
+    void KeyExpansion(unsigned char [16], unsigned char [44][4]);
+
 
 
 
