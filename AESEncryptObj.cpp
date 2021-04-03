@@ -33,13 +33,10 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_
 
 
 
-//    make array of arrays, each containing one block (128 bits) of the input
+    unsigned char blockVector[16][inputVector.size() / 16];
 
 
-
-
-
-
+    ~inputVector();
 
 
     return inputVector;
@@ -92,4 +89,24 @@ void AesEncryptObj::padInput(vector<unsigned char> & inputVector)
             inputVector.push_back(16);
         }
     }
+}
+
+
+
+/*
+
+   return value: none
+   parameters:
+     2d unsigned char vector that will hold the blocks of input data
+     unsigned char vector that contains the input data
+
+   description:
+     takes the data from the input vector and splits it into blocks of 16 bytes each as a 16 element vector within the 2d vector
+     each 16 element vector represents a block of 128 bits
+*/
+void AesEncryptObj::splitStateIntoBlocks(vector <vector<unsigned char>> & blockVector, const vector<unsigned char> & inputVector)
+{
+    blockVector.clear();
+
+
 }
