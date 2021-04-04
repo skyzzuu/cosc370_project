@@ -80,7 +80,7 @@ class AesEncryptObj {
     description:
       copies the bytes from the input data given and copies the data onto the state table
 */
-    void copyInputToState(const unsigned char [16], unsigned char [4][4]);
+    static void copyInputToState(const unsigned char [16], unsigned char [4][4]);
 
 
 
@@ -95,7 +95,7 @@ class AesEncryptObj {
      takes the data from the input vector and splits it into blocks of 16 bytes each as a 16 element vector within the 2d vector
      each 16 element vector represents a block of 128 bits
 */
-    void splitInputIntoBlocks(unsigned char [][16], uint16_t , const vector<unsigned char> &);
+    static void splitInputIntoBlocks(unsigned char [][16], uint16_t , const vector<unsigned char> &);
 
 
 
@@ -198,6 +198,79 @@ class AesEncryptObj {
       and puts them into the KeySched array.
 */
     void KeyExpansion(unsigned char [16], unsigned char [44][4]);
+
+
+
+
+/*
+    return value: uint8_t vector
+    parameters:
+        byte that you want to convert to a finite field representation
+
+    description:
+        This function takes the byte passed in as a parameter and returns a uint8_t vector
+        that represents the byte as a finite field.
+ */
+    vector<uint8_t> byteToFiniteField(const unsigned char &);
+
+
+
+
+/*
+    return value: unsigned char
+    parameters:
+        vector that contains the finite field representation of a byte
+
+    description:
+        This function takes the finite field passed in and converts it back into a byte.
+ */
+    unsigned char finiteFieldToByte(const vector<uint8_t> &);
+
+
+
+/*
+    return value: none
+    parameters:
+        vector that contains the finite field representation of a byte
+        vector that contains the finite field representation of the irreducible polynomial to use
+
+    description:
+        This function takes the finite field byte and the finite field irreducible polynomial
+        and expands any terms that need to be expanded according to irreducible polynomial given
+        (E.G. polynomials with an exponent greater than 7 need to be exploded)
+*/
+    void explode(vector<uint8_t> &, const vector<uint8_t> &);
+
+
+
+/*
+    return value: uint8_t vector containing the result of the finite field addition
+    parameters:
+        2 uint8_t vectors containing the finite fields you want to add
+
+    description:
+        This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
+ */
+    vector<uint8_t> galoisAdd(const vector<uint8_t> &, const vector<uint8_t> &);
+
+
+
+
+/*
+    return value: uint8_t vector containing the result of the finite field multiplication
+    parameters:
+        2 uint8_t vectors containing the finite fields you want to multiply
+        uint8_t vector containing the irreducible polynomial to use as last parameter
+
+    description:
+        This function takes 2 finite fields and multiplies them, applying modular reduction with irreducible
+        polynomial given
+*/
+    vector<uint8_t> galoisMultiply(const vector<uint8_t> &, const vector<uint8_t> &, const vector<uint8_t> &);
+
+
+
+
 
 
 

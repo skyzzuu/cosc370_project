@@ -3,6 +3,7 @@
 #include "AESEncryptObj.h"
 #include <cstdint>
 #include <cmath>
+#include <algorithm>
 
 
 
@@ -30,9 +31,10 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_
         inputVector.push_back(data[i]);
     }
 
-//    pad up to nearest block (or full block)
+//    pad up to nearest block (or add full block)
     padInput(inputVector);
 
+//    total number of blocks in padded input
     uint16_t numBlocks = inputVector.size() / 16;
 
 //    make a 2d array with the number of rows set to however many blocks there are in the padded input
@@ -117,8 +119,9 @@ void AesEncryptObj::padInput(vector<unsigned char> & inputVector)
      takes the data from the input vector and splits it into blocks of 16 bytes each as a 16 element vector within the 2d vector
      each 16 element vector represents a block of 128 bits
 */
-void splitInputIntoBlocks(unsigned char blockArray[][16], uint16_t numBlocks, const vector<unsigned char> & inputVector)
+void AesEncryptObj::splitInputIntoBlocks(unsigned char blockArray[][16], uint16_t numBlocks, const vector<unsigned char> & inputVector)
 {
+//    for each block that needs to be created
     for(uint16_t curBlock = 0; curBlock < numBlocks; curBlock++)
     {
 //        index position where current block begins
@@ -139,4 +142,262 @@ void splitInputIntoBlocks(unsigned char blockArray[][16], uint16_t numBlocks, co
 
     }
 
+}
+
+
+
+
+/*
+
+    return value: none
+    parameters:
+      const unsigned char array containing the input block to copy onto the state
+      2d unsigned char array containing the state table
+
+    description:
+      copies the bytes from the input data given and copies the data onto the state table
+*/
+void AesEncryptObj::copyInputToState(const unsigned char inputBlock[16] , unsigned char stateTable[4][4] )
+{
+
+//    for each row of the state
+    for(uint8_t row = 0; row < 4; row++)
+    {
+
+//        for each column of the state
+        for(uint8_t column = 0; column < 4; column++)
+        {
+
+//            formula provided by NIST in AES specification
+//            copies byte 0 to top left spot, byte 4 to the right of that, etc
+            stateTable[row][column] = inputBlock[row + (4 * column)];
+        }
+    }
+}
+
+
+
+/*
+    return value: none
+    parameters:
+        vector that contains the finite field representation of a byte
+        vector that contains the finite field representation of the irreducible polynomial to use
+
+    description:
+        This function takes the finite field byte and the finite field irreducible polynomial
+        and expands any terms that need to be expanded according to irreducible polynomial given
+        (E.G. polynomials with an exponent greater than 7 need to be exploded)
+*/
+void AesEncryptObj::explode(vector<uint8_t> & finiteField, const vector<uint8_t> & irreducePoly)
+{
+    // how many polynomial elements were exploded in current loop
+    int numExploded = 0;
+
+    do
+    {
+        numExploded = 0;
+
+        // will store the numbers from irreducible polynomial + what needs to be added to them
+        vector<int> numsToAdd;
+        numsToAdd.clear();
+
+        int i = 0;
+
+        // iterate through each number
+        while(i < finiteField.size())
+        {
+            // if larger than allowed
+            if(finiteField[i] >= irreducePoly[0])
+            {
+                // how many numbers were exploded in current loop
+                numExploded++;
+
+                // store temporary value
+                int temp = finiteField[i];
+
+                // remove the element that is too large
+                finiteField.erase(finiteField.begin() + i);
+
+
+                for(int j = 1; j < irreducePoly.size(); j++)
+                {
+                    // push back numbers from irreducible polynomial plus the difference
+                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
+                }
+
+                // if an item was removed, decrement index
+                i--;
+
+
+            }
+
+            // increment index to move to next element
+            i++;
+        }
+
+//        add in all of the numbers after explosion
+        for(int x : numsToAdd)
+        {
+            finiteField.push_back(x);
+        }
+
+//    end only when an entire loop is done without any elements exploded
+    } while (numExploded > 0);
+
+}
+
+
+
+
+/*
+    return value: uint8_t vector containing the result of the finite field addition
+    parameters:
+        2 uint8_t vectors containing the finite fields you want to add
+
+    description:
+        This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
+*/
+vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, const vector<uint8_t> & rightVector)
+{
+//    copy left vector elements into vector
+    vector<uint8_t> returnVector(leftVector);
+
+//    copy right vector elements into vector
+    for(const uint8_t & temp : rightVector)
+    {
+        returnVector.push_back(temp);
+    }
+
+
+
+    // positions of numbers where there is an even quantity of the number
+    vector<int> even_removes;
+
+    // positions of numbers where there is an odd quantity of the number
+    vector<int> odd_removes;
+
+
+    for(int x : vect)
+    {
+        // how many times the number is in the polynomial
+        int count = 0;
+
+        // positions of the number that match what is being search for
+        vector<int> positions;
+        positions.clear();
+
+
+        for(int i = 0; i < vect.size(); i++)
+        {
+
+            int y = vect[i];
+
+            // if there is a match
+            if(x == y)
+            {
+
+
+
+                // add the position to the list of positions
+                positions.push_back(i);
+                count++;
+
+
+            }
+        }
+
+
+        // if there is an even number of the element
+        if((count % 2) == 0)
+        {
+            sort(positions.begin(), positions.end());
+
+            // for each position
+            for(int pos : positions)
+            {
+                bool already_in = false;
+
+                for(int pos2 : even_removes)
+                {
+                    if(pos == pos2)
+                    {
+                        already_in = true;
+                        break;
+                    }
+                }
+
+                if(!already_in)
+                {
+                    // add positions of elements that need to be removed
+                    even_removes.push_back(pos);
+                }
+
+
+            }
+        }
+        else if(count > 1)
+        {
+            sort(positions.begin(), positions.end());
+
+            // counter to keep track of how many positions have been added
+            int removed = 0;
+
+            // for each position
+            for(int pos : positions)
+            {
+                bool already_in = false;
+
+                for(int pos2 : odd_removes)
+                {
+                    if(pos == pos2)
+                    {
+                        already_in = true;
+                        break;
+                    }
+                }
+
+                if(!already_in)
+                {
+                    // if not on the first position, add to vector
+                    if(removed > 0)
+                    {
+                        odd_removes.push_back(pos);
+                    }
+                }
+
+
+                removed++;
+            }
+        }
+    }
+
+    sort(even_removes.begin(), even_removes.end());
+    sort(odd_removes.begin(), odd_removes.end());
+
+    int removed = 0;
+
+    // for each of the numbers where there is an even count
+    for(int i = 0; i < even_removes.size(); i++)
+    {
+        // current position
+        int pos = even_removes[i];
+
+        vect.erase(vect.begin() + (pos - removed));
+
+
+        removed++;
+    }
+
+
+    removed = 0;
+    for(int i = 0; i < odd_removes.size(); i++)
+    {
+        // current position
+        int pos = odd_removes[i];
+
+        vect.erase(vect.begin() + (pos - removed));
+
+
+        removed++;
+    }
 }
