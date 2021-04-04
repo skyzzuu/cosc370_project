@@ -250,23 +250,15 @@ void AesEncryptObj::explode(vector<uint8_t> & finiteField, const vector<uint8_t>
 
 
 /*
-    return value: uint8_t vector containing the result of the finite field addition
+    return value: none
     parameters:
-        2 uint8_t vectors containing the finite fields you want to add
+        uint8_t vectors containing the finite fields you want to add
 
     description:
         This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
 */
-vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, const vector<uint8_t> & rightVector)
+void AesEncryptObj::galoisAdd( vector<uint8_t> & vect)
 {
-//    copy left vector elements into vector
-    vector<uint8_t> returnVector(leftVector);
-
-//    copy right vector elements into vector
-    for(const uint8_t & temp : rightVector)
-    {
-        returnVector.push_back(temp);
-    }
 
 
 
@@ -335,6 +327,8 @@ vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, con
 
             }
         }
+
+//        odd number of the element
         else if(count > 1)
         {
             sort(positions.begin(), positions.end());
@@ -371,17 +365,18 @@ vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, con
         }
     }
 
+
+//    sort the positions of the elements that need to be removed
     sort(even_removes.begin(), even_removes.end());
     sort(odd_removes.begin(), odd_removes.end());
 
+//    count of how many elements have been removed
     int removed = 0;
 
     // for each of the numbers where there is an even count
-    for(int i = 0; i < even_removes.size(); i++)
+    for(int pos : even_removes)
     {
-        // current position
-        int pos = even_removes[i];
-
+//        remove the element
         vect.erase(vect.begin() + (pos - removed));
 
 
@@ -389,15 +384,235 @@ vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, con
     }
 
 
+//    remove the duplicate values for elements that appear an odd number of times
     removed = 0;
-    for(int i = 0; i < odd_removes.size(); i++)
+    for(int pos : odd_removes)
     {
-        // current position
-        int pos = odd_removes[i];
-
+//        remove the element
         vect.erase(vect.begin() + (pos - removed));
 
 
         removed++;
     }
 }
+
+
+
+/*
+    return value: none
+    parameters:
+        uint8_t vector containing the finite field to apply modular reduction to
+        uint8_t vector containing the irreducible polynomial to use for modular reduction
+
+    description:
+        This function takes the finite field and the irreducible polynomial given and applies modular reduction to
+        the finite field using the irreducible polynomial
+*/
+void AesEncryptObj::mod_reduce(vector<uint8_t> & vals, const vector<uint8_t> & irreduce)
+{
+
+    explode(vals, irreduce);
+    galoisAdd(vals);
+
+}
+
+
+
+/*
+    return value: uint8_t vector containing the result of the finite field multiplication
+    parameters:
+        2 uint8_t vectors containing the finite fields you want to multiply
+        uint8_t vector containing the irreducible polynomial to use as last parameter
+
+    description:
+        This function takes 2 finite fields and multiplies them, applying modular reduction with irreducible
+        polynomial given
+*/
+vector<uint8_t> AesEncryptObj::galoisMultiply(const vector<uint8_t> & a, const vector<uint8_t> & b, const vector<uint8_t> & irreduce)
+{
+    vector<uint8_t> vect;
+
+    for(unsigned char x : a)
+    {
+        for(unsigned char j : b)
+        {
+            vect.push_back(x + j);
+
+        }
+    }
+
+//    galois addition on the vector
+    galoisAdd(vect);
+
+
+
+    sort(vect.rbegin(), vect.rend());
+
+    // modular reduction
+    mod_reduce(vect, irreduce);
+
+
+
+    return vect;
+
+}
+
+
+
+/*
+
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+      unordered map with uint8_t mapped to uint8_t (should always be the sBox that is passed in)
+
+
+    description:
+      This function takes the state that you pass in and will perform the SubBytes transformation on the table.
+      This will substitute each of the bytes in the table according to the method that NIST specifies.
+      The pre-made sBox is passed in instead of calculating the substitution in the function to speed up the encryption process.
+*/
+void AesEncryptObj::SubBytes(unsigned char state[4][4], const unordered_map<uint8_t, uint8_t> & sBox)
+{
+    for(uint8_t row = 0; row < 4; row++)
+    {
+        for(uint8_t column = 0; column < 4; column++)
+        {
+//            set value of byte to the mapped value in the sBox
+//            passes in byte as key to find function, then fetches the value from the iterator using "second"
+            state[row][column] = sBox.find(state[row][column])->second;
+        }
+
+    }
+}
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function takes the state and shifts the rows within it according to the schema identified by NIST.
+      The top row will not be shifted.
+      The second row will be shifted to the left 1 space.
+      The third row will be shifted to the left 2 spaces.
+      The fourth row will be shifted to the left 3 spaces.
+
+*/
+void AesEncryptObj::ShiftRows(unsigned char [4][4])
+{
+
+}
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
+      The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
+*/
+void AesEncryptObj::MixColumns(unsigned char [4][4])
+{
+
+}
+
+
+
+
+/*
+    return value: none
+    parameters:
+      2d unsigned char array (should always be the state that is passed in)
+
+    description:
+      This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
+      The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
+*/
+void AesEncryptObj::AddRoundKey(unsigned char [4][4], const unsigned char *)
+{
+
+}
+
+
+
+
+/*
+    return value: uint8_t vector
+    parameters:
+        byte that you want to convert to a finite field representation
+
+    description:
+        This function takes the byte passed in as a parameter and returns a uint8_t vector
+        that represents the byte as a finite field.
+ */
+vector<uint8_t> AesEncryptObj::byteToFiniteField(const unsigned char & origByte)
+{
+//    powers of 2
+    const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
+
+//    make a copy of the original byte
+    unsigned char byte = origByte;
+
+//    will contain the exponents of the bits that are set in the byte
+    vector<uint8_t> returnVector;
+    returnVector.clear();
+
+
+//    for each power of 2 starting from right
+    for(uint8_t i = 7; i >= 0; i++)
+    {
+//        value of the current power
+        uint8_t currentPower = powsOfTwo[i];
+
+//        if the current power fits into the remaining value of the byte
+        if (currentPower <= byte)
+        {
+//            add the index position to the vector
+//            represents which bits are set
+            returnVector.push_back(i);
+
+//            subtract the value from the byte
+            byte -= currentPower;
+        }
+    }
+
+
+    return returnVector;
+
+}
+
+
+
+
+/*
+    return value: unsigned char
+    parameters:
+        vector that contains the finite field representation of a byte
+
+    description:
+        This function takes the finite field passed in and converts it back into a byte.
+ */
+unsigned char AesEncryptObj::finiteFieldToByte(const vector<uint8_t> & field)
+{
+    unsigned char retVal = 0;
+
+//    for each value in the field
+    for(const uint8_t & val : field)
+    {
+//        add the value of 2 to that power
+        retVal += pow(2, val);
+    }
+
+    return retVal;
+}
+
+
+
+
+
