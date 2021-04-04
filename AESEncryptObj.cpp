@@ -16,13 +16,26 @@ AesEncryptObj::~AesEncryptObj() {
 
 }
 
+/*
+    return value: unsigned char array of size 12 bytes
+    parameters: none
+    description: this function generates an initialization vector (IV). The
+      IV is a cryptographically securely randomized array of unsigned
+      characters of size 12 bytes. The IV is later used as an input to the
+      encryption algorithm to ensure semantic security (plaintext cannot be
+      derived from a message's cyphertext).
+*/
 
+unsigned char * AesEncryptObj::generateIV()
+{
+  return nullptr;
+}
 
 vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_t inputLength, const unsigned char key[16])
 {
 
 //    unsigned char vector containing all the input data
-    vector<unsigned char > inputVector;
+    vector<unsigned char> inputVector;
     inputVector.clear();
 
 //    copy all bytes from original input into vector
