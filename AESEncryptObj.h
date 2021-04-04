@@ -139,7 +139,7 @@ unsigned char * generateIV();
       This will substitute each of the bytes in the table according to the method that NIST specifies.
       The pre-made sBox is passed in instead of calculating the substitution in the function to speed up the encryption process.
 */
-    void SubBytes(unsigned char [4][4], const unordered_map<uint8_t , uint8_t> &);
+    static void SubBytes(unsigned char [4][4], const unordered_map<uint8_t , uint8_t> &);
 
 
 /*
@@ -219,7 +219,7 @@ unsigned char * generateIV();
         This function takes the byte passed in as a parameter and returns a uint8_t vector
         that represents the byte as a finite field.
  */
-    vector<uint8_t> byteToFiniteField(const unsigned char &);
+    static vector<uint8_t> byteToFiniteField(const unsigned char &);
 
 
 
@@ -254,12 +254,12 @@ unsigned char * generateIV();
 /*
     return value: uint8_t vector containing the result of the finite field addition
     parameters:
-        2 uint8_t vectors containing the finite fields you want to add
+        uint8_t vector containing the finite fields merged that you want to add
 
     description:
         This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
  */
-    vector<uint8_t> galoisAdd(const vector<uint8_t> &, const vector<uint8_t> &);
+    void galoisAdd( vector<uint8_t> &);
 
 
 
@@ -278,6 +278,18 @@ unsigned char * generateIV();
 
 
 
+
+/*
+    return value: none
+    parameters:
+        uint8_t vector containing the finite field to apply modular reduction to
+        uint8_t vector containing the irreducible polynomial to use for modular reduction
+
+    description:
+        This function takes the finite field and the irreducible polynomial given and applies modular reduction to
+        the finite field using the irreducible polynomial
+*/
+    void mod_reduce(vector<uint8_t> & , const vector<uint8_t> & );
 
 
 

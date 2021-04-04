@@ -263,23 +263,15 @@ void AesEncryptObj::explode(vector<uint8_t> & finiteField, const vector<uint8_t>
 
 
 /*
-    return value: uint8_t vector containing the result of the finite field addition
+    return value: none
     parameters:
-        2 uint8_t vectors containing the finite fields you want to add
+        uint8_t vectors containing the finite fields you want to add
 
     description:
         This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
 */
-vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, const vector<uint8_t> & rightVector)
+void AesEncryptObj::galoisAdd( vector<uint8_t> & vect)
 {
-//    copy left vector elements into vector
-    vector<uint8_t> returnVector(leftVector);
-
-//    copy right vector elements into vector
-    for(const uint8_t & temp : rightVector)
-    {
-        returnVector.push_back(temp);
-    }
 
 
 
@@ -348,6 +340,8 @@ vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, con
 
             }
         }
+
+//        odd number of the element
         else if(count > 1)
         {
             sort(positions.begin(), positions.end());
@@ -384,17 +378,18 @@ vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, con
         }
     }
 
+
+//    sort the positions of the elements that need to be removed
     sort(even_removes.begin(), even_removes.end());
     sort(odd_removes.begin(), odd_removes.end());
 
+//    count of how many elements have been removed
     int removed = 0;
 
     // for each of the numbers where there is an even count
-    for(int i = 0; i < even_removes.size(); i++)
+    for(int pos : even_removes)
     {
-        // current position
-        int pos = even_removes[i];
-
+//        remove the element
         vect.erase(vect.begin() + (pos - removed));
 
 
@@ -402,12 +397,11 @@ vector<uint8_t> AesEncryptObj::galoisAdd(const vector<uint8_t> & leftVector, con
     }
 
 
+//    remove the duplicate values for elements that appear an odd number of times
     removed = 0;
-    for(int i = 0; i < odd_removes.size(); i++)
+    for(int pos : odd_removes)
     {
-        // current position
-        int pos = odd_removes[i];
-
+//        remove the element
         vect.erase(vect.begin() + (pos - removed));
 
 
