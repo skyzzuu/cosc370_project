@@ -638,7 +638,9 @@ unsigned char * AesEncryptObj::generateIV()
 {
     unsigned char initVector[12] = {0};
 
-//    populate IV. randombytes_buf() is a Sodium library function
+//    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
+    if(sodium_init() == -1)
+        return nullptr;
     randombytes_buf(initVector, 12);
 
     unsigned char *ptr = &initVector[0];
