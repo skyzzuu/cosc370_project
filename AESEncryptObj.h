@@ -294,6 +294,10 @@ unsigned char * generateIV();
 
 
 
+    vector<unsigned char > fourTermPolyMultiply(unsigned char [4], unsigned char [4]);
+
+
+
 };
 
 

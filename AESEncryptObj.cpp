@@ -6,6 +6,15 @@
 #include <algorithm>
 
 
+/*
+    Sodium is an encryption library. We use it to populate initialization
+    vectors with cryptographically secure random bytes. See function
+    generateIV().
+*/
+#include <sodium.h>
+
+
+
 
 AesEncryptObj::AesEncryptObj() {
 
@@ -627,7 +636,7 @@ unsigned char AesEncryptObj::finiteFieldToByte(const vector<uint8_t> & field)
 */
 unsigned char * AesEncryptObj::generateIV()
 {
-    unsigned char initVector[12];
+    unsigned char initVector[12] = {0};
 
 //    populate IV. randombytes_buf() is a Sodium library function
     randombytes_buf(initVector, 12);
@@ -639,4 +648,53 @@ unsigned char * AesEncryptObj::generateIV()
 
 
 
+vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], unsigned char b[4])
+{
+    unsigned char d[4] = {0};
 
+    const vector<uint8_t> irreduce = {4, 0};
+
+//    use finite field multiplication to get the multiplication results needed for d0
+    unsigned char d0_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d0_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[1]), irreduce));
+    unsigned char d0_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[2]), irreduce));
+    unsigned char d0_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[3]), irreduce));
+
+//    set d[0] to the result of a bitwise xor of the results of finite field multiplication
+    unsigned char d0 = (d0_step1 | d0_step2 | d0_step3 | d0_step4);
+    d[0] = d0;
+
+
+    //    use finite field multiplication to get the multiplication results needed for d0
+    unsigned char d1_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d1_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[1]), irreduce));
+    unsigned char d1_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[2]), irreduce));
+    unsigned char d1_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[3]), irreduce));
+
+    unsigned char d1 = (d1_step1 | d1_step2 | d1_step3 | d1_step4);
+    d[1] = d1;
+
+
+    /*
+     * NOT DONE!!!!
+     * TODO:
+     *
+     *
+     *
+     *
+     * */
+
+    unsigned char d2_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d2_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d2_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d2_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+
+
+
+
+    unsigned char d3_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d3_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d3_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d3_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+
+}
