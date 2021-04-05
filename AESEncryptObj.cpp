@@ -5,6 +5,13 @@
 #include <cmath>
 #include <algorithm>
 
+/*
+    Sodium is an encryption library. We use it to populate initialization
+    vectors with cryptographically secure random bytes. See function
+    generateIV().
+*/
+#include <sodium.h>
+
 
 
 AesEncryptObj::AesEncryptObj() {
@@ -25,10 +32,15 @@ AesEncryptObj::~AesEncryptObj() {
       encryption algorithm to ensure semantic security (plaintext cannot be
       derived from a message's cyphertext).
 */
-
 unsigned char * AesEncryptObj::generateIV()
 {
-  return nullptr;
+  unsigned char initVector[12];
+
+//    populate IV. randombytes_buf() is a Sodium library function
+  randombytes_buf(initVector, 12);
+
+  unsigned char *ptr = &initVector[0];
+  return ptr;
 }
 
 vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_t inputLength, const unsigned char key[16])

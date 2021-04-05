@@ -1,6 +1,6 @@
 
-cflags= "-std=c++11"
-
+cflags="-std=c++11" $(pkg-config --cflags libsodium)
+ldflags=$(pkg-config --libs libsodium)
 target="project.out"
 
 
@@ -27,4 +27,3 @@ main.o:
 # remove target executable and all object files
 clean:
 	rm -rf $(target) *.o
-
