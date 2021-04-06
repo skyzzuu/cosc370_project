@@ -654,6 +654,7 @@ vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], u
 {
     unsigned char d[4] = {0};
 
+//    irreducible polynomial specified in AES specification to be used with four-term polynomial multiplication
     const vector<uint8_t> irreduce = {4, 0};
 
 //    use finite field multiplication to get the multiplication results needed for d0
@@ -677,19 +678,15 @@ vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], u
     d[1] = d1;
 
 
-    /*
-     * NOT DONE!!!!
-     * TODO:
-     *
-     *
-     *
-     *
-     * */
 
-    unsigned char d2_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d2_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d2_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d2_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d2_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[0]), irreduce));
+    unsigned char d2_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[1]), irreduce));
+    unsigned char d2_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[2]), irreduce));
+    unsigned char d2_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[3]), irreduce));
+
+
+    unsigned char d2 = (d2_step1 | d2_step2 | d2_step3 | d2_step4);
+    d[2] = d2;
 
 
 
@@ -698,5 +695,21 @@ vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], u
     unsigned char d3_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
     unsigned char d3_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
     unsigned char d3_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+
+    unsigned char d3 = (d3_step1 | d3_step2 | d3_step3 | d3_step4);
+    d[3] = d3;
+
+
+
+//    copy elements into the 4 element vector that will be returned
+    vector<unsigned char > fourTermPoly(4);
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        fourTermPoly[i] = d[i];
+    }
+
+
+    return fourTermPoly;
+
 
 }

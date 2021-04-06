@@ -211,6 +211,25 @@ unsigned char * generateIV();
 
 
 /*
+    return value: none
+    parameters:
+      4-byte word (4 byte array)
+
+    description:
+      This function takes a 4-byte word and applies the SubBytes transformation to each of the bytes. It is used within
+      the KeyExpansion function.
+*/
+    void SubWord(unsigned char[4]);
+
+
+
+
+
+
+
+
+
+/*
     return value: uint8_t vector
     parameters:
         byte that you want to convert to a finite field representation
