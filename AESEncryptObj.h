@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <vector>
 #include <exception>
+#include "word.h"
+
 
 using namespace std;
 
@@ -213,7 +215,7 @@ unsigned char * generateIV();
 
 //  key schedule containing 44 4-byte words that will be generated in the KeyExpansion function
 //  each row represents a 4-byte word
-    unsigned char keySched[176] = {0};
+    word keySched[44];
 
 
 
@@ -240,7 +242,7 @@ unsigned char * generateIV();
       This function takes a 4-byte word and applies the SubBytes transformation to each of the bytes. It is used within
       the KeyExpansion function.
 */
-    void SubWord(unsigned char[4]);
+    void SubWord(word &);
 
 
 
@@ -254,7 +256,7 @@ unsigned char * generateIV();
     description:
       This function takes a 4-byte word and performs a cyclic permutation one space to the left.
 */
-    void RotWord(unsigned char [4]);
+    void RotWord(word &);
 
 
 
@@ -360,11 +362,7 @@ unsigned char * generateIV();
     class InvalidKeySize
     {
         public:
-            uint16_t Size;
-            explicit InvalidKeySize(uint16_t size)
-            {
-                Size = size;
-            }
+            explicit InvalidKeySize(uint16_t size){}
     };
 
 

@@ -805,10 +805,22 @@ void AesEncryptObj::KeyExpansion()
 //    while i less than (4 * ( number of rounds + 1 ) )
     while (i < (nB * (nR + 1)))
     {
+//        copy the bytes in the previous word into temp
         for(uint8_t index = 0; index < 4; index++)
+        {
+            temp[index] = keySched[i - 4 + index];
+        }
+
+
+        if((i % nK) == 0)
         {
 
         }
+
+
+
+//        move one word (4 bytes) to the right
+        i = i + 4;
     }
 
 
@@ -825,43 +837,49 @@ void AesEncryptObj::KeyExpansion()
       This function takes a 4-byte word and applies the SubBytes transformation to each of the bytes. It is used within
       the KeyExpansion function.
 */
-void AesEncryptObj::SubWord(unsigned char word[4])
+void AesEncryptObj::SubWord(word & curWord)
 {
 
 //    for each byte in the word
-    for(uint8_t  i = 0; i < 4; i++)
+    for(uint8_t i = 0; i < 4; i++)
     {
 
 //        substitute each byte with it's matching value in the sBox
-        word[i] = sBox.find(word[i])->second;
+        curWord[i] = sBox.find(word[i])->second;
     }
 }
 
 
 
 /*
-    return value: none
-    parameters:
-      4-byte word (4 byte array)
+ *  !!!   DEFINED IN THE WORD CLASS NOW
+ * */
 
-    description:
-      This function takes a 4-byte word and performs a cyclic permutation one space to the left.
-*/
-void AesEncryptObj::RotWord(unsigned char word[4])
-{
-
-//    make a copy of the value of the first byte
-    unsigned char firstByte = word[0];
-
-//    for each byte except for the last
-    for(uint8_t i = 0; i < 3; i++)
-    {
-
-//        make the value of the byte, the value of the byte to the right
-        word[i] = word[i+1];
-    }
-
-//    copy the value of what used to be the first byte into the last position
-    word[3] = firstByte;
-}
+///*
+//    return value: none
+//    parameters:
+//      4-byte word (4 byte array)
+//
+//    description:
+//      This function takes a 4-byte word and performs a cyclic permutation one space to the left.
+//*/
+//void AesEncryptObj::RotWord(word  curWord)
+//{
+//
+//    word retWord
+//
+////    make a copy of the value of the first byte
+//    unsigned char firstByte = curWord[0];
+//
+////    for each byte except for the last
+//    for(uint8_t i = 0; i < 3; i++)
+//    {
+//
+////        make the value of the byte, the value of the byte to the right
+//        curWord[i] = curWord[i+1];
+//    }
+//
+////    copy the value of what used to be the first byte into the last position
+//    curWord[3] = firstByte;
+//}
 
