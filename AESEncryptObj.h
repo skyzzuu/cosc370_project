@@ -8,12 +8,20 @@
 #include <unordered_map>
 #include <cstdint>
 #include <vector>
+#include <exception>
 
 using namespace std;
 
 class AesEncryptObj {
     AesEncryptObj();
+    AesEncryptObj(uint8_t);
     ~AesEncryptObj();
+
+
+    uint16_t keySize = 0;
+    uint8_t nK = 0;
+    uint8_t nB = 0;
+    uint8_t nR = 0;
 
 //    state table
     unsigned char state[4][4] = {0};
@@ -23,7 +31,7 @@ class AesEncryptObj {
 
 
 //    round constant word array, formulas given in AES specification
-    const unsigned char [10][4] roundConstants = {
+    const unsigned char roundConstants[10][4]  = {
             {1, 0, 0, 0},
             {2, 0, 0, 0},
             {4, 0, 0, 0},
@@ -43,8 +51,8 @@ class AesEncryptObj {
     uint16_t inputLength = 0;
 
 
-//    128 bit key used to encrypt the data
-    unsigned char key[16] = {0};
+//     key used to encrypt the data, length depends on which key size is being used (4 * nK)
+    vector<unsigned char > key;
 
 
 //    sBox, can pass in the number you have, and it will give you the number that it should be substituted with in the SubBytes section
@@ -205,23 +213,20 @@ unsigned char * generateIV();
 
 //  key schedule containing 44 4-byte words that will be generated in the KeyExpansion function
 //  each row represents a 4-byte word
-    unsigned char KeySched[44][4] = {0};
+    unsigned char keySched[176] = {0};
 
 
 
 /*
     return value: none
-    parameters:
-      16 element unsigned char array that should always be the cipher key that was passed in for encryption.
-      44 row, 4 column unsigned char array that should always be the KeySched 2d array.
-      10, 4 unsigned char array that should contain the round constants
+    parameters: none
 
     description:
       This function takes the original cipher key passed in for encryption and the empty key schedule array and
       performs the KeyExpansion operation to generate the round keys that will be needed for the AddRoundKey transformation
-      and puts them into the KeySched array.
+      and puts them into the keySched array.
 */
-    void KeyExpansion(const unsigned char [16], unsigned char [44][4], const unsigned char [10][4]);
+    void KeyExpansion();
 
 
 
@@ -342,6 +347,25 @@ unsigned char * generateIV();
 
 
     vector<unsigned char > fourTermPolyMultiply(unsigned char [4], unsigned char [4]);
+
+
+
+
+
+
+
+
+    /* EXCEPTION CLASSES */
+
+    class InvalidKeySize
+    {
+        public:
+            uint16_t Size;
+            explicit InvalidKeySize(uint16_t size)
+            {
+                Size = size;
+            }
+    };
 
 
 

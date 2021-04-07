@@ -166,12 +166,12 @@ class AESDecryptObj {
     return value: none
     parameters:
       16 element unsigned char array that should always be the cipher key that was passed in for decryption.
-      44 row, 4 column unsigned char array that should always be the KeySched 2d array.
+      44 row, 4 column unsigned char array that should always be the keySched 2d array.
 
     description:
       This function takes the original cipher key passed in for decryption and the empty key schedule array and
       performs the KeyExpansion operation to generate the round keys that will be needed for the AddRoundKey transformation
-      and puts them into the KeySched array.
+      and puts them into the keySched array.
 */
     void KeyExpansion(unsigned char [16], unsigned char [44][4]);
 

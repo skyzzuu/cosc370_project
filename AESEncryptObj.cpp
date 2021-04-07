@@ -16,8 +16,60 @@
 
 
 
-AesEncryptObj::AesEncryptObj() {
+AesEncryptObj::AesEncryptObj(uint8_t keysize)
+{
+    keySize = keysize;
 
+//    nB is always 4 regardless of key size
+    nB = 4;
+
+
+//    AES-128
+    if(keySize == 128)
+    {
+        nK = 4;
+        nR = 10;
+
+    }
+
+//    AES-192
+    else if (keySize == 192)
+    {
+        nK = 6;
+        nR = 12;
+    }
+
+//    AES-256
+    else if(keySize == 256)
+    {
+        nK = 8;
+        nR = 14;
+    }
+
+//    invalid key size
+    else
+    {
+        throw InvalidKeySize(keysize);
+    }
+
+
+    key.resize(4 * nK);
+
+}
+
+
+/*
+ * Default constructor
+ * assumes AES-128
+ *
+ * */
+AesEncryptObj::AesEncryptObj()  {
+    keySize = 128;
+    nK = 4;
+    nB = 4;
+    nR = 10;
+
+    key.resize(4 * nK);
 }
 
 
@@ -721,17 +773,95 @@ vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], u
 
 /*
     return value: none
-    parameters:
-      16 element unsigned char array that should always be the cipher key that was passed in for encryption.
-      44 row, 4 column unsigned char array that should always be the KeySched 2d array.
-      10, 4 unsigned char array that should contain the round constants
+    parameters: none
+
 
     description:
       This function takes the original cipher key passed in for encryption and the empty key schedule array and
       performs the KeyExpansion operation to generate the round keys that will be needed for the AddRoundKey transformation
-      and puts them into the KeySched array.
+      and puts them into the keySched array.
 */
-void KeyExpansion(const unsigned char ciphKey[16], unsigned char keySched[44][4], const unsigned char roundConstants[10][4])
+
+void AesEncryptObj::KeyExpansion()
 {
 
+//    holds a temporary 4-byte word in a later loop, will hold the value of the previous word
+    unsigned char temp[4] = {0};
+
+//    index position
+    uint8_t i = 0;
+
+
+//    for each byte of the cipher key
+    while (i < (4 * nK))
+    {
+//        copy the current byte of the cipher key into the beginning of the key schedule
+        keySched[i] = key[i];
+    }
+
+    i = nK;
+
+
+//    while i less than (4 * ( number of rounds + 1 ) )
+    while (i < (nB * (nR + 1)))
+    {
+        for(uint8_t index = 0; index < 4; index++)
+        {
+
+        }
+    }
+
+
 }
+
+
+
+/*
+    return value: none
+    parameters:
+      4-byte word (4 byte array)
+
+    description:
+      This function takes a 4-byte word and applies the SubBytes transformation to each of the bytes. It is used within
+      the KeyExpansion function.
+*/
+void AesEncryptObj::SubWord(unsigned char word[4])
+{
+
+//    for each byte in the word
+    for(uint8_t  i = 0; i < 4; i++)
+    {
+
+//        substitute each byte with it's matching value in the sBox
+        word[i] = sBox.find(word[i])->second;
+    }
+}
+
+
+
+/*
+    return value: none
+    parameters:
+      4-byte word (4 byte array)
+
+    description:
+      This function takes a 4-byte word and performs a cyclic permutation one space to the left.
+*/
+void AesEncryptObj::RotWord(unsigned char word[4])
+{
+
+//    make a copy of the value of the first byte
+    unsigned char firstByte = word[0];
+
+//    for each byte except for the last
+    for(uint8_t i = 0; i < 3; i++)
+    {
+
+//        make the value of the byte, the value of the byte to the right
+        word[i] = word[i+1];
+    }
+
+//    copy the value of what used to be the first byte into the last position
+    word[3] = firstByte;
+}
+
