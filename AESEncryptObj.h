@@ -15,15 +15,37 @@
 using namespace std;
 
 class AesEncryptObj {
+public:
     AesEncryptObj();
     AesEncryptObj(uint8_t);
     ~AesEncryptObj();
+
+    /*
+    return value: unsigned char vector containing encrypted bytes
+    parameters:
+      const unsigned char * containing the bytes to encrypt
+      unsigned integer representing how many bytes are in the input
+      const unsigned char array containing the encryption key to use
+
+    description:
+      takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
+      of the input data in the form of an unsigned char vector.
+      encrypts using the cipher block chaining mode of operation.
+
+ */
+    vector<unsigned char> encrypt(const unsigned char * , uint16_t , const unsigned char [16]);
+
+
+
+
+private:
 
 
     uint16_t keySize = 0;
     uint8_t nK = 0;
     uint8_t nB = 0;
     uint8_t nR = 0;
+    uint8_t numWordsInKeySched = 0;
 
 //    state table
     unsigned char state[4][4] = {0};
@@ -32,19 +54,9 @@ class AesEncryptObj {
     unsigned char * input = nullptr;
 
 
-//    round constant word array, formulas given in AES specification
-    const unsigned char roundConstants[10][4]  = {
-            {1, 0, 0, 0},
-            {2, 0, 0, 0},
-            {4, 0, 0, 0},
-            {8, 0, 0, 0},
-            {16, 0, 0, 0},
-            {32, 0, 0, 0},
-            {64, 0, 0, 0},
-            {128, 0, 0, 0},
-            {27, 0, 0, 0},
-            {54, 0, 0, 0}
-    };
+
+    uint8_t numRoundConstants = 0;
+    word * roundConstants = nullptr;
 
 
 
@@ -54,7 +66,7 @@ class AesEncryptObj {
 
 
 //     key used to encrypt the data, length depends on which key size is being used (4 * nK)
-    vector<unsigned char > key;
+    word * key = nullptr;
 
 
 //    sBox, can pass in the number you have, and it will give you the number that it should be substituted with in the SubBytes section
@@ -88,20 +100,7 @@ class AesEncryptObj {
 */
 unsigned char * generateIV();
 
-/*
-    return value: unsigned char vector containing encrypted bytes
-    parameters:
-      const unsigned char * containing the bytes to encrypt
-      unsigned integer representing how many bytes are in the input
-      const unsigned char array containing the encryption key to use
 
-    description:
-      takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
-      of the input data in the form of an unsigned char vector.
-      encrypts using the cipher block chaining mode of operation.
-
- */
-   vector<unsigned char> encrypt(const unsigned char * , uint16_t , const unsigned char [16]);
 
 /*
 
@@ -213,9 +212,9 @@ unsigned char * generateIV();
 
 
 
-//  key schedule containing 44 4-byte words that will be generated in the KeyExpansion function
+//  key schedule containing 4-byte words that will be generated in the KeyExpansion function
 //  each row represents a 4-byte word
-    word keySched[44];
+    word * keySched = nullptr;
 
 
 
@@ -233,30 +232,7 @@ unsigned char * generateIV();
 
 
 
-/*
-    return value: none
-    parameters:
-      4-byte word (4 byte array)
 
-    description:
-      This function takes a 4-byte word and applies the SubBytes transformation to each of the bytes. It is used within
-      the KeyExpansion function.
-*/
-    void SubWord(word &);
-
-
-
-
-
-/*
-    return value: none
-    parameters:
-      4-byte word (4 byte array)
-
-    description:
-      This function takes a 4-byte word and performs a cyclic permutation one space to the left.
-*/
-    void RotWord(word &);
 
 
 

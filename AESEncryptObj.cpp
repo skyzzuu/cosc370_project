@@ -20,6 +20,7 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
 {
     keySize = keysize;
 
+
 //    nB is always 4 regardless of key size
     nB = 4;
 
@@ -30,6 +31,23 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
         nK = 4;
         nR = 10;
 
+        numRoundConstants = 10;
+        roundConstants = new word[numRoundConstants];
+
+//        appendix A of AES spec
+        (roundConstants[0])[0] = 1;
+        (roundConstants[0])[1] = 2;
+        (roundConstants[0])[2] = 4;
+        (roundConstants[0])[3] = 8;
+        (roundConstants[0])[4] = 16;
+        (roundConstants[0])[5] = 32;
+        (roundConstants[0])[6] = 64;
+        (roundConstants[0])[7] = 128;
+        (roundConstants[0])[8] = 27;
+        (roundConstants[0])[9] = 54;
+
+
+
     }
 
 //    AES-192
@@ -37,6 +55,20 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
     {
         nK = 6;
         nR = 12;
+
+
+        numRoundConstants = 8;
+        roundConstants = new word[numRoundConstants];
+
+//        appendix A of AES spec
+        (roundConstants[0])[0] = 1;
+        (roundConstants[0])[1] = 2;
+        (roundConstants[0])[2] = 4;
+        (roundConstants[0])[3] = 8;
+        (roundConstants[0])[4] = 16;
+        (roundConstants[0])[5] = 32;
+        (roundConstants[0])[6] = 64;
+        (roundConstants[0])[7] = 128;
     }
 
 //    AES-256
@@ -44,6 +76,19 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
     {
         nK = 8;
         nR = 14;
+
+
+        numRoundConstants = 7;
+        roundConstants = new word[numRoundConstants];
+
+//        appendix A of AES spec
+        (roundConstants[0])[0] = 1;
+        (roundConstants[0])[1] = 2;
+        (roundConstants[0])[2] = 4;
+        (roundConstants[0])[3] = 8;
+        (roundConstants[0])[4] = 16;
+        (roundConstants[0])[5] = 32;
+        (roundConstants[0])[6] = 64;
     }
 
 //    invalid key size
@@ -53,7 +98,11 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
     }
 
 
-    key.resize(4 * nK);
+//    make key a word array of nK words
+    key = new word[nK];
+
+    numWordsInKeySched = nB * (nR + 1);
+    keySched = new word[numWordsInKeySched];
 
 }
 
@@ -69,12 +118,17 @@ AesEncryptObj::AesEncryptObj()  {
     nB = 4;
     nR = 10;
 
-    key.resize(4 * nK);
+    key = new word[nK];
+
+    numWordsInKeySched = nB * (nR + 1);
+    keySched = new word[numWordsInKeySched];
 }
 
 
 AesEncryptObj::~AesEncryptObj() {
-
+    delete[] key;
+    delete[] keySched;
+    delete[] roundConstants;
 }
 
 
@@ -786,16 +840,16 @@ void AesEncryptObj::KeyExpansion()
 {
 
 //    holds a temporary 4-byte word in a later loop, will hold the value of the previous word
-    unsigned char temp[4] = {0};
+    word temp;
 
 //    index position
     uint8_t i = 0;
 
 
-//    for each byte of the cipher key
-    while (i < (4 * nK))
+//    for each word of the cipher key
+    while (i < nK)
     {
-//        copy the current byte of the cipher key into the beginning of the key schedule
+//        copy the current word of the cipher key into the beginning of the key schedule
         keySched[i] = key[i];
     }
 
@@ -805,13 +859,11 @@ void AesEncryptObj::KeyExpansion()
 //    while i less than (4 * ( number of rounds + 1 ) )
     while (i < (nB * (nR + 1)))
     {
-//        copy the bytes in the previous word into temp
-        for(uint8_t index = 0; index < 4; index++)
-        {
-            temp[index] = keySched[i - 4 + index];
-        }
+//        copy the previous word into temp
+        temp = keySched[i-1];
 
 
+//        happens every nK words of the key
         if((i % nK) == 0)
         {
 
@@ -828,58 +880,4 @@ void AesEncryptObj::KeyExpansion()
 
 
 
-/*
-    return value: none
-    parameters:
-      4-byte word (4 byte array)
-
-    description:
-      This function takes a 4-byte word and applies the SubBytes transformation to each of the bytes. It is used within
-      the KeyExpansion function.
-*/
-void AesEncryptObj::SubWord(word & curWord)
-{
-
-//    for each byte in the word
-    for(uint8_t i = 0; i < 4; i++)
-    {
-
-//        substitute each byte with it's matching value in the sBox
-        curWord[i] = sBox.find(word[i])->second;
-    }
-}
-
-
-
-/*
- *  !!!   DEFINED IN THE WORD CLASS NOW
- * */
-
-///*
-//    return value: none
-//    parameters:
-//      4-byte word (4 byte array)
-//
-//    description:
-//      This function takes a 4-byte word and performs a cyclic permutation one space to the left.
-//*/
-//void AesEncryptObj::RotWord(word  curWord)
-//{
-//
-//    word retWord
-//
-////    make a copy of the value of the first byte
-//    unsigned char firstByte = curWord[0];
-//
-////    for each byte except for the last
-//    for(uint8_t i = 0; i < 3; i++)
-//    {
-//
-////        make the value of the byte, the value of the byte to the right
-//        curWord[i] = curWord[i+1];
-//    }
-//
-////    copy the value of what used to be the first byte into the last position
-//    curWord[3] = firstByte;
-//}
 

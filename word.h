@@ -8,6 +8,7 @@
 
 
 #include <cstdint>
+#include <unordered_map>
 
 using namespace std;
 
@@ -17,14 +18,23 @@ class word
 public:
     unsigned char bytes[4] = {0};
 
+
     word(unsigned char *);
     word();
+    word(const word &);
 
     unsigned char & operator[](uint8_t i);
 
     word operator^(const word &);
+    word operator^=(const word &);
 
-    word rotate();
+    word operator=(const word &);
+
+
+    word leftRotate();
+    word rightRotate();
+
+    word SubWord(const unordered_map<uint8_t, uint8_t> & );
 
 
 
