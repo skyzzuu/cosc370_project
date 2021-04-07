@@ -22,6 +22,21 @@ class AesEncryptObj {
     unsigned char * input = nullptr;
 
 
+//    round constant word array, formulas given in AES specification
+    const unsigned char [10][4] roundConstants = {
+            {1, 0, 0, 0},
+            {2, 0, 0, 0},
+            {4, 0, 0, 0},
+            {8, 0, 0, 0},
+            {16, 0, 0, 0},
+            {32, 0, 0, 0},
+            {64, 0, 0, 0},
+            {128, 0, 0, 0},
+            {27, 0, 0, 0},
+            {54, 0, 0, 0}
+    };
+
+
 
 
 //    how many bytes are in the input
@@ -199,13 +214,14 @@ unsigned char * generateIV();
     parameters:
       16 element unsigned char array that should always be the cipher key that was passed in for encryption.
       44 row, 4 column unsigned char array that should always be the KeySched 2d array.
+      10, 4 unsigned char array that should contain the round constants
 
     description:
       This function takes the original cipher key passed in for encryption and the empty key schedule array and
       performs the KeyExpansion operation to generate the round keys that will be needed for the AddRoundKey transformation
       and puts them into the KeySched array.
 */
-    void KeyExpansion(unsigned char [16], unsigned char [44][4]);
+    void KeyExpansion(const unsigned char [16], unsigned char [44][4], const unsigned char [10][4]);
 
 
 
@@ -222,6 +238,18 @@ unsigned char * generateIV();
     void SubWord(unsigned char[4]);
 
 
+
+
+
+/*
+    return value: none
+    parameters:
+      4-byte word (4 byte array)
+
+    description:
+      This function takes a 4-byte word and performs a cyclic permutation one space to the left.
+*/
+    void RotWord(unsigned char [4]);
 
 
 
