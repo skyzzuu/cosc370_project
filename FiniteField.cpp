@@ -4,6 +4,7 @@
 
 #include "FiniteField.h"
 #include <algorithm>
+#include <vector>
 
 
 FiniteField()
@@ -103,14 +104,124 @@ void FiniteField::operator=(const byte & rightByte)
 
 FiniteField operator+(const FiniteField & rightField)
 {
-//    create finite field with elements from the 2 finite fields combined
+    byte leftByte = this;
+    byte rightByte = rightField;
+
+    byte retByte = leftByte + rightByte;
+
+    FiniteField retField = retByte;
+
+    return retField;
+}
+
+
+
+void FiniteField::operator+=(const FiniteField & rightField)
+{
+    *this = *this + rightField;
+}
+
+
+
+
+FiniteField FiniteField::galoisMultiply(const FiniteField & rightField, const vector <uint8_t> & irreduce) {
+
+//    copy elements from this finite field into return field
     FiniteField retField = *this;
 
+//    copy elements from rightField into return field
     for(uint8_t i = 0; i < rightField.size(); i++)
     {
         retField.addElement(rightField[i]);
     }
 
+//    remove elements that appear an even number of times, and remove duplicates of elements
+//    that appear an odd number of times
+    retField.xorSelf();
+
+//    sort the vector
+    sort(retField.elements);
+
+//    modular reduction
+    retField.mod_reduce(irreduce);
+
+
+
+    return retField;
+}
+
+
+
+void FiniteField::explode(const vector <uint8_t> & irreduce) {
+    // how many polynomial elements were exploded in current loop
+    uint8_t numExploded = 0;
+
+
+
+    do
+    {
+        numExploded = 0;
+
+        // will store the numbers from irreducible polynomial + what needs to be added to them
+        vector<uint8_t> numsToAdd;
+        numsToAdd.clear();
+
+        uint8_t i = 0;
+
+        // iterate through each number
+        while(i < size())
+        {
+
+            // if larger than allowed
+            if(this[i] >= irreduce[0])
+            {
+                // how many numbers were exploded in current loop
+                numExploded++;
+
+                // store temporary value
+                uint8_t temp = this[i];
+
+                // remove the element that is too large
+                removeElement(i);
+
+
+                for(uint8_t j = 1; j < irreduce.size(); j++)
+                {
+                    // push back numbers from irreducible polynomial plus the difference
+                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
+                }
+
+                // if an item was removed, decrement index
+                i--;
+
+
+            }
+
+            // increment index to move to next element
+            i++;
+        }
+
+//        add in all of the numbers after explosion
+        for(const uint8_t & x : numsToAdd)
+        {
+            addElement(x);
+        }
+
+//    end only when an entire loop is done without any elements exploded
+    } while (numExploded > 0);
+}
+
+
+
+
+void FiniteField::mod_reduce(const vector <uint8_t> & irreduce) {
+    explode(irreduce);
+    xorSelf();
+}
+
+
+
+void FiniteField::xorSelf() {
 
     // positions of numbers where there is an even quantity of the number
     vector<uint8_t> even_removes;
@@ -118,21 +229,23 @@ FiniteField operator+(const FiniteField & rightField)
     // positions of numbers where there is an odd quantity of the number
     vector<uint8_t> odd_removes;
 
-    for(uint8_t i = 0; i < retField.size(); i++)
+
+    for(uint8_t i = 0; i < this.size(); i++)
     {
-        uint8_t x = retField[i];
+        uint8_t x = this[i];
 
+        // how many times the number is in the polynomial
         uint8_t count = 0;
-
 
         // positions of the number that match what is being search for
         vector<uint8_t> positions;
         positions.clear();
 
 
-        for(uint8_t inner = 0; inner < retField.size(); inner++)
+        for(uint8_t inner = 0; inner < this.size(); inner++)
         {
-            uint8_t y = retField[inner];
+
+            uint8_t y = this[inner];
 
             // if there is a match
             if(x == y)
@@ -141,7 +254,7 @@ FiniteField operator+(const FiniteField & rightField)
 
 
                 // add the position to the list of positions
-                positions.push_back(inner);
+                positions.push_back(i);
                 count++;
 
 
@@ -213,9 +326,7 @@ FiniteField operator+(const FiniteField & rightField)
                 removed++;
             }
         }
-
     }
-
 
 
 //    sort the positions of the elements that need to be removed
@@ -229,7 +340,7 @@ FiniteField operator+(const FiniteField & rightField)
     for(uint8_t pos : even_removes)
     {
 //        remove the element
-        retField.removeElement((pos - removed));
+        this.removeElement((pos - removed));
 
 
         removed++;
@@ -241,100 +352,12 @@ FiniteField operator+(const FiniteField & rightField)
     for(uint8_t pos : odd_removes)
     {
 //        remove the element
-        retField.removeElement((pos - removed));
+        this.removeElement((pos - removed));
 
 
         removed++;
     }
 
-
-    return retField;
-
-}
-
-
-
-void FiniteField::operator+=(const FiniteField & rightField)
-{
-    *this = *this + rightField;
-}
-
-
-
-FiniteField FiniteField::operator*(const FiniteField &, const vector<uint8_t> &)
-{
-
-}
-
-
-void FiniteField::operator*=(const FiniteField &, const vector<uint8_t> &);
-
-
-
-void FiniteField::explode(const vector <uint8_t> & irreduce) {
-    // how many polynomial elements were exploded in current loop
-    uint8_t numExploded = 0;
-
-
-
-    do
-    {
-        numExploded = 0;
-
-        // will store the numbers from irreducible polynomial + what needs to be added to them
-        vector<uint8_t> numsToAdd;
-        numsToAdd.clear();
-
-        uint8_t i = 0;
-
-        // iterate through each number
-        while(i < size())
-        {
-
-            // if larger than allowed
-            if(this[i] >= irreduce[0])
-            {
-                // how many numbers were exploded in current loop
-                numExploded++;
-
-                // store temporary value
-                uint8_t temp = this[i];
-
-                // remove the element that is too large
-                removeElement(i);
-
-
-                for(uint8_t j = 1; j < irreduce.size(); j++)
-                {
-                    // push back numbers from irreducible polynomial plus the difference
-                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
-                }
-
-                // if an item was removed, decrement index
-                i--;
-
-
-            }
-
-            // increment index to move to next element
-            i++;
-        }
-
-//        add in all of the numbers after explosion
-        for(const uint8_t & x : numsToAdd)
-        {
-            addElement(x);
-        }
-
-//    end only when an entire loop is done without any elements exploded
-    } while (numExploded > 0);
-}
-
-
-
-
-void FiniteField::mod_reduce(const vector <uint8_t> & irreduce) {
-    explode(irreduce);
 
 }
 

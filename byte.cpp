@@ -120,18 +120,28 @@ void byte::operator+=(const byte & rightByte)
 
 
 
-byte byte::operator*(const byte & rightByte, const vector<uint8_t> & irreduce)
+byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irreduce)
 {
 
+//    make version of this as finite field
+    FiniteField leftField = this;
+
+//    make version
+    FiniteField rightField = rightByte;
+
+//    get result of finite field multiplication with given irreducible polynomial
+    FiniteField retField = leftField.galoisMultiply(rightField, irreduce);
+
+//    convert back to byte
+    byte retByte = retField;
+
+    return retByte;
 }
 
 
 
 
-void byte::operator*=(const byte & rightByte, const vector<uint8_t> &)
-{
 
-}
 
 
 

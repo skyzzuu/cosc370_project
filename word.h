@@ -40,7 +40,7 @@ public:
 
 
 private:
-    unsigned char bytes[4] = {0};
+    byte bytes[4] = {0};
 
 
 

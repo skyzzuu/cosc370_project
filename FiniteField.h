@@ -27,8 +27,8 @@ public:
     FiniteField operator+(const FiniteField &);
     void operator+=(const FiniteField &);
 
-    FiniteField operator*(const FiniteField &, const vector<uint8_t> &);
-    void operator*=(const FiniteField &, const vector<uint8_t> &);
+    FiniteField galoisMultiply(const FiniteField &, const vector<uint8_t> &);
+    FiniteField xorSelf();
 
     void explode(const vector<uint8_t> & );
     void mod_reduce(const vector<uint8_t> & );

@@ -36,8 +36,7 @@ public:
     byte operator+(const byte &);
     void operator+=(const byte &);
 
-    byte operator*(const byte &, const vector<uint8_t> &);
-    void operator*=(const byte &, const vector<uint8_t> &);
+    byte galoisMultiply(const byte &, const vector<uint8_t> &);
 
 
     unsigned char rawData();
