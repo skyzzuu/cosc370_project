@@ -70,7 +70,7 @@ word word::operator^(const word & rightWord) {
 
 
 //overload bitwise xor assignment operator
-word word::operator^=(const word & rightWord) {
+void word::operator^=(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
         this[i] = this[i] ^ rightWord[i];
@@ -81,7 +81,7 @@ word word::operator^=(const word & rightWord) {
 
 
 //overload assignment operator
-word word::operator=(const word & rightWord) {
+void word::operator=(const word & rightWord) {
 
     for(uint8_t i = 0; i < 4; i++)
     {
