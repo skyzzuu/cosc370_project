@@ -29,7 +29,7 @@ public:
     byte & operator=(const byte &);
     byte & operator=(const unsigned char &);
     bool operator==(const byte &);
-    byte & operator=(const FiniteField );
+    byte & operator=(const FiniteField & );
 
     byte operator^(const byte &);
     void operator^=(const byte &);
@@ -40,7 +40,7 @@ public:
     byte galoisMultiply(const byte &, const vector<uint8_t> &);
 
 
-    unsigned char rawData();
+    unsigned char rawData() const;
 
 
     /*

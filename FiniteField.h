@@ -30,12 +30,13 @@ public:
     void operator+=(const FiniteField &);
 
     FiniteField galoisMultiply(const FiniteField &, const vector<uint8_t> &);
-    FiniteField xorSelf();
+    void xorSelf();
 
     void explode(const vector<uint8_t> & );
     void mod_reduce(const vector<uint8_t> & );
 
-    uint8_t & operator[](const uint8_t &) const;
+    uint8_t & operator[](const uint8_t &);
+    uint8_t getElement(const uint8_t &) const;
 
     uint8_t size() const;
 

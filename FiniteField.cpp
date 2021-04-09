@@ -7,14 +7,14 @@
 #include <vector>
 
 
-FiniteField()
+FiniteField::FiniteField()
 {
 //    start off with empty vector
     elements.clear();
 }
 
 
-FiniteField(const byte & rightByte)
+FiniteField::FiniteField(const byte & rightByte)
 {
     elements.clear();
 
@@ -54,7 +54,7 @@ FiniteField(const byte & rightByte)
 }
 
 
-void operator=(const vector<uint8_t> & rightVect)
+void FiniteField::operator=(const vector<uint8_t> & rightVect)
 {
     elements.clear();
     elements = rightVect;
@@ -102,10 +102,13 @@ void FiniteField::operator=(const byte & rightByte)
 
 }
 
-FiniteField operator+(const FiniteField & rightField) const
+FiniteField FiniteField::operator+(const FiniteField & rightField) const
 {
-    byte leftByte = this;
-    byte rightByte = rightField;
+    byte leftByte;
+    leftByte = *this;
+
+    byte rightByte;
+    rightByte = rightField;
 
     byte retByte = leftByte + rightByte;
 
@@ -132,7 +135,7 @@ FiniteField FiniteField::galoisMultiply(const FiniteField & rightField, const ve
 //    copy elements from rightField into return field
     for(uint8_t i = 0; i < rightField.size(); i++)
     {
-        retField.addElement(rightField[i]);
+        retField.addElement(rightField.getElement(i));
     }
 
 //    remove elements that appear an even number of times, and remove duplicates of elements
@@ -140,7 +143,7 @@ FiniteField FiniteField::galoisMultiply(const FiniteField & rightField, const ve
     retField.xorSelf();
 
 //    sort the vector
-    sort(retField.elements);
+    sort(retField.elements.begin(), retField.elements.end());
 
 //    modular reduction
     retField.mod_reduce(irreduce);
@@ -173,13 +176,13 @@ void FiniteField::explode(const vector <uint8_t> & irreduce) {
         {
 
             // if larger than allowed
-            if(this[i] >= irreduce[0])
+            if(this->getElement(i) >= irreduce[0])
             {
                 // how many numbers were exploded in current loop
                 numExploded++;
 
                 // store temporary value
-                uint8_t temp = this[i];
+                uint8_t temp = this->getElement(i);
 
                 // remove the element that is too large
                 removeElement(i);
@@ -188,7 +191,7 @@ void FiniteField::explode(const vector <uint8_t> & irreduce) {
                 for(uint8_t j = 1; j < irreduce.size(); j++)
                 {
                     // push back numbers from irreducible polynomial plus the difference
-                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
+                    numsToAdd.push_back(irreduce[j] + temp - irreduce[0]);
                 }
 
                 // if an item was removed, decrement index
@@ -230,9 +233,9 @@ void FiniteField::xorSelf() {
     vector<uint8_t> odd_removes;
 
 
-    for(uint8_t i = 0; i < this.size(); i++)
+    for(uint8_t i = 0; i < this->size(); i++)
     {
-        uint8_t x = this[i];
+        uint8_t x = this->getElement(i);
 
         // how many times the number is in the polynomial
         uint8_t count = 0;
@@ -242,10 +245,10 @@ void FiniteField::xorSelf() {
         positions.clear();
 
 
-        for(uint8_t inner = 0; inner < this.size(); inner++)
+        for(uint8_t inner = 0; inner < this->size(); inner++)
         {
 
-            uint8_t y = this[inner];
+            uint8_t y = this->getElement(inner);
 
             // if there is a match
             if(x == y)
@@ -340,7 +343,7 @@ void FiniteField::xorSelf() {
     for(uint8_t pos : even_removes)
     {
 //        remove the element
-        this.removeElement((pos - removed));
+        this->removeElement((pos - removed));
 
 
         removed++;
@@ -352,7 +355,7 @@ void FiniteField::xorSelf() {
     for(uint8_t pos : odd_removes)
     {
 //        remove the element
-        this.removeElement((pos - removed));
+        this->removeElement((pos - removed));
 
 
         removed++;
@@ -363,8 +366,13 @@ void FiniteField::xorSelf() {
 
 
 
-uint8_t & FiniteField::operator[](const uint8_t & position) const {
-    return & elements[position];
+uint8_t & FiniteField::operator[](const uint8_t & position)  {
+    return elements[position];
+}
+
+
+uint8_t FiniteField::getElement(const uint8_t & position) const {
+    return elements[position];
 }
 
 

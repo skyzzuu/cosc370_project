@@ -19,7 +19,8 @@ using namespace std;
 
 byte& byte::operator=(const byte & rightByte)
 {
-    data = rightByte.data;
+    data = rightByte.rawData();
+    return *this;
 }
 
 
@@ -29,13 +30,13 @@ byte& byte::operator=(const byte & rightByte)
 byte& byte::operator=(const unsigned char & rightChar)
 {
     data = rightChar;
+    return *this;
 
 }
 
 
-byte& byte::operator=(const FiniteField  rightField) {
+byte& byte::operator=(const FiniteField & rightField) {
     unsigned char retVal = 0;
-    byte temp;
 
 
     //    for each value in the field
@@ -44,6 +45,11 @@ byte& byte::operator=(const FiniteField  rightField) {
         //        add the value of 2 to that power
         retVal += pow(2, rightField[i]);
     }
+
+    data = retVal;
+
+
+    return *this;
 
 
 }
@@ -133,7 +139,8 @@ byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irredu
     FiniteField retField = leftField.galoisMultiply(rightField, irreduce);
 
 //    convert back to byte
-    byte retByte = retField;
+    byte retByte;
+    retByte = retField;
 
     return retByte;
 }
@@ -145,19 +152,19 @@ byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irredu
 
 
 
-unsigned char byte::rawData()
+unsigned char byte::rawData() const
 {
     return data;
 }
 
 
 
-byte byte::SubByte(const unordered_map<uint8_t, uint8_t> & sBox) {
-
-}
-
-
-void byte::SubByteInPlace(const unordered_map<uint8_t, uint8_t> &)
-{
-
-}
+//byte byte::SubByte(const unordered_map<uint8_t, uint8_t> & sBox) {
+//
+//}
+//
+//
+//void byte::SubByteInPlace(const unordered_map<uint8_t, uint8_t> &)
+//{
+//
+//}

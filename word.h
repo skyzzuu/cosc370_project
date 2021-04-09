@@ -23,13 +23,14 @@ public:
     word();
     word(const word &);
 
-    unsigned char & operator[](uint8_t i);
+    byte & operator[](uint8_t i);
 
     word operator^(const word &);
     void operator^=(const word &);
 
     void operator=(const word &);
 
+    byte getByte(const uint8_t &) const;
 
 
     word leftRotate();

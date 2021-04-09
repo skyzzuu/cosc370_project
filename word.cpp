@@ -9,7 +9,7 @@ using namespace std;
 
 
 //pass in 4 element unsigned char array, fills bytes of word with elements from array
-word::word(unsigned char wordBytes *) {
+word::word(unsigned char * wordBytes ) {
     for(uint8_t i = 0; i < 4; i++)
     {
         bytes[i] = wordBytes[i];
@@ -30,8 +30,13 @@ word::word() {
 word::word(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
-        this[i] = rightWord[i];
+        this[i] = rightWord.getByte(i);
     }
+}
+
+
+byte word::getByte(const uint8_t & position) const {
+    return bytes[position];
 }
 
 
