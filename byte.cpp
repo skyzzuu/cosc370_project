@@ -6,32 +6,36 @@
 
 
 #include "byte.h"
+#include "FiniteField.h"
 #include <unordered_map>
 #include <cmath>
 
 using namespace std;
 
 
-void byte::operator=(const byte & rightByte)
+// TODO: fix assignment operator overloading
+// TODO: should return byte &
+
+
+byte& byte::operator=(const byte & rightByte)
 {
     data = rightByte.data;
 }
 
 
-void byte::operator=(const uint8_t & rightInt) {
-    data = rightInt;
-}
 
 
-void byte::operator=(const unsigned char & rightChar)
+
+byte& byte::operator=(const unsigned char & rightChar)
 {
     data = rightChar;
 
 }
 
 
-void byte::operator=(const FiniteField & rightField) {
+byte& byte::operator=(const FiniteField  rightField) {
     unsigned char retVal = 0;
+    byte temp;
 
 
     //    for each value in the field
@@ -41,11 +45,11 @@ void byte::operator=(const FiniteField & rightField) {
         retVal += pow(2, rightField[i]);
     }
 
-    this = retVal;
+
 }
 
 
-byte()
+byte::byte()
 {
     data = 0;
 }
@@ -53,21 +57,17 @@ byte()
 
 
 
-byte(const uint8_t & val)
+byte::byte(const uint8_t & val)
 {
     data = val;
 }
 
 
-byte(const byte & rightByte)
+byte::byte(const byte & rightByte)
 {
     data = rightByte.data;
 }
 
-byte(const unsigned char & rightChar)
-{
-    data = rightChar;
-}
 
 
 
@@ -107,7 +107,7 @@ void byte::operator^=(const byte & rightByte)
 
 byte byte::operator+(const byte & rightByte)
 {
-    return this ^ rightByte;
+    return *this ^ rightByte;
 }
 
 
@@ -115,7 +115,7 @@ byte byte::operator+(const byte & rightByte)
 
 void byte::operator+=(const byte & rightByte)
 {
-    this ^= rightByte;
+    *this ^= rightByte;
 }
 
 
@@ -124,7 +124,7 @@ byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irredu
 {
 
 //    make version of this as finite field
-    FiniteField leftField = this;
+    FiniteField leftField = *this;
 
 //    make version
     FiniteField rightField = rightByte;
@@ -145,7 +145,7 @@ byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irredu
 
 
 
-unsigned char rawData()
+unsigned char byte::rawData()
 {
     return data;
 }

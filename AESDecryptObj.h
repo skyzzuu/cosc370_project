@@ -6,6 +6,13 @@
 #define COSC370_PROJECT_AESDECRYPTOBJ_H
 
 
+#include <vector>
+#include <cstdint>
+#include <unordered_map>
+
+using namespace std;
+
+
 class AESDecryptObj {
 
     AESDecryptObj();

@@ -9,6 +9,7 @@
 
 #include <cstdint>
 #include <unordered_map>
+#include "byte.h"
 
 using namespace std;
 

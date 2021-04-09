@@ -102,7 +102,7 @@ void FiniteField::operator=(const byte & rightByte)
 
 }
 
-FiniteField operator+(const FiniteField & rightField)
+FiniteField operator+(const FiniteField & rightField) const
 {
     byte leftByte = this;
     byte rightByte = rightField;
@@ -363,12 +363,12 @@ void FiniteField::xorSelf() {
 
 
 
-uint8_t & FiniteField::operator[](const uint8_t & position) {
+uint8_t & FiniteField::operator[](const uint8_t & position) const {
     return & elements[position];
 }
 
 
-uint8_t FiniteField::size() {
+uint8_t FiniteField::size() const {
     return elements.size();
 }
 

@@ -4,14 +4,16 @@
 #include <cstdint>
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
+using namespace std;
 
 /*
     Sodium is an encryption library. We use it to populate initialization
     vectors with cryptographically secure random bytes. See function
     generateIV().
 */
-#include <sodium.h>
+//#include <sodium.h>
 
 
 
@@ -133,15 +135,17 @@ AesEncryptObj::~AesEncryptObj() {
 
 
 
-vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_t inputLength, const unsigned char key[16])
+vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char key[16])
 {
+
+    inputLength = inputlength;
 
 //    unsigned char vector containing all the input data
     vector<unsigned char > inputVector;
     inputVector.clear();
 
 //    copy all bytes from original input into vector
-    for(uint16_t i = 0; i < inputLength; i++)
+    for(uint64_t i = 0; i < inputLength; i++)
     {
         inputVector.push_back(data[i]);
     }
@@ -162,7 +166,21 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint16_
     inputVector.clear();
 
 
+    for(uint8_t  i = 0; i < 16; i++)
+    {
+        cout << std::hex << blockArray[0][i];
+    }
+    cout << endl;
 
+
+
+
+//    for(uint64_t i = 0; i < numBlocks; i++)
+//    {
+//        copyInputToState(blockArray[i], state);
+//
+//
+//    }
 
 
 
@@ -657,75 +675,75 @@ void AesEncryptObj::AddRoundKey(unsigned char [4][4], const unsigned char *)
 
 
 
-/*
-    return value: uint8_t vector
-    parameters:
-        byte that you want to convert to a finite field representation
-
-    description:
-        This function takes the byte passed in as a parameter and returns a uint8_t vector
-        that represents the byte as a finite field.
- */
-vector<uint8_t> AesEncryptObj::byteToFiniteField(const unsigned char & origByte)
-{
-//    powers of 2
-    const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
-
-//    make a copy of the original byte
-    unsigned char byte = origByte;
-
-//    will contain the exponents of the bits that are set in the byte
-    vector<uint8_t> returnVector;
-    returnVector.clear();
-
-
-//    for each power of 2 starting from right
-    for(uint8_t i = 7; i >= 0; i++)
-    {
-//        value of the current power
-        uint8_t currentPower = powsOfTwo[i];
-
-//        if the current power fits into the remaining value of the byte
-        if (currentPower <= byte)
-        {
-//            add the index position to the vector
-//            represents which bits are set
-            returnVector.push_back(i);
-
-//            subtract the value from the byte
-            byte -= currentPower;
-        }
-    }
-
-
-    return returnVector;
-
-}
-
-
+///*
+//    return value: uint8_t vector
+//    parameters:
+//        byte that you want to convert to a finite field representation
+//
+//    description:
+//        This function takes the byte passed in as a parameter and returns a uint8_t vector
+//        that represents the byte as a finite field.
+// */
+//vector<uint8_t> AesEncryptObj::byteToFiniteField(const unsigned char & origByte)
+//{
+////    powers of 2
+//    const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
+//
+////    make a copy of the original byte
+//    unsigned char byte = origByte;
+//
+////    will contain the exponents of the bits that are set in the byte
+//    vector<uint8_t> returnVector;
+//    returnVector.clear();
+//
+//
+////    for each power of 2 starting from right
+//    for(uint8_t i = 7; i >= 0; i++)
+//    {
+////        value of the current power
+//        uint8_t currentPower = powsOfTwo[i];
+//
+////        if the current power fits into the remaining value of the byte
+//        if (currentPower <= byte)
+//        {
+////            add the index position to the vector
+////            represents which bits are set
+//            returnVector.push_back(i);
+//
+////            subtract the value from the byte
+//            byte -= currentPower;
+//        }
+//    }
+//
+//
+//    return returnVector;
+//
+//}
 
 
-/*
-    return value: unsigned char
-    parameters:
-        vector that contains the finite field representation of a byte
 
-    description:
-        This function takes the finite field passed in and converts it back into a byte.
- */
-unsigned char AesEncryptObj::finiteFieldToByte(const vector<uint8_t> & field)
-{
-    unsigned char retVal = 0;
 
-//    for each value in the field
-    for(const uint8_t & val : field)
-    {
-//        add the value of 2 to that power
-        retVal += pow(2, val);
-    }
-
-    return retVal;
-}
+///*
+//    return value: unsigned char
+//    parameters:
+//        vector that contains the finite field representation of a byte
+//
+//    description:
+//        This function takes the finite field passed in and converts it back into a byte.
+// */
+//unsigned char AesEncryptObj::finiteFieldToByte(const vector<uint8_t> & field)
+//{
+//    unsigned char retVal = 0;
+//
+////    for each value in the field
+//    for(const uint8_t & val : field)
+//    {
+////        add the value of 2 to that power
+//        retVal += pow(2, val);
+//    }
+//
+//    return retVal;
+//}
 
 
 
@@ -740,85 +758,85 @@ unsigned char AesEncryptObj::finiteFieldToByte(const vector<uint8_t> & field)
       encryption algorithm to ensure semantic security (plaintext cannot be
       derived from a message's cyphertext).
 */
-unsigned char * AesEncryptObj::generateIV()
-{
-    unsigned char initVector[12] = {0};
-
-//    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
-    if(sodium_init() == -1)
-        return nullptr;
-    randombytes_buf(initVector, 12);
-
-    unsigned char *ptr = &initVector[0];
-    return ptr;
-}
-
-
-
-
-vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], unsigned char b[4])
-{
-    unsigned char d[4] = {0};
-
-//    irreducible polynomial specified in AES specification to be used with four-term polynomial multiplication
-    const vector<uint8_t> irreduce = {4, 0};
-
-//    use finite field multiplication to get the multiplication results needed for d0
-    unsigned char d0_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d0_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[1]), irreduce));
-    unsigned char d0_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[2]), irreduce));
-    unsigned char d0_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[3]), irreduce));
-
-//    set d[0] to the result of a bitwise xor of the results of finite field multiplication
-    unsigned char d0 = (d0_step1 | d0_step2 | d0_step3 | d0_step4);
-    d[0] = d0;
-
-
-    //    use finite field multiplication to get the multiplication results needed for d0
-    unsigned char d1_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d1_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[1]), irreduce));
-    unsigned char d1_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[2]), irreduce));
-    unsigned char d1_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[3]), irreduce));
-
-    unsigned char d1 = (d1_step1 | d1_step2 | d1_step3 | d1_step4);
-    d[1] = d1;
+//unsigned char * AesEncryptObj::generateIV()
+//{
+//    unsigned char initVector[12] = {0};
+//
+////    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
+//    if(sodium_init() == -1)
+//        return nullptr;
+//    randombytes_buf(initVector, 12);
+//
+//    unsigned char *ptr = &initVector[0];
+//    return ptr;
+//}
 
 
 
-    unsigned char d2_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d2_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[1]), irreduce));
-    unsigned char d2_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[2]), irreduce));
-    unsigned char d2_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[3]), irreduce));
-
-
-    unsigned char d2 = (d2_step1 | d2_step2 | d2_step3 | d2_step4);
-    d[2] = d2;
-
-
-
-
-    unsigned char d3_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d3_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d3_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-    unsigned char d3_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-
-    unsigned char d3 = (d3_step1 | d3_step2 | d3_step3 | d3_step4);
-    d[3] = d3;
-
-
-
-//    copy elements into the 4 element vector that will be returned
-    vector<unsigned char > fourTermPoly(4);
-    for(uint8_t i = 0; i < 4; i++)
-    {
-        fourTermPoly[i] = d[i];
-    }
-
-
-    return fourTermPoly;
-
-
-}
+//
+//vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], unsigned char b[4])
+//{
+//    unsigned char d[4] = {0};
+//
+////    irreducible polynomial specified in AES specification to be used with four-term polynomial multiplication
+//    const vector<uint8_t> irreduce = {4, 0};
+//
+////    use finite field multiplication to get the multiplication results needed for d0
+//    unsigned char d0_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+//    unsigned char d0_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[1]), irreduce));
+//    unsigned char d0_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[2]), irreduce));
+//    unsigned char d0_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[3]), irreduce));
+//
+////    set d[0] to the result of a bitwise xor of the results of finite field multiplication
+//    unsigned char d0 = (d0_step1 | d0_step2 | d0_step3 | d0_step4);
+//    d[0] = d0;
+//
+//
+//    //    use finite field multiplication to get the multiplication results needed for d0
+//    unsigned char d1_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[0]), irreduce));
+//    unsigned char d1_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[1]), irreduce));
+//    unsigned char d1_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[2]), irreduce));
+//    unsigned char d1_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[3]), irreduce));
+//
+//    unsigned char d1 = (d1_step1 | d1_step2 | d1_step3 | d1_step4);
+//    d[1] = d1;
+//
+//
+//
+//    unsigned char d2_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[0]), irreduce));
+//    unsigned char d2_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[1]), irreduce));
+//    unsigned char d2_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[2]), irreduce));
+//    unsigned char d2_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[3]), irreduce));
+//
+//
+//    unsigned char d2 = (d2_step1 | d2_step2 | d2_step3 | d2_step4);
+//    d[2] = d2;
+//
+//
+//
+//
+//    unsigned char d3_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+//    unsigned char d3_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+//    unsigned char d3_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+//    unsigned char d3_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
+//
+//    unsigned char d3 = (d3_step1 | d3_step2 | d3_step3 | d3_step4);
+//    d[3] = d3;
+//
+//
+//
+////    copy elements into the 4 element vector that will be returned
+//    vector<unsigned char > fourTermPoly(4);
+//    for(uint8_t i = 0; i < 4; i++)
+//    {
+//        fourTermPoly[i] = d[i];
+//    }
+//
+//
+//    return fourTermPoly;
+//
+//
+//}
 
 
 

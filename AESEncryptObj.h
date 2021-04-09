@@ -33,7 +33,7 @@ public:
       encrypts using the cipher block chaining mode of operation.
 
  */
-    vector<unsigned char> encrypt(const unsigned char * , uint16_t , const unsigned char [16]);
+    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char [16]);
 
 
 

@@ -9,7 +9,10 @@
 #include <unordered_map>
 #include <cstdint>
 #include <vector>
-#include "FiniteField.h"
+
+using namespace std;
+
+class FiniteField;
 
 class byte {
 private:
@@ -19,16 +22,14 @@ private:
 public:
 
     byte();
-    byte(const uint8_t &);
     byte(const byte &);
     byte(const unsigned char &);
     ~byte();
 
-    void operator=(const byte &);
-    void operator=(const uint8_t &);
-    void operator=(const unsigned char &);
+    byte & operator=(const byte &);
+    byte & operator=(const unsigned char &);
     bool operator==(const byte &);
-    void operator=(const FiniteField &);
+    byte & operator=(const FiniteField );
 
     byte operator^(const byte &);
     void operator^=(const byte &);

@@ -6,9 +6,11 @@
 #define COSC370_PROJECT_FINITEFIELD_H
 
 
-#include "byte.h"
 #include <vector>
 #include <cstdint>
+#include "byte.h"
+
+using namespace std;
 
 
 class FiniteField {
@@ -24,7 +26,7 @@ public:
     void operator=(const byte &);
     void operator=(const vector<uint8_t> &);
 
-    FiniteField operator+(const FiniteField &);
+    FiniteField operator+(const FiniteField &) const;
     void operator+=(const FiniteField &);
 
     FiniteField galoisMultiply(const FiniteField &, const vector<uint8_t> &);
@@ -33,9 +35,9 @@ public:
     void explode(const vector<uint8_t> & );
     void mod_reduce(const vector<uint8_t> & );
 
-    uint8_t & operator[](const uint8_t &);
+    uint8_t & operator[](const uint8_t &) const;
 
-    uint8_t size();
+    uint8_t size() const;
 
 
     /*
