@@ -37,16 +37,16 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
         roundConstants = new word[numRoundConstants];
 
 //        appendix A of AES spec
-        (roundConstants[0])[0] = 1;
-        (roundConstants[0])[1] = 2;
-        (roundConstants[0])[2] = 4;
-        (roundConstants[0])[3] = 8;
-        (roundConstants[0])[4] = 16;
-        (roundConstants[0])[5] = 32;
-        (roundConstants[0])[6] = 64;
-        (roundConstants[0])[7] = 128;
-        (roundConstants[0])[8] = 27;
-        (roundConstants[0])[9] = 54;
+        (roundConstants[0]).operator[](0) = 1;
+        (roundConstants[1]).operator[](0) = 2;
+        (roundConstants[2]).operator[](0) = 4;
+        (roundConstants[3]).operator[](0) = 8;
+        (roundConstants[4]).operator[](0) = 16;
+        (roundConstants[5]).operator[](0) = 32;
+        (roundConstants[6]).operator[](0) = 64;
+        (roundConstants[7]).operator[](0) = 128;
+        (roundConstants[8]).operator[](0) = 27;
+        (roundConstants[9]).operator[](0) = 54;
 
 
 
