@@ -44,8 +44,15 @@ word::~word() {
 
 
 
-byte word::getByte(const uint8_t & position) const {
-    return bytes[position];
+byte word::getByte(const uint8_t & i) const {
+
+    if(i <= 3 && i >= 0) {
+
+        return bytes[i];
+    } else
+    {
+        throw OutOfBounds();
+    }
 }
 
 
@@ -53,7 +60,7 @@ byte word::getByte(const uint8_t & position) const {
 byte * word::operator[](uint8_t i) {
 
 //    valid index position in the word
-    if(i < 4)
+    if(i <= 3 && i >= 0)
     {
 
 //        return reference to specific byte in the word
@@ -63,7 +70,7 @@ byte * word::operator[](uint8_t i) {
 //    invalid index position in word
     else
     {
-        throw OutOfBounds(i);
+        throw OutOfBounds();
     }
 }
 
@@ -84,23 +91,30 @@ word word::operator^(const word & rightWord) {
 
 
 //overload bitwise xor assignment operator
-void word::operator^=(const word & rightWord) {
+word & word::operator^=(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
         *(this->operator[](i)) = this->getByte(i) ^ rightWord.getByte(i);
     }
+
+    return *this;
 }
 
 
 
 
 //overload assignment operator
-void word::operator=(const word & rightWord) {
+word & word::operator=(const word & rightWord) {
 
     for(uint8_t i = 0; i < 4; i++)
     {
+
+//        set each matching byte equal to each other
         *(this->operator[](i)) = rightWord.getByte(i);
     }
+
+//    return pointer to current word object
+    return *this;
 }
 
 
@@ -142,10 +156,20 @@ word word::leftRotate() {
 word word::SubWord(const unordered_map<uint8_t, uint8_t> & sBox) {
     word retWord;
 
+//    for(uint8_t i = 0; i < 4; i++)
+//    {
+//        *(retWord[i]) = sBox.find(this->getByte(i).rawData())->second;
+//    }
+
     for(uint8_t i = 0; i < 4; i++)
     {
-        *(retWord[i]) = sBox.find(this->getByte(i).rawData())->second;
+
+//        make each byte of the retWord have a value of the mapped value for the corresponding byte
+        *(retWord[i]) = this->operator[](i)->SubByte(sBox);
     }
+
+
 
     return retWord;
 }
+

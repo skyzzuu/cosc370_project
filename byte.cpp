@@ -134,7 +134,7 @@ byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irredu
 //    make version of this as finite field
     FiniteField leftField = *this;
 
-//    make version
+//    make version of right byte as finite field
     FiniteField rightField = rightByte;
 
 //    get result of finite field multiplication with given irreducible polynomial
@@ -144,6 +144,7 @@ byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irredu
     byte retByte;
     retByte = retField;
 
+//    return resulting byte object
     return retByte;
 }
 
@@ -161,12 +162,17 @@ unsigned char byte::rawData() const
 
 
 
-//byte byte::SubByte(const unordered_map<uint8_t, uint8_t> & sBox) {
-//
-//}
-//
-//
-//void byte::SubByteInPlace(const unordered_map<uint8_t, uint8_t> &)
-//{
-//
-//}
+byte byte::SubByte(const unordered_map<uint8_t, uint8_t> & sBox) const
+{
+
+//    return value that has a key of the value stored in the current byte
+    return sBox.find(this->rawData())->second;
+}
+
+
+void byte::SubByteInPlace(const unordered_map<uint8_t, uint8_t> & sBox)
+{
+
+//    set byte's value equal to it's mapped value in sBox
+    *this = sBox.find(this->rawData())->second;
+}

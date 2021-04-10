@@ -65,6 +65,15 @@ public:
 */
     void removeElement(const uint8_t &);
 
+
+    /* EXCEPTION CLASS */
+
+
+    class OutOfBounds {
+    public:
+        OutOfBounds() {}
+    };
+
 };
 
 
