@@ -23,7 +23,7 @@ public:
     word();
     word(const word &);
 
-    byte & operator[](uint8_t i);
+    byte * operator[](uint8_t i);
 
     word operator^(const word &);
     void operator^=(const word &);

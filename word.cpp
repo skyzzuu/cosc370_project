@@ -41,14 +41,14 @@ byte word::getByte(const uint8_t & position) const {
 
 
 //overload [] operator returning reference to specific byte in bytes array with bounds checking
-unsigned char & word::operator[](uint8_t i) {
+byte & word::operator[](uint8_t i) {
 
 //    valid index position in the word
     if(i < 4)
     {
 
 //        return reference to specific byte in the word
-        return & bytes[i];
+        return  bytes[i];
     }
 
 //    invalid index position in word
