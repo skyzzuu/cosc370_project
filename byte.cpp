@@ -43,7 +43,7 @@ byte& byte::operator=(const FiniteField & rightField) {
     for(uint8_t i = 0; i < rightField.size(); i++)
     {
         //        add the value of 2 to that power
-        retVal += pow(2, rightField[i]);
+        retVal += pow(2, rightField.getElement(i));
     }
 
     data = retVal;
