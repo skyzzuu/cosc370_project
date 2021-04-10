@@ -22,6 +22,7 @@ public:
     word(unsigned char *);
     word();
     word(const word &);
+    ~word();
 
     byte * operator[](uint8_t i);
 

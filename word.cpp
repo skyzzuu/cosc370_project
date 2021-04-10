@@ -30,9 +30,18 @@ word::word() {
 word::word(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
-        this->operator[](i) = rightWord.getByte(i);
+        *(this->operator[](i)) = rightWord.getByte(i);
     }
 }
+
+
+
+word::~word() {
+
+}
+
+
+
 
 
 byte word::getByte(const uint8_t & position) const {
@@ -41,14 +50,14 @@ byte word::getByte(const uint8_t & position) const {
 
 
 //overload [] operator returning reference to specific byte in bytes array with bounds checking
-byte & word::operator[](uint8_t i) {
+byte * word::operator[](uint8_t i) {
 
 //    valid index position in the word
     if(i < 4)
     {
 
 //        return reference to specific byte in the word
-        return  bytes[i];
+        return & bytes[i];
     }
 
 //    invalid index position in word
@@ -67,7 +76,7 @@ word word::operator^(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
 //        put in the value of the matching words xor'd with each other
-        retWord[i] = this->operator[](i) ^ rightWord[i];
+        *(retWord[i]) = this->getByte(i) ^ rightWord.getByte(i);
     }
 
     return retWord;
@@ -78,7 +87,7 @@ word word::operator^(const word & rightWord) {
 void word::operator^=(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
-        this->operator[](i) = this->operator[](i) ^ rightWord[i];
+        *(this->operator[](i)) = this->getByte(i) ^ rightWord.getByte(i);
     }
 }
 
@@ -90,7 +99,7 @@ void word::operator=(const word & rightWord) {
 
     for(uint8_t i = 0; i < 4; i++)
     {
-        this->operator[](i) = rightWord[i];
+        *(this->operator[](i)) = rightWord.getByte(i);
     }
 }
 
@@ -102,17 +111,17 @@ word word::leftRotate() {
     word retWord;
 
 //    store copy of the value of first byte
-    unsigned char firstByte = this->getByte(0);
+    unsigned char firstByte = this->getByte(0).rawData();
 
 //    for each byte except the last
     for(uint8_t i = 0; i < 3; i++)
     {
 
 //        make the value, the value of byte on the right
-        retWord[i] = this->getByte(i+1);
+        *(retWord[i]) = this->getByte(i+1);
     }
 
-    retWord[3] = firstByte;
+    *(retWord[3]) = firstByte;
 
     return retWord;
 
@@ -135,7 +144,7 @@ word word::SubWord(const unordered_map<uint8_t, uint8_t> & sBox) {
 
     for(uint8_t i = 0; i < 4; i++)
     {
-        retWord[i] = sBox.find(this->getByte(i).rawData())->second;
+        *(retWord[i]) = sBox.find(this->getByte(i).rawData())->second;
     }
 
     return retWord;

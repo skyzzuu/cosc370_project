@@ -75,7 +75,9 @@ byte::byte(const byte & rightByte)
 }
 
 
+byte::~byte() {
 
+}
 
 
 
