@@ -366,13 +366,28 @@ void FiniteField::xorSelf() {
 
 
 
-uint8_t & FiniteField::operator[](const uint8_t & position)  {
-    return elements[position];
+uint8_t & FiniteField::operator[](const uint8_t & i)  {
+
+    if(i >= 0 && i < size())
+    {
+        return elements[i];
+    } else
+    {
+        throw OutOfBounds();
+    }
+
 }
 
 
-uint8_t FiniteField::getElement(const uint8_t & position) const {
-    return elements[position];
+uint8_t FiniteField::getElement(const uint8_t & i) const {
+
+    if(i >= 0 && i < size())
+    {
+        return elements[i];
+    } else
+    {
+        throw OutOfBounds();
+    }
 }
 
 

@@ -15,15 +15,69 @@ using namespace std;
 
 class FiniteField {
 private:
+
+//    contains the elements of the finite field
     vector<uint8_t> elements;
 
 
 public:
+
+    /*
+    return value: FiniteField object (constructor for FiniteField object)
+    parameters: none
+
+
+    description:
+      creates a FiniteField with no elements
+
+    */
     FiniteField();
+
+    /*
+    return value: FiniteField object (constructor for FiniteField object)
+    parameters: byte object
+
+
+    description:
+      creates a FiniteField equivalent of the byte object passed in
+
+    */
     FiniteField(const byte &);
 
+
+    /*
+    return value: none
+    parameters: FiniteField object
+
+
+    description:
+      sets elements of this FiniteField exactly the same as FiniteField on the right
+
+    */
     void operator=(const FiniteField &);
+
+
+
+    /*
+    return value: none
+    parameters: byte object
+
+
+    description:
+      sets elements of this FiniteField equivalent to the byte object passed in
+
+    */
     void operator=(const byte &);
+
+    /*
+    return value: none
+    parameters: vector<uint8_t>
+
+
+    description:
+      sets elements of this FiniteField exactly to vector passed in
+
+    */
     void operator=(const vector<uint8_t> &);
 
     FiniteField operator+(const FiniteField &) const;

@@ -12,6 +12,11 @@
 
 using namespace std;
 
+
+// forward declaration of FiniteField class
+//DO NOT GET RID OF!!!
+//BECAUSE BYTE INCLUDES FiniteField and FiniteField INCLUDES BYTE,
+//WILL PREVENT COMPILATION
 class FiniteField;
 
 class byte {
@@ -56,7 +61,7 @@ public:
       creates a byte object that has the same value as unsigned char passed in as parameter.
 
     */
-    byte(const unsigned char &);
+    byte(const uint8_t &);
 
 
 
@@ -216,7 +221,7 @@ public:
       This will substitute each of the bytes in the table according to the method that NIST specifies.
       The pre-made sBox or InvSBox is passed in instead of calculating the substitution in the function to
       speed up the encryption and decryption processes.
-*/
+    */
     byte SubByte(const unordered_map<uint8_t, uint8_t> &) const;
 
 
