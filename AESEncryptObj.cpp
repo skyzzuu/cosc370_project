@@ -18,7 +18,7 @@ using namespace std;
 
 
 
-AesEncryptObj::AesEncryptObj(uint8_t keysize)
+AesEncryptObj::AesEncryptObj(uint16_t keysize)
 {
     keySize = keysize;
 
@@ -968,8 +968,11 @@ void AesEncryptObj::KeyExpansion()
 
 
 //            then xor each byte with word from round constants
-            temp = temp ^ roundConstants[(i - nK) / 4];
-            cout << "Rcon[i/Nk]: " << roundConstants[(i - nK) / 4] << endl;
+            temp = temp ^ roundConstants[(i / nK) - 1];
+            cout << "i: " << (int) i << endl;
+            cout << "Nk: " << (int) nK << endl;
+            cout << (i / nK) - 1 << endl;
+            cout << "Rcon[i/Nk]: " << roundConstants[(i / nK) - 1] << endl;
             cout << "After XOR: " << temp << endl;
 
         }

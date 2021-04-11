@@ -17,7 +17,7 @@ using namespace std;
 class AesEncryptObj {
 public:
     AesEncryptObj();
-    AesEncryptObj(uint8_t);
+    AesEncryptObj(uint16_t);
     ~AesEncryptObj();
 
     /*
