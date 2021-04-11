@@ -244,7 +244,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         AddRoundKey(0);
 
 
-        cout << "END STATE" << endl;
+        cout << "after add round key: " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
             for(uint8_t column = 0; column < 4; column++ )
@@ -253,6 +253,36 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
             }
         }
         cout << endl;
+
+
+        SubBytes();
+
+        cout << "after SubBytes(): " << endl;
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            for(uint8_t column = 0; column < 4; column++ )
+            {
+                cout << std::hex << (int) state[column][row];
+            }
+        }
+        cout << endl;
+
+
+        ShiftRows();
+
+        cout << "after ShiftRows(): " << endl;
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            for(uint8_t column = 0; column < 4; column++ )
+            {
+                cout << std::hex << (int) state[column][row];
+            }
+        }
+        cout << endl;
+
+
+
+
 
 
 
@@ -679,17 +709,15 @@ vector<uint8_t> AesEncryptObj::galoisMultiply(const vector<uint8_t> & a, const v
 /*
 
     return value: none
-    parameters:
-      2d unsigned char array (should always be the state that is passed in)
-      unordered map with uint8_t mapped to uint8_t (should always be the sBox that is passed in)
+    parameters: none
 
 
     description:
-      This function takes the state that you pass in and will perform the SubBytes transformation on the table.
+      This function takes the state and will perform the SubBytes transformation using the sBox .
       This will substitute each of the bytes in the table according to the method that NIST specifies.
-      The pre-made sBox is passed in instead of calculating the substitution in the function to speed up the encryption process.
+      The pre-made sBox is used instead of calculating the substitution in the function to speed up the encryption process.
 */
-void AesEncryptObj::SubBytes(unsigned char state[4][4], const unordered_map<uint8_t, uint8_t> & sBox)
+void AesEncryptObj::SubBytes()
 {
     for(uint8_t row = 0; row < 4; row++)
     {
@@ -707,8 +735,7 @@ void AesEncryptObj::SubBytes(unsigned char state[4][4], const unordered_map<uint
 
 /*
     return value: none
-    parameters:
-      2d unsigned char array (should always be the state that is passed in)
+    parameters: none
 
     description:
       This function takes the state and shifts the rows within it according to the schema identified by NIST.
@@ -718,23 +745,40 @@ void AesEncryptObj::SubBytes(unsigned char state[4][4], const unordered_map<uint
       The fourth row will be shifted to the left 3 spaces.
 
 */
-void AesEncryptObj::ShiftRows(unsigned char [4][4])
+void AesEncryptObj::ShiftRows()
 {
+    for(uint8_t wordCounter = 0; wordCounter < 4; wordCounter++)
+    {
+        word stateWord;
+        stateWord = state[wordCounter];
 
+
+        for(uint8_t rotateCount = 0; rotateCount < wordCounter; rotateCount++)
+        {
+            stateWord = stateWord.leftRotate();
+        }
+
+        for(uint8_t byteIndex = 0; byteIndex < 4; byteIndex++)
+        {
+            state[wordCounter][byteIndex] = (stateWord[byteIndex])->rawData();
+        }
+
+
+    }
 }
 
 
 
 /*
     return value: none
-    parameters:
-      2d unsigned char array (should always be the state that is passed in)
+    parameters: none
+
 
     description:
       This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
       The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
 */
-void AesEncryptObj::MixColumns(unsigned char [4][4])
+void AesEncryptObj::MixColumns()
 {
 
 }

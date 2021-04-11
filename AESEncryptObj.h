@@ -155,9 +155,7 @@ unsigned char * generateIV();
 /*
 
     return value: none
-    parameters:
-      2d unsigned char array (should always be the state that is passed in)
-      unordered map with uint8_t mapped to uint8_t (should always be the sBox that is passed in)
+    parameters: none
 
 
     description:
@@ -165,13 +163,13 @@ unsigned char * generateIV();
       This will substitute each of the bytes in the table according to the method that NIST specifies.
       The pre-made sBox is passed in instead of calculating the substitution in the function to speed up the encryption process.
 */
-    static void SubBytes(unsigned char [4][4], const unordered_map<uint8_t , uint8_t> &);
+    void SubBytes();
 
 
 /*
     return value: none
-    parameters:
-      2d unsigned char array (should always be the state that is passed in)
+    parameters: none
+
 
     description:
       This function takes the state and shifts the rows within it according to the schema identified by NIST.
@@ -181,21 +179,21 @@ unsigned char * generateIV();
       The fourth row will be shifted to the left 3 spaces.
 
 */
-    void ShiftRows(unsigned char [4][4]);
+    void ShiftRows();
 
 
 
 
 /*
     return value: none
-    parameters:
-      2d unsigned char array (should always be the state that is passed in)
+    parameters: none
+
 
     description:
       This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
       The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
 */
-    void MixColumns(unsigned char [4][4]);
+    void MixColumns();
 
 
 
