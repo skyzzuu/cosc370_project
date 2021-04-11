@@ -69,6 +69,8 @@ public:
     */
     void operator=(const byte &);
 
+
+
     /*
     return value: none
     parameters: vector<uint8_t>
@@ -80,18 +82,129 @@ public:
     */
     void operator=(const vector<uint8_t> &);
 
+
+
+    /*
+    return value: FiniteField
+    parameters: FiniteField object
+
+
+    description:
+      returns a FiniteField containing the result of finite field addition with FiniteField passed in
+
+    */
     FiniteField operator+(const FiniteField &) const;
+
+
+    /*
+    return value: none
+    parameters: FiniteField
+
+
+    description:
+      sets elements of this FiniteField equal to finite field addition with FiniteField passed in
+
+    */
     void operator+=(const FiniteField &);
 
+
+
+    /*
+    return value: FiniteField
+    parameters:
+        FiniteField
+        uint8_t vector containing irreducible polynomial
+
+
+    description:
+      performs finite field multiplication on this FiniteField and the FiniteField passed in
+      and performs modular reduction using irreducible polynomial given
+
+    */
     FiniteField galoisMultiply(const FiniteField &, const vector<uint8_t> &);
+
+
+    /*
+    return value: none
+    parameters: none
+
+
+    description:
+      will remove all duplicate elements that appear an evn number of times
+      and remove duplicate elements for elements that appear an odd number of times
+
+    */
     void xorSelf();
 
+
+
+    /*
+    return value: none
+    parameters: uint8_t vector containing irreducible polynomial to use
+
+
+    description:
+      explode elements that are too large to be within the FiniteField after multiplication.
+      (essentially performs the modular reduction)
+
+      explodes according to irreducible polynomial given
+
+      E.G. if the irreducible polynomial defined in AES specification section 4.2 {8, 4, 3, 1, 0}
+      is passed in, anything larger than or equal to 8 will be exploded
+
+    */
     void explode(const vector<uint8_t> & );
+
+
+    /*
+    return value: none
+    parameters: uint8_t vector containing irreducible polynomial to use
+
+
+    description:
+      calls the explode function to perform modular reduction, then calls the xorSelf function to
+      remove duplicates and remove elements appearing an even number of times
+
+    */
     void mod_reduce(const vector<uint8_t> & );
 
+
+
+    /*
+    return value: uint8_t
+    parameters: uint8_t containing index position
+
+
+    description:
+      returns reference to element at given index position in the field
+
+    */
     uint8_t & operator[](const uint8_t &);
+
+
+    /*
+    return value: uint8_t
+    parameters: uint8_t
+
+
+    description:
+      returns copy of element at given index position
+
+
+    */
     uint8_t getElement(const uint8_t &) const;
 
+
+
+    /*
+    return value: uint8_t
+    parameters: none
+
+
+    description:
+      returns the number of elements in the FiniteField
+
+    */
     uint8_t size() const;
 
 
@@ -99,10 +212,10 @@ public:
 
     return value: none
     parameters:
-        uint8_t containing element to add to FiniteField
+        uint8_t containing element to add
 
     description:
-      This function takes the uint8_t element you pass in and adds it into the finite field.
+      adds uint8_t passed in to the FiniteField
 */
     void addElement(const uint8_t &);
 

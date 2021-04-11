@@ -104,15 +104,22 @@ void FiniteField::operator=(const byte & rightByte)
 
 FiniteField FiniteField::operator+(const FiniteField & rightField) const
 {
+
+//    make a byte object copy of this FiniteField
     byte leftByte;
     leftByte = *this;
 
+//    make a byte object copy of rightField
     byte rightByte;
     rightByte = rightField;
 
+//    add bytes (xor)
     byte retByte = leftByte + rightByte;
 
+//    make FiniteField object containing the result
     FiniteField retField = retByte;
+
+    sort(retField.elements.begin(), retField.elements.end());
 
     return retField;
 }
@@ -122,6 +129,7 @@ FiniteField FiniteField::operator+(const FiniteField & rightField) const
 void FiniteField::operator+=(const FiniteField & rightField)
 {
     *this = *this + rightField;
+    sort(elements.begin(), elements.end());
 }
 
 
@@ -402,6 +410,7 @@ uint8_t FiniteField::size() const {
 
 void FiniteField::addElement(const uint8_t & element) {
     elements.push_back(element);
+    sort(elements.begin(), elements.end());
 }
 
 
