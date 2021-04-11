@@ -281,7 +281,17 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout << endl;
 
 
+        MixColumns();
 
+        cout << "after MixColumns(): " << endl;
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            for(uint8_t column = 0; column < 4; column++ )
+            {
+                cout << std::hex << (int) state[column][row];
+            }
+        }
+        cout << endl;
 
 
 
@@ -424,285 +434,285 @@ void AesEncryptObj::copyInputToState(const unsigned char inputBlock[16] , unsign
 
 
 
-/*
-    return value: none
-    parameters:
-        vector that contains the finite field representation of a byte
-        vector that contains the finite field representation of the irreducible polynomial to use
-
-    description:
-        This function takes the finite field byte and the finite field irreducible polynomial
-        and expands any terms that need to be expanded according to irreducible polynomial given
-        (E.G. polynomials with an exponent greater than 7 need to be exploded)
-*/
-void AesEncryptObj::explode(vector<uint8_t> & finiteField, const vector<uint8_t> & irreducePoly)
-{
-    // how many polynomial elements were exploded in current loop
-    int numExploded = 0;
-
-    do
-    {
-        numExploded = 0;
-
-        // will store the numbers from irreducible polynomial + what needs to be added to them
-        vector<int> numsToAdd;
-        numsToAdd.clear();
-
-        int i = 0;
-
-        // iterate through each number
-        while(i < finiteField.size())
-        {
-            // if larger than allowed
-            if(finiteField[i] >= irreducePoly[0])
-            {
-                // how many numbers were exploded in current loop
-                numExploded++;
-
-                // store temporary value
-                int temp = finiteField[i];
-
-                // remove the element that is too large
-                finiteField.erase(finiteField.begin() + i);
-
-
-                for(int j = 1; j < irreducePoly.size(); j++)
-                {
-                    // push back numbers from irreducible polynomial plus the difference
-                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
-                }
-
-                // if an item was removed, decrement index
-                i--;
-
-
-            }
-
-            // increment index to move to next element
-            i++;
-        }
-
-//        add in all of the numbers after explosion
-        for(int x : numsToAdd)
-        {
-            finiteField.push_back(x);
-        }
-
-//    end only when an entire loop is done without any elements exploded
-    } while (numExploded > 0);
-
-}
-
-
-
-
-/*
-    return value: none
-    parameters:
-        uint8_t vectors containing the finite fields you want to add
-
-    description:
-        This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
-*/
-void AesEncryptObj::galoisAdd( vector<uint8_t> & vect)
-{
-
-
-
-    // positions of numbers where there is an even quantity of the number
-    vector<int> even_removes;
-
-    // positions of numbers where there is an odd quantity of the number
-    vector<int> odd_removes;
-
-
-    for(int x : vect)
-    {
-        // how many times the number is in the polynomial
-        int count = 0;
-
-        // positions of the number that match what is being search for
-        vector<int> positions;
-        positions.clear();
-
-
-        for(int i = 0; i < vect.size(); i++)
-        {
-
-            int y = vect[i];
-
-            // if there is a match
-            if(x == y)
-            {
-
-
-
-                // add the position to the list of positions
-                positions.push_back(i);
-                count++;
-
-
-            }
-        }
-
-
-        // if there is an even number of the element
-        if((count % 2) == 0)
-        {
-            sort(positions.begin(), positions.end());
-
-            // for each position
-            for(int pos : positions)
-            {
-                bool already_in = false;
-
-                for(int pos2 : even_removes)
-                {
-                    if(pos == pos2)
-                    {
-                        already_in = true;
-                        break;
-                    }
-                }
-
-                if(!already_in)
-                {
-                    // add positions of elements that need to be removed
-                    even_removes.push_back(pos);
-                }
-
-
-            }
-        }
-
-//        odd number of the element
-        else if(count > 1)
-        {
-            sort(positions.begin(), positions.end());
-
-            // counter to keep track of how many positions have been added
-            int removed = 0;
-
-            // for each position
-            for(int pos : positions)
-            {
-                bool already_in = false;
-
-                for(int pos2 : odd_removes)
-                {
-                    if(pos == pos2)
-                    {
-                        already_in = true;
-                        break;
-                    }
-                }
-
-                if(!already_in)
-                {
-                    // if not on the first position, add to vector
-                    if(removed > 0)
-                    {
-                        odd_removes.push_back(pos);
-                    }
-                }
-
-
-                removed++;
-            }
-        }
-    }
-
-
-//    sort the positions of the elements that need to be removed
-    sort(even_removes.begin(), even_removes.end());
-    sort(odd_removes.begin(), odd_removes.end());
-
-//    count of how many elements have been removed
-    int removed = 0;
-
-    // for each of the numbers where there is an even count
-    for(int pos : even_removes)
-    {
-//        remove the element
-        vect.erase(vect.begin() + (pos - removed));
-
-
-        removed++;
-    }
-
-
-//    remove the duplicate values for elements that appear an odd number of times
-    removed = 0;
-    for(int pos : odd_removes)
-    {
-//        remove the element
-        vect.erase(vect.begin() + (pos - removed));
-
-
-        removed++;
-    }
-}
-
-
-
-/*
-    return value: none
-    parameters:
-        uint8_t vector containing the finite field to apply modular reduction to
-        uint8_t vector containing the irreducible polynomial to use for modular reduction
-
-    description:
-        This function takes the finite field and the irreducible polynomial given and applies modular reduction to
-        the finite field using the irreducible polynomial
-*/
-void AesEncryptObj::mod_reduce(vector<uint8_t> & vals, const vector<uint8_t> & irreduce)
-{
-
-    explode(vals, irreduce);
-    galoisAdd(vals);
-
-}
-
-
-
-/*
-    return value: uint8_t vector containing the result of the finite field multiplication
-    parameters:
-        2 uint8_t vectors containing the finite fields you want to multiply
-        uint8_t vector containing the irreducible polynomial to use as last parameter
-
-    description:
-        This function takes 2 finite fields and multiplies them, applying modular reduction with irreducible
-        polynomial given
-*/
-vector<uint8_t> AesEncryptObj::galoisMultiply(const vector<uint8_t> & a, const vector<uint8_t> & b, const vector<uint8_t> & irreduce)
-{
-    vector<uint8_t> vect;
-
-    for(unsigned char x : a)
-    {
-        for(unsigned char j : b)
-        {
-            vect.push_back(x + j);
-
-        }
-    }
-
-//    galois addition on the vector
-    galoisAdd(vect);
-
-
-
-    sort(vect.rbegin(), vect.rend());
-
-    // modular reduction
-    mod_reduce(vect, irreduce);
-
-
-
-    return vect;
-
-}
+///*
+//    return value: none
+//    parameters:
+//        vector that contains the finite field representation of a byte
+//        vector that contains the finite field representation of the irreducible polynomial to use
+//
+//    description:
+//        This function takes the finite field byte and the finite field irreducible polynomial
+//        and expands any terms that need to be expanded according to irreducible polynomial given
+//        (E.G. polynomials with an exponent greater than 7 need to be exploded)
+//*/
+//void AesEncryptObj::explode(vector<uint8_t> & finiteField, const vector<uint8_t> & irreducePoly)
+//{
+//    // how many polynomial elements were exploded in current loop
+//    int numExploded = 0;
+//
+//    do
+//    {
+//        numExploded = 0;
+//
+//        // will store the numbers from irreducible polynomial + what needs to be added to them
+//        vector<int> numsToAdd;
+//        numsToAdd.clear();
+//
+//        int i = 0;
+//
+//        // iterate through each number
+//        while(i < finiteField.size())
+//        {
+//            // if larger than allowed
+//            if(finiteField[i] >= irreducePoly[0])
+//            {
+//                // how many numbers were exploded in current loop
+//                numExploded++;
+//
+//                // store temporary value
+//                int temp = finiteField[i];
+//
+//                // remove the element that is too large
+//                finiteField.erase(finiteField.begin() + i);
+//
+//
+//                for(int j = 1; j < irreducePoly.size(); j++)
+//                {
+//                    // push back numbers from irreducible polynomial plus the difference
+//                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
+//                }
+//
+//                // if an item was removed, decrement index
+//                i--;
+//
+//
+//            }
+//
+//            // increment index to move to next element
+//            i++;
+//        }
+//
+////        add in all of the numbers after explosion
+//        for(int x : numsToAdd)
+//        {
+//            finiteField.push_back(x);
+//        }
+//
+////    end only when an entire loop is done without any elements exploded
+//    } while (numExploded > 0);
+//
+//}
+
+
+
+//
+///*
+//    return value: none
+//    parameters:
+//        uint8_t vectors containing the finite fields you want to add
+//
+//    description:
+//        This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
+//*/
+//void AesEncryptObj::galoisAdd( vector<uint8_t> & vect)
+//{
+//
+//
+//
+//    // positions of numbers where there is an even quantity of the number
+//    vector<int> even_removes;
+//
+//    // positions of numbers where there is an odd quantity of the number
+//    vector<int> odd_removes;
+//
+//
+//    for(int x : vect)
+//    {
+//        // how many times the number is in the polynomial
+//        int count = 0;
+//
+//        // positions of the number that match what is being search for
+//        vector<int> positions;
+//        positions.clear();
+//
+//
+//        for(int i = 0; i < vect.size(); i++)
+//        {
+//
+//            int y = vect[i];
+//
+//            // if there is a match
+//            if(x == y)
+//            {
+//
+//
+//
+//                // add the position to the list of positions
+//                positions.push_back(i);
+//                count++;
+//
+//
+//            }
+//        }
+//
+//
+//        // if there is an even number of the element
+//        if((count % 2) == 0)
+//        {
+//            sort(positions.begin(), positions.end());
+//
+//            // for each position
+//            for(int pos : positions)
+//            {
+//                bool already_in = false;
+//
+//                for(int pos2 : even_removes)
+//                {
+//                    if(pos == pos2)
+//                    {
+//                        already_in = true;
+//                        break;
+//                    }
+//                }
+//
+//                if(!already_in)
+//                {
+//                    // add positions of elements that need to be removed
+//                    even_removes.push_back(pos);
+//                }
+//
+//
+//            }
+//        }
+//
+////        odd number of the element
+//        else if(count > 1)
+//        {
+//            sort(positions.begin(), positions.end());
+//
+//            // counter to keep track of how many positions have been added
+//            int removed = 0;
+//
+//            // for each position
+//            for(int pos : positions)
+//            {
+//                bool already_in = false;
+//
+//                for(int pos2 : odd_removes)
+//                {
+//                    if(pos == pos2)
+//                    {
+//                        already_in = true;
+//                        break;
+//                    }
+//                }
+//
+//                if(!already_in)
+//                {
+//                    // if not on the first position, add to vector
+//                    if(removed > 0)
+//                    {
+//                        odd_removes.push_back(pos);
+//                    }
+//                }
+//
+//
+//                removed++;
+//            }
+//        }
+//    }
+//
+//
+////    sort the positions of the elements that need to be removed
+//    sort(even_removes.begin(), even_removes.end());
+//    sort(odd_removes.begin(), odd_removes.end());
+//
+////    count of how many elements have been removed
+//    int removed = 0;
+//
+//    // for each of the numbers where there is an even count
+//    for(int pos : even_removes)
+//    {
+////        remove the element
+//        vect.erase(vect.begin() + (pos - removed));
+//
+//
+//        removed++;
+//    }
+//
+//
+////    remove the duplicate values for elements that appear an odd number of times
+//    removed = 0;
+//    for(int pos : odd_removes)
+//    {
+////        remove the element
+//        vect.erase(vect.begin() + (pos - removed));
+//
+//
+//        removed++;
+//    }
+//}
+//
+//
+//
+///*
+//    return value: none
+//    parameters:
+//        uint8_t vector containing the finite field to apply modular reduction to
+//        uint8_t vector containing the irreducible polynomial to use for modular reduction
+//
+//    description:
+//        This function takes the finite field and the irreducible polynomial given and applies modular reduction to
+//        the finite field using the irreducible polynomial
+//*/
+//void AesEncryptObj::mod_reduce(vector<uint8_t> & vals, const vector<uint8_t> & irreduce)
+//{
+//
+//    explode(vals, irreduce);
+//    galoisAdd(vals);
+//
+//}
+//
+//
+//
+///*
+//    return value: uint8_t vector containing the result of the finite field multiplication
+//    parameters:
+//        2 uint8_t vectors containing the finite fields you want to multiply
+//        uint8_t vector containing the irreducible polynomial to use as last parameter
+//
+//    description:
+//        This function takes 2 finite fields and multiplies them, applying modular reduction with irreducible
+//        polynomial given
+//*/
+//vector<uint8_t> AesEncryptObj::galoisMultiply(const vector<uint8_t> & a, const vector<uint8_t> & b, const vector<uint8_t> & irreduce)
+//{
+//    vector<uint8_t> vect;
+//
+//    for(unsigned char x : a)
+//    {
+//        for(unsigned char j : b)
+//        {
+//            vect.push_back(x + j);
+//
+//        }
+//    }
+//
+////    galois addition on the vector
+//    galoisAdd(vect);
+//
+//
+//
+//    sort(vect.rbegin(), vect.rend());
+//
+//    // modular reduction
+//    mod_reduce(vect, irreduce);
+//
+//
+//
+//    return vect;
+//
+//}
 
 
 
@@ -781,6 +791,92 @@ void AesEncryptObj::ShiftRows()
 void AesEncryptObj::MixColumns()
 {
 
+    const byte firstConst = 0x03;
+    const byte fourthConst = 0x02;
+
+    byte firstParen;
+    byte secondParen;
+    byte thirdParen;
+    byte fourthParen;
+
+
+    for(uint8_t column = 0; column < 4; column++)
+    {
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            byte retByte;
+
+
+
+
+            if(row == 0)
+            {
+                firstParen = state[0][column];
+                firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+
+                secondParen = state[1][column];
+                secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+                thirdParen = state[2][column];
+
+                fourthParen = state[3][column];
+
+            }
+
+            else if(row == 1)
+            {
+                firstParen = state[0][column];
+
+
+                secondParen = state[1][column];
+                secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+
+
+                thirdParen = state[2][column];
+                thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+
+                fourthParen = state[3][column];
+
+            }
+
+            else if(row == 2)
+            {
+                firstParen = state[0][column];
+
+                secondParen = state[1][column];
+
+
+                thirdParen = state[2][column];
+                thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+
+                fourthParen = state[3][column];
+                fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+
+            }
+            else
+            {
+                firstParen = state[0][column];
+                firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+                secondParen = state[1][column];
+
+                thirdParen = state[2][column];
+
+                fourthParen = state[3][column];
+                fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+            }
+
+
+            retByte = firstParen + secondParen + thirdParen + fourthParen;
+
+            state[row][column] = retByte.rawData();
+
+
+
+        }
+    }
 }
 
 

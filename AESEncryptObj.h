@@ -61,9 +61,11 @@ private:
     word * roundConstants = nullptr;
 
 
+    const vector<uint8_t> mixColumnsIrreduce = {4, 0};
 
 
-//    how many bytes are in the input
+
+    //    how many bytes are in the input
     uint16_t inputLength = 0;
 
 

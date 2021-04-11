@@ -33,7 +33,7 @@ FiniteField::FiniteField(const byte & rightByte)
 
 
     //    for each power of 2 starting from right
-    for(uint8_t i = 7; i >= 0; i++)
+    for(int i = 7; i >= 0; i--)
     {
 //        value of the current power
         uint8_t currentPower = powsOfTwo[i];
@@ -71,6 +71,8 @@ void FiniteField::operator=(const FiniteField & rightField)
 
 void FiniteField::operator=(const byte & rightByte)
 {
+    cout << "DING DING" << endl;
+
     elements.clear();
 
     //    powers of 2
@@ -83,7 +85,7 @@ void FiniteField::operator=(const byte & rightByte)
 
 
     //    for each power of 2 starting from right
-    for(uint8_t i = 7; i >= 0; i++)
+    for(int i = 7; i >= 0; i--)
     {
 //        value of the current power
         uint8_t currentPower = powsOfTwo[i];
@@ -177,7 +179,7 @@ void FiniteField::explode(const vector <uint8_t> & irreduce) {
         vector<uint8_t> numsToAdd;
         numsToAdd.clear();
 
-        uint8_t i = 0;
+        int i = 0;
 
         // iterate through each number
         while(i < size())

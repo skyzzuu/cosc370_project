@@ -6,6 +6,9 @@
 #include "AESEncryptObj.h"
 #include "AESDecryptObj.h"
 #include "word.h"
+#include "byte.h"
+#include "FiniteField.h"
+
 
 using namespace std;
 
@@ -39,16 +42,30 @@ int main()
 
 
 
-//    AesEncryptObj aes128(128);
-//    aes128.encrypt(aes128plaintext, 16, aes128key);
+    AesEncryptObj aes128(128);
+    aes128.encrypt(aes128plaintext, 16, aes128key);
 
 
-    AesEncryptObj aes192(192);
-    aes192.encrypt(aes128plaintext, 16, aes192key);
+//    AesEncryptObj aes192(192);
+//    aes192.encrypt(aes128plaintext, 16, aes192key);
 
 
 //    AesEncryptObj aes256(256);
 //    aes256.encrypt(aes128plaintext, 16, aes256key);
+
+
+
+
+//    byte x = 5;
+//    FiniteField field;
+//    field = x;
+//
+//    for(uint8_t i = 0; i < field.size(); i++)
+//    {
+//        cout << (int) field.getElement(i) << " ";
+//    }
+//    cout << endl;
+
 
 
 
