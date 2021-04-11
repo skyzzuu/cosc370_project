@@ -23,8 +23,6 @@ AesEncryptObj::AesEncryptObj(uint16_t keysize)
     keySize = keysize;
 
 
-//    nB is always 4 regardless of key size
-    nB = 4;
 
 
 //    AES-128
@@ -48,7 +46,6 @@ AesEncryptObj::AesEncryptObj(uint16_t keysize)
         *((roundConstants[7]).operator[](0)) = 128;
         *((roundConstants[8]).operator[](0)) = 27;
         *((roundConstants[9]).operator[](0)) = 54;
-
 
 
     }
@@ -120,10 +117,10 @@ AesEncryptObj::AesEncryptObj(uint16_t keysize)
 AesEncryptObj::AesEncryptObj()  {
     keySize = 128;
     nK = 4;
-    nB = 4;
     nR = 10;
 
     key = new word[nK];
+
 
     numWordsInKeySched = nB * (nR + 1);
     keySched = new word[numWordsInKeySched];
@@ -182,7 +179,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     cout << endl << endl;
 
 //    pad up to nearest block (or add full block)
-    padInput(inputVector);
+//    padInput(inputVector);
 
 
     cout << "After Padding: ";
@@ -228,26 +225,46 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
-//    cout << "BLOCKS: " << endl;
-//    for(uint64_t i = 0; i < numBlocks; i++)
-//    {
-//        copyInputToState(blockArray[i], state);
-//
-//
-//        for(uint8_t row = 0; row < 4; row++)
+    cout << "BLOCKS: " << endl;
+    for(uint64_t i = 0; i < numBlocks; i++)
+    {
+        copyInputToState(blockArray[i], state);
+
+
+        cout << "BEGINNING STATE" << endl;
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            for(uint8_t column = 0; column < 4; column++ )
+            {
+                cout << std::hex << (int) state[column][row];
+            }
+        }
+        cout << endl;
+
+        AddRoundKey(0);
+
+
+        cout << "END STATE" << endl;
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            for(uint8_t column = 0; column < 4; column++ )
+            {
+                cout << std::hex << (int) state[column][row];
+            }
+        }
+        cout << endl;
+
+
+
+
+//        for(uint8_t round = 0; round < nR; round++)
 //        {
-//            for(uint8_t column = 0; column < 4; column++ )
-//            {
-//                cout << std::hex << (int) state[row][column] << " ";
-//            }
-//            cout << endl;
+//
 //        }
-//        cout << endl;
-//
-//
-//
-//    }
-//    cout << endl;
+
+
+    }
+    cout << endl;
 
 
 
@@ -728,89 +745,35 @@ void AesEncryptObj::MixColumns(unsigned char [4][4])
 /*
     return value: none
     parameters:
-      2d unsigned char array (should always be the state that is passed in)
+        unsigned integer containing the current round number
 
     description:
-      This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
-      The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
+      This function will get the round key and perform a bitwise XOR on the state, essentially performing
+      an addition within a finite Field.
 */
-void AesEncryptObj::AddRoundKey(unsigned char [4][4], const unsigned char *)
+void AesEncryptObj::AddRoundKey( const uint8_t & round )
 {
+    for(uint8_t column = 0; column < 4; column++)
+    {
+        for(uint8_t row = 0; row < 4; row++)
+        {
+
+            cout << "byte from state: " << (int)  state[row][column] << endl;
+            cout << "round key word: " << (keySched[(round * nB) + column]) << endl;
+            cout << "byte from round key word: " << ((keySched[(round * nB) + column])[row])->rawData() << endl;
+
+//            make each byte in state the result of xor with byte from round key
+            state[row][column] = state[row][column] ^ ((keySched[(round * nB) + column])[row])->rawData();
+
+
+            cout << "result from addroundkey: " << std::hex << (int) state[row][column] << endl << endl;
+        }
+    }
 
 }
 
 
 
-
-///*
-//    return value: uint8_t vector
-//    parameters:
-//        byte that you want to convert to a finite field representation
-//
-//    description:
-//        This function takes the byte passed in as a parameter and returns a uint8_t vector
-//        that represents the byte as a finite field.
-// */
-//vector<uint8_t> AesEncryptObj::byteToFiniteField(const unsigned char & origByte)
-//{
-////    powers of 2
-//    const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
-//
-////    make a copy of the original byte
-//    unsigned char byte = origByte;
-//
-////    will contain the exponents of the bits that are set in the byte
-//    vector<uint8_t> returnVector;
-//    returnVector.clear();
-//
-//
-////    for each power of 2 starting from right
-//    for(uint8_t i = 7; i >= 0; i++)
-//    {
-////        value of the current power
-//        uint8_t currentPower = powsOfTwo[i];
-//
-////        if the current power fits into the remaining value of the byte
-//        if (currentPower <= byte)
-//        {
-////            add the index position to the vector
-////            represents which bits are set
-//            returnVector.push_back(i);
-//
-////            subtract the value from the byte
-//            byte -= currentPower;
-//        }
-//    }
-//
-//
-//    return returnVector;
-//
-//}
-
-
-
-
-///*
-//    return value: unsigned char
-//    parameters:
-//        vector that contains the finite field representation of a byte
-//
-//    description:
-//        This function takes the finite field passed in and converts it back into a byte.
-// */
-//unsigned char AesEncryptObj::finiteFieldToByte(const vector<uint8_t> & field)
-//{
-//    unsigned char retVal = 0;
-//
-////    for each value in the field
-//    for(const uint8_t & val : field)
-//    {
-////        add the value of 2 to that power
-//        retVal += pow(2, val);
-//    }
-//
-//    return retVal;
-//}
 
 
 
@@ -838,72 +801,6 @@ void AesEncryptObj::AddRoundKey(unsigned char [4][4], const unsigned char *)
 //    return ptr;
 //}
 
-
-
-//
-//vector<unsigned char > AesEncryptObj::fourTermPolyMultiply(unsigned char a[4], unsigned char b[4])
-//{
-//    unsigned char d[4] = {0};
-//
-////    irreducible polynomial specified in AES specification to be used with four-term polynomial multiplication
-//    const vector<uint8_t> irreduce = {4, 0};
-//
-////    use finite field multiplication to get the multiplication results needed for d0
-//    unsigned char d0_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-//    unsigned char d0_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[1]), irreduce));
-//    unsigned char d0_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[2]), irreduce));
-//    unsigned char d0_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[3]), irreduce));
-//
-////    set d[0] to the result of a bitwise xor of the results of finite field multiplication
-//    unsigned char d0 = (d0_step1 | d0_step2 | d0_step3 | d0_step4);
-//    d[0] = d0;
-//
-//
-//    //    use finite field multiplication to get the multiplication results needed for d0
-//    unsigned char d1_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[0]), irreduce));
-//    unsigned char d1_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[1]), irreduce));
-//    unsigned char d1_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[2]), irreduce));
-//    unsigned char d1_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[3]), irreduce));
-//
-//    unsigned char d1 = (d1_step1 | d1_step2 | d1_step3 | d1_step4);
-//    d[1] = d1;
-//
-//
-//
-//    unsigned char d2_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[2]), byteToFiniteField(b[0]), irreduce));
-//    unsigned char d2_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[1]), byteToFiniteField(b[1]), irreduce));
-//    unsigned char d2_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[2]), irreduce));
-//    unsigned char d2_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[3]), byteToFiniteField(b[3]), irreduce));
-//
-//
-//    unsigned char d2 = (d2_step1 | d2_step2 | d2_step3 | d2_step4);
-//    d[2] = d2;
-//
-//
-//
-//
-//    unsigned char d3_step1 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-//    unsigned char d3_step2 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-//    unsigned char d3_step3 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-//    unsigned char d3_step4 = finiteFieldToByte(galoisMultiply(byteToFiniteField(a[0]), byteToFiniteField(b[0]), irreduce));
-//
-//    unsigned char d3 = (d3_step1 | d3_step2 | d3_step3 | d3_step4);
-//    d[3] = d3;
-//
-//
-//
-////    copy elements into the 4 element vector that will be returned
-//    vector<unsigned char > fourTermPoly(4);
-//    for(uint8_t i = 0; i < 4; i++)
-//    {
-//        fourTermPoly[i] = d[i];
-//    }
-//
-//
-//    return fourTermPoly;
-//
-//
-//}
 
 
 

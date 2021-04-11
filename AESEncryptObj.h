@@ -45,7 +45,7 @@ private:
 
     uint16_t keySize = 0;
     uint8_t nK = 0;
-    uint8_t nB = 0;
+    const uint8_t nB = 4;
     uint8_t nR = 0;
     uint8_t numWordsInKeySched = 0;
 
@@ -203,14 +203,13 @@ unsigned char * generateIV();
 /*
     return value: none
     parameters:
-      2d unsigned char array (should always be the state that is passed in)
-      4 element unsigned char array that should contain the 4 words from the key schedule that represent the current round key
+        unsigned integer containing the current round number
 
     description:
-      This function will take the round key passed in and perform a bitwise XOR on the state, essentially performing
-      an addition within a Galois Field.
+      This function will get the round key and perform a bitwise XOR on the state, essentially performing
+      an addition within a finite Field.
 */
-    void AddRoundKey(unsigned char [4][4], const unsigned char [4]);
+    void AddRoundKey(const uint8_t &);
 
 
 
