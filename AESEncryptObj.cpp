@@ -30,6 +30,7 @@ AesEncryptObj::AesEncryptObj(uint8_t keysize)
 //    AES-128
     if(keySize == 128)
     {
+        cout << "AES-128" << endl;
         nK = 4;
         nR = 10;
 
@@ -137,7 +138,7 @@ AesEncryptObj::~AesEncryptObj() {
 
 
 
-vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char key[16])
+vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey)
 {
 
     inputLength = inputlength;
@@ -152,8 +153,45 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         inputVector.push_back(data[i]);
     }
 
+
+//    read all words from cipher key given into member variable key
+    for(uint64_t i = 0; i < nK; i++)
+    {
+        key[i] = & ciphKey[i * 4];
+    }
+
+
+
+    cout << "cipher key: ";
+    for(uint8_t i = 0; i < nK; i++)
+    {
+        cout << key[i];
+    }
+    cout << endl << endl;
+
+
+
+
+
+
+    cout << "Beginning plaintext: ";
+    for(uint64_t i = 0; i < inputlength; i++)
+    {
+        cout << std::hex << (int) data[i];
+    }
+    cout << endl << endl;
+
 //    pad up to nearest block (or add full block)
     padInput(inputVector);
+
+
+    cout << "After Padding: ";
+    for(uint64_t i = 0; i < inputVector.size(); i++)
+    {
+        cout << std::hex << (int) inputVector[i];
+    }
+    cout << endl << endl;
+
 
 //    total number of blocks in padded input
     uint16_t numBlocks = inputVector.size() / 16;
@@ -168,21 +206,39 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     inputVector.clear();
 
 
-    for(uint8_t  i = 0; i < 16; i++)
+
+    KeyExpansion();
+
+
+    cout << "Key Schedule words:" << endl;
+    for(uint8_t i = 0; i < numWordsInKeySched; i++)
     {
-        cout << std::hex << blockArray[0][i];
+        cout << keySched[i] << endl;
     }
-    cout << endl;
+    cout << endl << endl;
 
 
 
-
+//    cout << "BLOCKS: " << endl;
 //    for(uint64_t i = 0; i < numBlocks; i++)
 //    {
 //        copyInputToState(blockArray[i], state);
 //
 //
+//        for(uint8_t row = 0; row < 4; row++)
+//        {
+//            for(uint8_t column = 0; column < 4; column++ )
+//            {
+//                cout << std::hex << (int) state[row][column] << " ";
+//            }
+//            cout << endl;
+//        }
+//        cout << endl;
+//
+//
+//
 //    }
+//    cout << endl;
 
 
 
@@ -859,6 +915,7 @@ void AesEncryptObj::AddRoundKey(unsigned char [4][4], const unsigned char *)
 void AesEncryptObj::KeyExpansion()
 {
 
+    cout << endl << "IN KEY EXPANSION" << endl << endl;
 //    holds a temporary 4-byte word in a later loop, will hold the value of the previous word
     word temp;
 
@@ -871,7 +928,11 @@ void AesEncryptObj::KeyExpansion()
     {
 //        copy the current word of the cipher key into the beginning of the key schedule
         keySched[i] = key[i];
+        cout << keySched[i] << endl;
+
+        i++;
     }
+    cout << endl;
 
     i = nK;
 
@@ -881,19 +942,50 @@ void AesEncryptObj::KeyExpansion()
     {
 //        copy the previous word into temp
         temp = keySched[i-1];
+        cout << "temp: " << temp << endl;
 
 
 //        happens every nK words of the key
         if((i % nK) == 0)
         {
+//            rotate temp
+            temp = temp.leftRotate();
+            cout << "After RotWord(): " << temp << endl;
+
+
+//            then sub each of the bytes according to sBox
+            temp = temp.SubWord(sBox);
+            cout << "After SubWord(): " << temp << endl;
+
+
+//            then xor each byte with word from round constants
+            temp = temp ^ roundConstants[i - nK];
+            cout << "i: " << (int) i << endl;
+            cout << "nK: " << (int) nK << endl;
+            cout << "i / nK: " << (int) (i / nK) << endl;
+            cout << "Rcon[0]: " << roundConstants[0] << endl;
+            cout << "Rcon[i/Nk]: " << roundConstants[i - nK] << endl;
+            cout << "After XOR: " << temp << endl;
 
         }
 
+//        AES-256 and (i-4) is a multiple of nK
+        else if (nK == 8 && (i-4) % nK == 0)
+        {
+            temp = temp.SubWord(sBox);
+        }
+
+        cout << "w[i-Nk]: " << keySched[i - nK] << endl;
+//        set current word of key schedule equal to XOR with word nK positions before and temp word
+        keySched[i] = keySched[i - nK] ^ temp;
+
+        cout << "temp XOR w[i-nK]: " << keySched[i] << endl << endl << endl;
 
 
 //        move one word (4 bytes) to the right
-        i = i + 4;
+        i++;
     }
+    cout << endl;
 
 
 }

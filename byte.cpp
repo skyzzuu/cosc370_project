@@ -332,3 +332,12 @@ void byte::SubByteInPlace(const unordered_map<uint8_t, uint8_t> & sBox)
 //    set byte's value equal to it's mapped value in sBox
     *this = sBox.find(this->rawData())->second;
 }
+
+
+
+
+ostream & operator<<(ostream & stream, const byte & rightByte)
+{
+    stream << std::hex << (int) rightByte.rawData();
+    return stream;
+}

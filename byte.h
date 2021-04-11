@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <cstdint>
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -243,6 +244,9 @@ public:
     void SubByteInPlace(const unordered_map<uint8_t, uint8_t> &);
 
 public:
+
+    friend ostream & operator<<(ostream &, const byte &);
+
 
 };
 

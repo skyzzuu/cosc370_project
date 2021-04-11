@@ -12,6 +12,7 @@
 #include "byte.h"
 #include <stdexcept>
 #include <cstring>
+#include <iostream>
 
 using namespace std;
 
@@ -174,6 +175,23 @@ public:
         E.G. should be used for SubBytes and SubWord transformations.
     */
     word SubWord(const unordered_map<uint8_t, uint8_t> & );
+
+
+    /*
+    return value: ostream reference object
+    parameters:
+        ostream reference
+        word object reference
+
+
+    description:
+        outputs all bytes in the word in their hex form
+
+        E.G. if word is 0xff, 0xaa, 0xbb, 0xcc, will output: ffaabbcc in ostream
+
+    */
+    friend ostream & operator<<(ostream & , const word & );
+
 
 
 private:

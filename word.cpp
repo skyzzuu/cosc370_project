@@ -260,3 +260,12 @@ word word::SubWord(const unordered_map<uint8_t, uint8_t> & sBox) {
     return retWord;
 }
 
+
+ostream  & operator<<(ostream & stream, const word & rightWord)
+{
+    for(uint8_t i = 0; i < 4; i++)
+    {
+        stream << rightWord.getByte(i);
+    }
+    return stream;
+}

@@ -25,7 +25,9 @@ public:
     parameters:
       const unsigned char * containing the bytes to encrypt
       unsigned integer representing how many bytes are in the input
-      const unsigned char array containing the encryption key to use
+      const unsigned char * containing the encryption key to use
+      unsigned integer representing how many bytes are in the key
+
 
     description:
       takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
@@ -33,7 +35,7 @@ public:
       encrypts using the cipher block chaining mode of operation.
 
  */
-    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char [16]);
+    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char *);
 
 
 
