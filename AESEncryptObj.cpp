@@ -206,6 +206,14 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     inputVector.clear();
 
 
+    cout << "Round Constants" << endl;
+    for(uint8_t i = 0; i < numRoundConstants; i++)
+    {
+        cout << roundConstants[i] << endl;
+    }
+
+
+
 
     KeyExpansion();
 
@@ -216,6 +224,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout << keySched[i] << endl;
     }
     cout << endl << endl;
+
 
 
 
@@ -959,12 +968,8 @@ void AesEncryptObj::KeyExpansion()
 
 
 //            then xor each byte with word from round constants
-            temp = temp ^ roundConstants[i - nK];
-            cout << "i: " << (int) i << endl;
-            cout << "nK: " << (int) nK << endl;
-            cout << "i / nK: " << (int) (i / nK) << endl;
-            cout << "Rcon[0]: " << roundConstants[0] << endl;
-            cout << "Rcon[i/Nk]: " << roundConstants[i - nK] << endl;
+            temp = temp ^ roundConstants[(i - nK) / 4];
+            cout << "Rcon[i/Nk]: " << roundConstants[(i - nK) / 4] << endl;
             cout << "After XOR: " << temp << endl;
 
         }
