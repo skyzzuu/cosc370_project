@@ -61,7 +61,7 @@ private:
     word * roundConstants = nullptr;
 
 
-    const vector<uint8_t> mixColumnsIrreduce = {4, 0};
+    const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
 
 
 
