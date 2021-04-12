@@ -140,13 +140,23 @@ void FiniteField::operator+=(const FiniteField & rightField)
 FiniteField FiniteField::galoisMultiply(const FiniteField & rightField, const vector <uint8_t> & irreduce) {
 
 //    copy elements from this finite field into return field
-    FiniteField retField = *this;
+    FiniteField retField;
 
-//    copy elements from rightField into return field
-    for(uint8_t i = 0; i < rightField.size(); i++)
+    for(uint8_t outer = 0; outer < this->size(); outer++)
     {
-        retField.addElement(rightField.getElement(i));
+        //    copy elements from rightField into return field
+        for(uint8_t inner = 0; inner < rightField.size(); inner++)
+        {
+//            retField.addElement(rightField.getElement(i));
+
+            retField.addElement(this->getElement(outer) + rightField.getElement(inner));
+        }
     }
+
+
+
+
+
 
 //    remove elements that appear an even number of times, and remove duplicates of elements
 //    that appear an odd number of times
@@ -389,11 +399,11 @@ uint8_t & FiniteField::operator[](const uint8_t & i)  {
 }
 
 
-uint8_t FiniteField::getElement(const uint8_t & i) const {
+uint8_t  FiniteField::getElement(const uint8_t & i) const {
 
     if(i >= 0 && i < size())
     {
-        return elements[i];
+        return  elements[i];
     } else
     {
         throw OutOfBounds();

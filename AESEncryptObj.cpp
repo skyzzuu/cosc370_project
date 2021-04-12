@@ -252,7 +252,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
                 cout << std::hex << (int) state[column][row];
             }
         }
-        cout << endl;
+        cout << endl << endl;
 
 
         SubBytes();
@@ -265,7 +265,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
                 cout << std::hex << (int) state[column][row];
             }
         }
-        cout << endl;
+        cout << endl << endl;
 
 
         ShiftRows();
@@ -278,7 +278,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
                 cout << std::hex << (int) state[column][row];
             }
         }
-        cout << endl;
+        cout << endl << endl;
 
 
         MixColumns();
@@ -291,7 +291,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
                 cout << std::hex << (int) state[column][row];
             }
         }
-        cout << endl;
+        cout << endl << endl;
 
 
 
