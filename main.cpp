@@ -69,15 +69,16 @@ int main()
 
 
     byte x = 0x57;
-    byte y = 0x83;
+    byte y = 0x13;
 
     vector<uint8_t> irreduce = {8, 4, 3, 1, 0};
 
     byte result;
     result = x.galoisMultiply(y, irreduce);
 
+//    result = x + y;
 
-//    cout << result << endl;
+    cout << result << endl;
 
 
 

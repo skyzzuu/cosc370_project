@@ -277,7 +277,7 @@ void FiniteField::xorSelf() {
 
 
                 // add the position to the list of positions
-                positions.push_back(i);
+                positions.push_back(inner);
                 count++;
 
 
@@ -336,13 +336,13 @@ void FiniteField::xorSelf() {
                     }
                 }
 
-                if(!already_in)
+                if(!already_in && pos != positions[0])
                 {
                     // if not on the first position, add to vector
-                    if(removed > 0)
-                    {
+//                    if(removed > 0 && pos != positions[0])
+//                    {
                         odd_removes.push_back(pos);
-                    }
+//                    }
                 }
 
 
@@ -359,6 +359,9 @@ void FiniteField::xorSelf() {
 //    count of how many elements have been removed
     uint8_t removed = 0;
 
+    const uint8_t evenRemovesStartSize = even_removes.size();
+
+
     // for each of the numbers where there is an even count
     for(uint8_t pos : even_removes)
     {
@@ -374,8 +377,20 @@ void FiniteField::xorSelf() {
     removed = 0;
     for(uint8_t pos : odd_removes)
     {
-//        remove the element
-        this->removeElement((pos - removed));
+
+//        valid index position
+        if((pos - removed) < this->size())
+        {
+            //        remove the element
+            this->removeElement((pos - removed));
+        }
+
+//        would try to remove index position that doesn't exist anymore, so add the number of elements that were removed in previous loop
+        else
+        {
+            this->removeElement((pos - removed) - evenRemovesStartSize);
+        }
+
 
 
         removed++;
