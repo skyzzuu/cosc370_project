@@ -9,6 +9,8 @@
 #include <vector>
 #include <cstdint>
 #include "byte.h"
+#include <algorithm>
+#include <set>
 
 using namespace std;
 

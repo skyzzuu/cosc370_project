@@ -42,8 +42,8 @@ int main()
 
 
 
-//    AesEncryptObj aes128(128);
-//    aes128.encrypt(aes128plaintext, 16, aes128key);
+    AesEncryptObj aes128(128);
+    aes128.encrypt(aes128plaintext, 16, aes128key);
 
 
 //    AesEncryptObj aes192(192);
@@ -56,29 +56,21 @@ int main()
 
 
 
-//    byte x = 5;
-//    FiniteField field;
-//    field = x;
+
+
+
+
+//    byte x = 0x57;
+//    byte y = 0x83;
 //
-//    for(uint8_t i = 0; i < field.size(); i++)
-//    {
-//        cout << (int) field.getElement(i) << " ";
-//    }
-//    cout << endl;
-
-
-
-    byte x = 0x57;
-    byte y = 0x13;
-
-    vector<uint8_t> irreduce = {8, 4, 3, 1, 0};
-
-    byte result;
-    result = x.galoisMultiply(y, irreduce);
-
-//    result = x + y;
-
-    cout << result << endl;
+//    vector<uint8_t> irreduce = {8, 4, 3, 1, 0};
+//
+//    byte result;
+//    result = x.galoisMultiply(y, irreduce);
+//
+////    result = x + y;
+//
+//    cout << result << endl;
 
 
 

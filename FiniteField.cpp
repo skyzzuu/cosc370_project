@@ -3,8 +3,6 @@
 //
 
 #include "FiniteField.h"
-#include <algorithm>
-#include <vector>
 
 
 FiniteField::FiniteField()
@@ -249,8 +247,7 @@ void FiniteField::xorSelf() {
     // positions of numbers where there is an even quantity of the number
     vector<uint8_t> even_removes;
 
-    // positions of numbers where there is an odd quantity of the number
-    vector<uint8_t> odd_removes;
+
 
 
     for(uint8_t i = 0; i < this->size(); i++)
@@ -314,47 +311,12 @@ void FiniteField::xorSelf() {
             }
         }
 
-//        odd number of the element
-        else if(count > 1)
-        {
-            sort(positions.begin(), positions.end());
 
-            // counter to keep track of how many positions have been added
-            uint8_t removed = 0;
-
-            // for each position
-            for(uint8_t pos : positions)
-            {
-                bool already_in = false;
-
-                for(uint8_t pos2 : odd_removes)
-                {
-                    if(pos == pos2)
-                    {
-                        already_in = true;
-                        break;
-                    }
-                }
-
-                if(!already_in && pos != positions[0])
-                {
-                    // if not on the first position, add to vector
-//                    if(removed > 0 && pos != positions[0])
-//                    {
-                        odd_removes.push_back(pos);
-//                    }
-                }
-
-
-                removed++;
-            }
-        }
     }
 
 
 //    sort the positions of the elements that need to be removed
     sort(even_removes.begin(), even_removes.end());
-    sort(odd_removes.begin(), odd_removes.end());
 
 //    count of how many elements have been removed
     uint8_t removed = 0;
@@ -373,28 +335,19 @@ void FiniteField::xorSelf() {
     }
 
 
-//    remove the duplicate values for elements that appear an odd number of times
-    removed = 0;
-    for(uint8_t pos : odd_removes)
+//    put elements into a set to remove duplicates
+    set<uint8_t> Set(this->elements.begin(), this->elements.end());
+
+//    remove all elements
+    this->elements.clear();
+
+//    add back elements with duplicates removed
+    for(uint8_t x : Set)
     {
-
-//        valid index position
-        if((pos - removed) < this->size())
-        {
-            //        remove the element
-            this->removeElement((pos - removed));
-        }
-
-//        would try to remove index position that doesn't exist anymore, so add the number of elements that were removed in previous loop
-        else
-        {
-            this->removeElement((pos - removed) - evenRemovesStartSize);
-        }
-
-
-
-        removed++;
+        this->addElement(x);
     }
+
+
 
 
 }

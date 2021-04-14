@@ -802,6 +802,14 @@ void AesEncryptObj::MixColumns()
 
     for(uint8_t column = 0; column < 4; column++)
     {
+        firstParen = state[0][column];
+        secondParen = state[1][column];
+        thirdParen = state[2][column];
+        fourthParen = state[3][column];
+
+
+
+
         for(uint8_t row = 0; row < 4; row++)
         {
             byte retByte;
@@ -811,60 +819,42 @@ void AesEncryptObj::MixColumns()
 
             if(row == 0)
             {
-                firstParen = state[0][column];
                 firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
 
-                secondParen = state[1][column];
                 secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
-                thirdParen = state[2][column];
 
-                fourthParen = state[3][column];
 
             }
 
             else if(row == 1)
             {
-                firstParen = state[0][column];
 
 
-                secondParen = state[1][column];
                 secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
 
 
-                thirdParen = state[2][column];
                 thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
 
-                fourthParen = state[3][column];
 
             }
 
             else if(row == 2)
             {
-                firstParen = state[0][column];
-
-                secondParen = state[1][column];
 
 
-                thirdParen = state[2][column];
+
                 thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
 
-                fourthParen = state[3][column];
                 fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
 
             }
             else
             {
-                firstParen = state[0][column];
                 firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
-                secondParen = state[1][column];
-
-                thirdParen = state[2][column];
-
-                fourthParen = state[3][column];
                 fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
             }
 
