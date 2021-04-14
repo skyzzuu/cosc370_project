@@ -42,16 +42,16 @@ int main()
 
 
 
-    AesEncryptObj aes128(128);
-    aes128.encrypt(aes128plaintext, 16, aes128key);
+//    AesEncryptObj aes128(128);
+//    aes128.encrypt(aes128plaintext, 16, aes128key);
 
 
 //    AesEncryptObj aes192(192);
 //    aes192.encrypt(aes128plaintext, 16, aes192key);
 
 
-//    AesEncryptObj aes256(256);
-//    aes256.encrypt(aes128plaintext, 16, aes256key);
+    AesEncryptObj aes256(256);
+    aes256.encrypt(aes128plaintext, 16, aes256key);
 
 
 

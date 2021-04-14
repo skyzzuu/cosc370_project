@@ -6,17 +6,46 @@
 #define COSC370_PROJECT_AESDECRYPTOBJ_H
 
 
-#include <vector>
-#include <cstdint>
 #include <unordered_map>
+#include <cstdint>
+#include <vector>
+#include <exception>
+#include "word.h"
+#include <cmath>
+#include <algorithm>
+#include <iostream>
+
 
 using namespace std;
 
 
 class AESDecryptObj {
-
+public:
     AESDecryptObj();
     ~AESDecryptObj();
+
+
+
+    /*
+return value: unsigned char array containing decrypted bytes
+parameters:
+  unsigned char * containing the bytes to decrypt
+  int representing how many bytes are in the input
+  unsigned char * containing the decryption key to use
+
+description:
+  takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
+  of the input data.
+
+*/
+    unsigned char * decrypt(unsigned char * , uint16_t, unsigned char *);
+
+
+
+
+
+private:
+
 
 
 //    state table
@@ -55,19 +84,7 @@ class AESDecryptObj {
     };
 
 
-    /*
-    return value: unsigned char array containing decrypted bytes
-    parameters:
-      unsigned char * containing the bytes to decrypt
-      int representing how many bytes are in the input
-      unsigned char * containing the decryption key to use
 
-    description:
-      takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
-      of the input data.
-
- */
-    unsigned char * decrypt(unsigned char * , uint16_t, unsigned char *);
 
 
 /*

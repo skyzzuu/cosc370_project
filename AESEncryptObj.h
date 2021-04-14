@@ -10,6 +10,9 @@
 #include <vector>
 #include <exception>
 #include "word.h"
+#include <cmath>
+#include <algorithm>
+#include <iostream>
 
 
 using namespace std;
@@ -66,7 +69,7 @@ private:
 
 
     //    how many bytes are in the input
-    uint16_t inputLength = 0;
+    uint64_t inputLength = 0;
 
 
 //     key used to encrypt the data, length depends on which key size is being used (4 * nK)

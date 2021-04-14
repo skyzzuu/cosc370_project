@@ -1,10 +1,7 @@
 
 
 #include "AESEncryptObj.h"
-#include <cstdint>
-#include <cmath>
-#include <algorithm>
-#include <iostream>
+
 
 using namespace std;
 
@@ -199,15 +196,11 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 //    take the blocks from the inputVector and copy the blocks into the blockArray
     splitInputIntoBlocks(blockArray, numBlocks, inputVector);
 
-//    inputVector not needed after this point
+//    inputVector will get the encrypted data added to it later
     inputVector.clear();
 
 
-//    cout << "Round Constants" << endl;
-//    for(uint8_t i = 0; i < numRoundConstants; i++)
-//    {
-//        cout << roundConstants[i] << endl;
-//    }
+
 
 
 
@@ -215,12 +208,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     KeyExpansion();
 
 
-//    cout << "Key Schedule words:" << endl;
-//    for(uint8_t i = 0; i < numWordsInKeySched; i++)
-//    {
-//        cout << keySched[i] << endl;
-//    }
-//    cout << endl << endl;
+
 
 
 
@@ -235,9 +223,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout << "BEGINNING STATE" << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
-            for(uint8_t column = 0; column < 4; column++ )
+            for(const auto & column : state)
             {
-                cout << std::hex << (int) state[column][row];
+                cout << std::hex << (int) column[row];
             }
         }
         cout << endl;
@@ -253,9 +241,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
             cout << (int) (roundNum) << " start: " << endl;
             for(uint8_t row = 0; row < 4; row++)
             {
-                for(uint8_t column = 0; column < 4; column++ )
+                for(const auto & column : state)
                 {
-                    cout << std::hex << (int) state[column][row];
+                    cout << std::hex << (int) column[row];
                 }
             }
             cout << endl << endl;
@@ -266,9 +254,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
             cout << (int) (roundNum) << " SubBytes(): " << endl;
             for(uint8_t row = 0; row < 4; row++)
             {
-                for(uint8_t column = 0; column < 4; column++ )
+                for(const auto & column : state)
                 {
-                    cout << std::hex << (int) state[column][row];
+                    cout << std::hex << (int) column[row];
                 }
             }
             cout << endl << endl;
@@ -279,9 +267,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
             cout << (int) (roundNum) << " ShiftRows(): " << endl;
             for(uint8_t row = 0; row < 4; row++)
             {
-                for(uint8_t column = 0; column < 4; column++ )
+                for(const auto & column : state)
                 {
-                    cout << std::hex << (int) state[column][row];
+                    cout << std::hex << (int) column[row];
                 }
             }
             cout << endl << endl;
@@ -292,9 +280,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
             cout << (int) (roundNum) << " MixColumns(): " << endl;
             for(uint8_t row = 0; row < 4; row++)
             {
-                for(uint8_t column = 0; column < 4; column++ )
+                for(const auto & column : state)
                 {
-                    cout << std::hex << (int) state[column][row];
+                    cout << std::hex << (int) column[row];
                 }
             }
             cout << endl << endl;
@@ -314,9 +302,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout <<  "final SubBytes(): " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
-            for(uint8_t column = 0; column < 4; column++ )
+            for(const auto & column : state)
             {
-                cout << std::hex << (int) state[column][row];
+                cout << std::hex << (int) column[row];
             }
         }
         cout << endl << endl;
@@ -327,9 +315,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout << "final ShiftRows(): " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
-            for(uint8_t column = 0; column < 4; column++ )
+            for(const auto & column : state)
             {
-                cout << std::hex << (int) state[column][row];
+                cout << std::hex << (int) column[row];
             }
         }
         cout << endl << endl;
@@ -341,9 +329,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout << "FINAL: " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
-            for(uint8_t column = 0; column < 4; column++ )
+            for(const auto & column : state)
             {
-                cout << std::hex << (int) state[column][row];
+                cout << std::hex << (int) column[row];
             }
         }
         cout << endl << endl;
@@ -359,7 +347,13 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     cout << endl;
 
 
-
+    for(uint8_t row = 0; row < 4; row++)
+    {
+        for( auto & column : state)
+        {
+            inputVector.push_back(column[row]);
+        }
+    }
 
 
 
@@ -486,286 +480,6 @@ void AesEncryptObj::copyInputToState(const unsigned char inputBlock[16] , unsign
 
 
 
-///*
-//    return value: none
-//    parameters:
-//        vector that contains the finite field representation of a byte
-//        vector that contains the finite field representation of the irreducible polynomial to use
-//
-//    description:
-//        This function takes the finite field byte and the finite field irreducible polynomial
-//        and expands any terms that need to be expanded according to irreducible polynomial given
-//        (E.G. polynomials with an exponent greater than 7 need to be exploded)
-//*/
-//void AesEncryptObj::explode(vector<uint8_t> & finiteField, const vector<uint8_t> & irreducePoly)
-//{
-//    // how many polynomial elements were exploded in current loop
-//    int numExploded = 0;
-//
-//    do
-//    {
-//        numExploded = 0;
-//
-//        // will store the numbers from irreducible polynomial + what needs to be added to them
-//        vector<int> numsToAdd;
-//        numsToAdd.clear();
-//
-//        int i = 0;
-//
-//        // iterate through each number
-//        while(i < finiteField.size())
-//        {
-//            // if larger than allowed
-//            if(finiteField[i] >= irreducePoly[0])
-//            {
-//                // how many numbers were exploded in current loop
-//                numExploded++;
-//
-//                // store temporary value
-//                int temp = finiteField[i];
-//
-//                // remove the element that is too large
-//                finiteField.erase(finiteField.begin() + i);
-//
-//
-//                for(int j = 1; j < irreducePoly.size(); j++)
-//                {
-//                    // push back numbers from irreducible polynomial plus the difference
-//                    numsToAdd.push_back(irreducePoly[j] + temp - irreducePoly[0]);
-//                }
-//
-//                // if an item was removed, decrement index
-//                i--;
-//
-//
-//            }
-//
-//            // increment index to move to next element
-//            i++;
-//        }
-//
-////        add in all of the numbers after explosion
-//        for(int x : numsToAdd)
-//        {
-//            finiteField.push_back(x);
-//        }
-//
-////    end only when an entire loop is done without any elements exploded
-//    } while (numExploded > 0);
-//
-//}
-
-
-
-//
-///*
-//    return value: none
-//    parameters:
-//        uint8_t vectors containing the finite fields you want to add
-//
-//    description:
-//        This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
-//*/
-//void AesEncryptObj::galoisAdd( vector<uint8_t> & vect)
-//{
-//
-//
-//
-//    // positions of numbers where there is an even quantity of the number
-//    vector<int> even_removes;
-//
-//    // positions of numbers where there is an odd quantity of the number
-//    vector<int> odd_removes;
-//
-//
-//    for(int x : vect)
-//    {
-//        // how many times the number is in the polynomial
-//        int count = 0;
-//
-//        // positions of the number that match what is being search for
-//        vector<int> positions;
-//        positions.clear();
-//
-//
-//        for(int i = 0; i < vect.size(); i++)
-//        {
-//
-//            int y = vect[i];
-//
-//            // if there is a match
-//            if(x == y)
-//            {
-//
-//
-//
-//                // add the position to the list of positions
-//                positions.push_back(i);
-//                count++;
-//
-//
-//            }
-//        }
-//
-//
-//        // if there is an even number of the element
-//        if((count % 2) == 0)
-//        {
-//            sort(positions.begin(), positions.end());
-//
-//            // for each position
-//            for(int pos : positions)
-//            {
-//                bool already_in = false;
-//
-//                for(int pos2 : even_removes)
-//                {
-//                    if(pos == pos2)
-//                    {
-//                        already_in = true;
-//                        break;
-//                    }
-//                }
-//
-//                if(!already_in)
-//                {
-//                    // add positions of elements that need to be removed
-//                    even_removes.push_back(pos);
-//                }
-//
-//
-//            }
-//        }
-//
-////        odd number of the element
-//        else if(count > 1)
-//        {
-//            sort(positions.begin(), positions.end());
-//
-//            // counter to keep track of how many positions have been added
-//            int removed = 0;
-//
-//            // for each position
-//            for(int pos : positions)
-//            {
-//                bool already_in = false;
-//
-//                for(int pos2 : odd_removes)
-//                {
-//                    if(pos == pos2)
-//                    {
-//                        already_in = true;
-//                        break;
-//                    }
-//                }
-//
-//                if(!already_in)
-//                {
-//                    // if not on the first position, add to vector
-//                    if(removed > 0)
-//                    {
-//                        odd_removes.push_back(pos);
-//                    }
-//                }
-//
-//
-//                removed++;
-//            }
-//        }
-//    }
-//
-//
-////    sort the positions of the elements that need to be removed
-//    sort(even_removes.begin(), even_removes.end());
-//    sort(odd_removes.begin(), odd_removes.end());
-//
-////    count of how many elements have been removed
-//    int removed = 0;
-//
-//    // for each of the numbers where there is an even count
-//    for(int pos : even_removes)
-//    {
-////        remove the element
-//        vect.erase(vect.begin() + (pos - removed));
-//
-//
-//        removed++;
-//    }
-//
-//
-////    remove the duplicate values for elements that appear an odd number of times
-//    removed = 0;
-//    for(int pos : odd_removes)
-//    {
-////        remove the element
-//        vect.erase(vect.begin() + (pos - removed));
-//
-//
-//        removed++;
-//    }
-//}
-//
-//
-//
-///*
-//    return value: none
-//    parameters:
-//        uint8_t vector containing the finite field to apply modular reduction to
-//        uint8_t vector containing the irreducible polynomial to use for modular reduction
-//
-//    description:
-//        This function takes the finite field and the irreducible polynomial given and applies modular reduction to
-//        the finite field using the irreducible polynomial
-//*/
-//void AesEncryptObj::mod_reduce(vector<uint8_t> & vals, const vector<uint8_t> & irreduce)
-//{
-//
-//    explode(vals, irreduce);
-//    galoisAdd(vals);
-//
-//}
-//
-//
-//
-///*
-//    return value: uint8_t vector containing the result of the finite field multiplication
-//    parameters:
-//        2 uint8_t vectors containing the finite fields you want to multiply
-//        uint8_t vector containing the irreducible polynomial to use as last parameter
-//
-//    description:
-//        This function takes 2 finite fields and multiplies them, applying modular reduction with irreducible
-//        polynomial given
-//*/
-//vector<uint8_t> AesEncryptObj::galoisMultiply(const vector<uint8_t> & a, const vector<uint8_t> & b, const vector<uint8_t> & irreduce)
-//{
-//    vector<uint8_t> vect;
-//
-//    for(unsigned char x : a)
-//    {
-//        for(unsigned char j : b)
-//        {
-//            vect.push_back(x + j);
-//
-//        }
-//    }
-//
-////    galois addition on the vector
-//    galoisAdd(vect);
-//
-//
-//
-//    sort(vect.rbegin(), vect.rend());
-//
-//    // modular reduction
-//    mod_reduce(vect, irreduce);
-//
-//
-//
-//    return vect;
-//
-//}
-
 
 
 /*
@@ -781,13 +495,13 @@ void AesEncryptObj::copyInputToState(const unsigned char inputBlock[16] , unsign
 */
 void AesEncryptObj::SubBytes()
 {
-    for(uint8_t row = 0; row < 4; row++)
+    for(auto & row : state)
     {
-        for(uint8_t column = 0; column < 4; column++)
+        for(unsigned char & column : row)
         {
 //            set value of byte to the mapped value in the sBox
 //            passes in byte as key to find function, then fetches the value from the iterator using "second"
-            state[row][column] = sBox.find(state[row][column])->second;
+            column = sBox.find(column)->second;
         }
 
     }
@@ -845,6 +559,8 @@ void AesEncryptObj::MixColumns()
 
 
 
+//    constants of a(x) defined in AES spec 5.1.3
+//    none of the 0x01's are used since multiplying by 0x01 gets the same result as doing nothing
     const byte firstConst = 0x03;
     const byte fourthConst = 0x02;
 
@@ -865,12 +581,14 @@ void AesEncryptObj::MixColumns()
 
 
 
-
         for(uint8_t row = 0; row < 4; row++)
         {
+
+//            will contain the final value for the byte, starts off as 0
             byte retByte;
 
 
+//            set each byte object to corresponding byte in the state
             firstParen = state[0][column];
             secondParen = state[1][column];
             thirdParen = state[2][column];
@@ -879,10 +597,15 @@ void AesEncryptObj::MixColumns()
 
 
 
+//            all of the following multiplications are defined in AES spec 5.1.3
             if(row == 0)
             {
+
+                //                finite field multiply with 0x02
                 firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
 
+
+                //                finite field multiply with 0x03
                 secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
 
@@ -892,10 +615,11 @@ void AesEncryptObj::MixColumns()
             else if(row == 1)
             {
 
-
+//                finite field multiply with 0x02
                 secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
 
 
+                //                finite field multiply with 0x03
                 thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
 
@@ -906,25 +630,32 @@ void AesEncryptObj::MixColumns()
             {
 
 
-
+//                finite field multiply with 0x02
                 thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
 
+
+                //                finite field multiply with 0x03
                 fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
 
             }
             else
             {
+
+//                finite field multiply with 0x03
                 firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
 
+
+//                finite field multiply with 0x02
                 fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
             }
 
 
+//            xor of all the bytes
             retByte = firstParen + secondParen + thirdParen + fourthParen;
 
-//            state[row][column] = retByte.rawData();
 
+//            set the matching element of the column to the final vaule
             curColumn[row] = retByte;
 
 
@@ -932,8 +663,11 @@ void AesEncryptObj::MixColumns()
 
 
 
+//        for each row of the current column being worked on
         for(uint8_t row = 0; row < 4; row++)
         {
+
+//            copy elements from the column into the column in the state
             state[row][column] = curColumn[row].rawData();
         }
 
@@ -959,15 +693,9 @@ void AesEncryptObj::AddRoundKey( const uint8_t & round )
         for(uint8_t row = 0; row < 4; row++)
         {
 
-//            cout << "byte from state: " << (int)  state[row][column] << endl;
-//            cout << "round key word: " << (keySched[(round * nB) + column]) << endl;
-//            cout << "byte from round key word: " << ((keySched[(round * nB) + column])[row])->rawData() << endl;
-
 //            make each byte in state the result of xor with byte from round key
             state[row][column] = state[row][column] ^ ((keySched[(round * nB) + column])[row])->rawData();
 
-
-//            cout << "result from addroundkey: " << std::hex << (int) state[row][column] << endl << endl;
         }
     }
 
