@@ -47,8 +47,14 @@ private:
 
 
     uint16_t keySize = 0;
+
+//    number of words in the key
     uint8_t nK = 0;
+
+//    number of words in a block, always 4 regardless of key size
     const uint8_t nB = 4;
+
+//    number of rounds, depends on keysize
     uint8_t nR = 0;
     uint8_t numWordsInKeySched = 0;
 
@@ -232,103 +238,6 @@ unsigned char * generateIV();
       and puts them into the keySched array.
 */
     void KeyExpansion();
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    return value: uint8_t vector
-    parameters:
-        byte that you want to convert to a finite field representation
-
-    description:
-        This function takes the byte passed in as a parameter and returns a uint8_t vector
-        that represents the byte as a finite field.
- */
-    static vector<uint8_t> byteToFiniteField(const unsigned char &);
-
-
-
-
-/*
-    return value: unsigned char
-    parameters:
-        vector that contains the finite field representation of a byte
-
-    description:
-        This function takes the finite field passed in and converts it back into a byte.
- */
-    unsigned char finiteFieldToByte(const vector<uint8_t> &);
-
-
-
-/*
-    return value: none
-    parameters:
-        vector that contains the finite field representation of a byte
-        vector that contains the finite field representation of the irreducible polynomial to use
-
-    description:
-        This function takes the finite field byte and the finite field irreducible polynomial
-        and expands any terms that need to be expanded according to irreducible polynomial given
-        (E.G. polynomials with an exponent greater than 7 need to be exploded)
-*/
-    void explode(vector<uint8_t> &, const vector<uint8_t> &);
-
-
-
-/*
-    return value: uint8_t vector containing the result of the finite field addition
-    parameters:
-        uint8_t vector containing the finite fields merged that you want to add
-
-    description:
-        This function takes 2 finite fields and adds them (E.G. xor) and then returns a finite field with the result
- */
-    void galoisAdd( vector<uint8_t> &);
-
-
-
-
-/*
-    return value: uint8_t vector containing the result of the finite field multiplication
-    parameters:
-        2 uint8_t vectors containing the finite fields you want to multiply
-        uint8_t vector containing the irreducible polynomial to use as last parameter
-
-    description:
-        This function takes 2 finite fields and multiplies them, applying modular reduction with irreducible
-        polynomial given
-*/
-    vector<uint8_t> galoisMultiply(const vector<uint8_t> &, const vector<uint8_t> &, const vector<uint8_t> &);
-
-
-
-
-/*
-    return value: none
-    parameters:
-        uint8_t vector containing the finite field to apply modular reduction to
-        uint8_t vector containing the irreducible polynomial to use for modular reduction
-
-    description:
-        This function takes the finite field and the irreducible polynomial given and applies modular reduction to
-        the finite field using the irreducible polynomial
-*/
-    void mod_reduce(vector<uint8_t> & , const vector<uint8_t> & );
-
-
-
-
-    vector<unsigned char > fourTermPolyMultiply(unsigned char [4], unsigned char [4]);
 
 
 
