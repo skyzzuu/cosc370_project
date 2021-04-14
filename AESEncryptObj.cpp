@@ -297,10 +297,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
-//        for(uint8_t round = 0; round < nR; round++)
-//        {
-//
-//        }
+
 
 
     }
@@ -791,6 +788,8 @@ void AesEncryptObj::ShiftRows()
 void AesEncryptObj::MixColumns()
 {
 
+
+
     const byte firstConst = 0x03;
     const byte fourthConst = 0x02;
 
@@ -802,10 +801,12 @@ void AesEncryptObj::MixColumns()
 
     for(uint8_t column = 0; column < 4; column++)
     {
-        firstParen = state[0][column];
-        secondParen = state[1][column];
-        thirdParen = state[2][column];
-        fourthParen = state[3][column];
+
+//        will be copied over into the column
+        byte curColumn[4];
+
+
+
 
 
 
@@ -813,6 +814,12 @@ void AesEncryptObj::MixColumns()
         for(uint8_t row = 0; row < 4; row++)
         {
             byte retByte;
+
+
+            firstParen = state[0][column];
+            secondParen = state[1][column];
+            thirdParen = state[2][column];
+            fourthParen = state[3][column];
 
 
 
@@ -861,11 +868,20 @@ void AesEncryptObj::MixColumns()
 
             retByte = firstParen + secondParen + thirdParen + fourthParen;
 
-            state[row][column] = retByte.rawData();
+//            state[row][column] = retByte.rawData();
 
+            curColumn[row] = retByte;
 
 
         }
+
+
+
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            state[row][column] = curColumn[row].rawData();
+        }
+
     }
 }
 
