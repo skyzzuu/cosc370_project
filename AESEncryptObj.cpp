@@ -753,7 +753,6 @@ void AesEncryptObj::AddRoundKey( const uint8_t & round )
 void AesEncryptObj::KeyExpansion()
 {
 
-    cout << endl << "IN KEY EXPANSION" << endl << endl;
 //    holds a temporary 4-byte word in a later loop, will hold the value of the previous word
     word temp;
 
@@ -766,11 +765,9 @@ void AesEncryptObj::KeyExpansion()
     {
 //        copy the current word of the cipher key into the beginning of the key schedule
         keySched[i] = key[i];
-        cout << keySched[i] << endl;
 
         i++;
     }
-    cout << endl;
 
     i = nK;
 
@@ -780,7 +777,6 @@ void AesEncryptObj::KeyExpansion()
     {
 //        copy the previous word into temp
         temp = keySched[i-1];
-        cout << "temp: " << temp << endl;
 
 
 //        happens every nK words of the key
@@ -788,21 +784,15 @@ void AesEncryptObj::KeyExpansion()
         {
 //            rotate temp
             temp = temp.leftRotate();
-            cout << "After RotWord(): " << temp << endl;
 
 
 //            then sub each of the bytes according to sBox
             temp = temp.SubWord(sBox);
-            cout << "After SubWord(): " << temp << endl;
 
 
 //            then xor each byte with word from round constants
             temp = temp ^ roundConstants[(i / nK) - 1];
-            cout << "i: " << (int) i << endl;
-            cout << "Nk: " << (int) nK << endl;
-            cout << (i / nK) - 1 << endl;
-            cout << "Rcon[i/Nk]: " << roundConstants[(i / nK) - 1] << endl;
-            cout << "After XOR: " << temp << endl;
+
 
         }
 
@@ -812,17 +802,14 @@ void AesEncryptObj::KeyExpansion()
             temp = temp.SubWord(sBox);
         }
 
-        cout << "w[i-Nk]: " << keySched[i - nK] << endl;
 //        set current word of key schedule equal to XOR with word nK positions before and temp word
         keySched[i] = keySched[i - nK] ^ temp;
 
-        cout << "temp XOR w[i-nK]: " << keySched[i] << endl << endl << endl;
 
 
 //        move one word (4 bytes) to the right
         i++;
     }
-    cout << endl;
 
 
 }

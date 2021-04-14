@@ -346,6 +346,13 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
+
+void AESDecryptObj::copyInputToState(const unsigned char *) {
+
+}
+
+
+
 /*
  *
  *
@@ -386,7 +393,7 @@ void AESDecryptObj::InvSubBytes() {
     {
         for(unsigned char & column : row)
         {
-//            set value of byte to the mapped value in the sBox
+//            set value of byte to the mapped value in the InvSBox
 //            passes in byte as key to find function, then fetches the value from the iterator using "second"
             column = InvSBox.find(column)->second;
         }
@@ -470,4 +477,71 @@ void AESDecryptObj::AddRoundKey(const uint8_t & roundNum) {
 
         }
     }
+}
+
+
+
+
+
+void AESDecryptObj::KeyExpansion() {
+
+//    holds a temporary 4-byte word in a later loop, will hold the value of the previous word
+    word temp;
+
+//    index position
+    uint8_t i = 0;
+
+
+//    for each word of the cipher key
+    while (i < nK)
+    {
+//        copy the current word of the cipher key into the beginning of the key schedule
+        keySched[i] = key[i];
+
+        i++;
+    }
+
+    i = nK;
+
+
+//    while i less than (4 * ( number of rounds + 1 ) )
+    while (i < (nB * (nR + 1)))
+    {
+//        copy the previous word into temp
+        temp = keySched[i-1];
+
+
+//        happens every nK words of the key
+        if((i % nK) == 0)
+        {
+//            rotate temp
+            temp = temp.leftRotate();
+
+
+//            then sub each of the bytes according to InvSBox
+            temp = temp.SubWord(InvSBox);
+
+
+//            then xor each byte with word from round constants
+            temp = temp ^ roundConstants[(i / nK) - 1];
+
+
+        }
+
+//        AES-256 and (i-4) is a multiple of nK
+        else if (nK == 8 && (i-4) % nK == 0)
+        {
+            temp = temp.SubWord(InvSBox);
+        }
+
+//        set current word of key schedule equal to XOR with word nK positions before and temp word
+        keySched[i] = keySched[i - nK] ^ temp;
+
+
+
+//        move one word (4 bytes) to the right
+        i++;
+    }
+
+
 }
