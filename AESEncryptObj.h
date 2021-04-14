@@ -15,6 +15,14 @@
 #include <iostream>
 
 
+/*
+ * TODO: add xorBlock function to xor a block with another block (or IV for first block)
+ *
+ *
+ * */
+
+
+
 using namespace std;
 
 class AesEncryptObj {

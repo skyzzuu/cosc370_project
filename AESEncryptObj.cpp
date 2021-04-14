@@ -176,7 +176,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     cout << endl << endl;
 
 //    pad up to nearest block (or add full block)
-//    padInput(inputVector);
+    padInput(inputVector);
 
 
     cout << "After Padding: ";
@@ -236,7 +236,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         for (uint8_t roundNum = 1; roundNum < nR; roundNum++)
         {
 
-            cout << "\n\n***\nround " << (roundNum) << "\n***\n\n";
+            cout << "\n\n***\nround " << (int) (roundNum) << "\n***\n\n";
 
             cout << (int) (roundNum) << " start: " << endl;
             for(uint8_t row = 0; row < 4; row++)
@@ -292,6 +292,9 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
             AddRoundKey(roundNum);
 
 
+
+
+
         }
 
 
@@ -338,7 +341,13 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
-
+        for(uint8_t row = 0; row < 4; row++)
+        {
+            for( auto & column : state)
+            {
+                inputVector.push_back(column[row]);
+            }
+        }
 
 
 
@@ -347,13 +356,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     cout << endl;
 
 
-    for(uint8_t row = 0; row < 4; row++)
-    {
-        for( auto & column : state)
-        {
-            inputVector.push_back(column[row]);
-        }
-    }
+
 
 
 

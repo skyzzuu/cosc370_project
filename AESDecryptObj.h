@@ -23,6 +23,8 @@ class AESDecryptObj {
 public:
     AESDecryptObj();
     ~AESDecryptObj();
+    AESDecryptObj(uint16_t);
+
 
 
 
@@ -40,7 +42,7 @@ description:
   of the input data.
 
 */
-    unsigned char * decrypt(const unsigned char * , const uint16_t &, const unsigned char *, const unsigned char *, const uint64_t &);
+    vector<unsigned char > decrypt(const unsigned char * , const uint16_t &, const unsigned char *, const unsigned char *, const uint64_t &);
 
 
 
@@ -107,14 +109,13 @@ private:
 
     return value: none
     parameters:
-      unsigned char * containing the input
-      int representing how many bytes are in the input
-      unsigned char [] containing the state table
+      const unsigned char array containing the input block to copy onto the state
+
 
     description:
       copies the bytes from the input data given and copies the data onto the state table
 */
-    void copyInputToState(unsigned char * , uint16_t, unsigned  char []);
+    void copyInputToState(const unsigned char [16]);
 
 
 
@@ -140,9 +141,7 @@ private:
  *
 
     return value: none
-    parameters:
-      unsigned char * containing the input data
-      unsigned int representing how many bytes are in the input
+    parameters: unsigned char vector containing data that needs to have padding removed
 
 
     description:
@@ -153,7 +152,7 @@ private:
       If the data given is a multiple of the block size, an extra block exists with 16 bytes of 16's
 */
 
-    void removePadding(unsigned char *, uint64_t);
+    void removePadding(vector<unsigned char > &);
 
 
 
@@ -233,6 +232,14 @@ private:
     void KeyExpansion();
 
 
+
+    /* EXCEPTION CLASSES */
+
+    class InvalidKeySize
+    {
+    public:
+        explicit InvalidKeySize(uint16_t size){}
+    };
 
 
 
