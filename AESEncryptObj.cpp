@@ -203,11 +203,11 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     inputVector.clear();
 
 
-    cout << "Round Constants" << endl;
-    for(uint8_t i = 0; i < numRoundConstants; i++)
-    {
-        cout << roundConstants[i] << endl;
-    }
+//    cout << "Round Constants" << endl;
+//    for(uint8_t i = 0; i < numRoundConstants; i++)
+//    {
+//        cout << roundConstants[i] << endl;
+//    }
 
 
 
@@ -215,12 +215,12 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     KeyExpansion();
 
 
-    cout << "Key Schedule words:" << endl;
-    for(uint8_t i = 0; i < numWordsInKeySched; i++)
-    {
-        cout << keySched[i] << endl;
-    }
-    cout << endl << endl;
+//    cout << "Key Schedule words:" << endl;
+//    for(uint8_t i = 0; i < numWordsInKeySched; i++)
+//    {
+//        cout << keySched[i] << endl;
+//    }
+//    cout << endl << endl;
 
 
 
@@ -229,6 +229,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     for(uint64_t i = 0; i < numBlocks; i++)
     {
         copyInputToState(blockArray[i], state);
+
 
 
         cout << "BEGINNING STATE" << endl;
@@ -244,20 +245,73 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         AddRoundKey(0);
 
 
-        cout << "after add round key: " << endl;
-        for(uint8_t row = 0; row < 4; row++)
+        for (uint8_t roundNum = 1; roundNum < nR; roundNum++)
         {
-            for(uint8_t column = 0; column < 4; column++ )
+
+            cout << "\n\n***\nround " << (roundNum) << "\n***\n\n";
+
+            cout << (int) (roundNum) << " start: " << endl;
+            for(uint8_t row = 0; row < 4; row++)
             {
-                cout << std::hex << (int) state[column][row];
+                for(uint8_t column = 0; column < 4; column++ )
+                {
+                    cout << std::hex << (int) state[column][row];
+                }
             }
+            cout << endl << endl;
+
+
+            SubBytes();
+
+            cout << (int) (roundNum) << " SubBytes(): " << endl;
+            for(uint8_t row = 0; row < 4; row++)
+            {
+                for(uint8_t column = 0; column < 4; column++ )
+                {
+                    cout << std::hex << (int) state[column][row];
+                }
+            }
+            cout << endl << endl;
+
+
+            ShiftRows();
+
+            cout << (int) (roundNum) << " ShiftRows(): " << endl;
+            for(uint8_t row = 0; row < 4; row++)
+            {
+                for(uint8_t column = 0; column < 4; column++ )
+                {
+                    cout << std::hex << (int) state[column][row];
+                }
+            }
+            cout << endl << endl;
+
+
+            MixColumns();
+
+            cout << (int) (roundNum) << " MixColumns(): " << endl;
+            for(uint8_t row = 0; row < 4; row++)
+            {
+                for(uint8_t column = 0; column < 4; column++ )
+                {
+                    cout << std::hex << (int) state[column][row];
+                }
+            }
+            cout << endl << endl;
+
+
+
+            AddRoundKey(roundNum);
+
+
         }
-        cout << endl << endl;
+
 
 
         SubBytes();
 
-        cout << "after SubBytes(): " << endl;
+
+        cout <<  "final SubBytes(): " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
             for(uint8_t column = 0; column < 4; column++ )
@@ -270,7 +324,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
         ShiftRows();
 
-        cout << "after ShiftRows(): " << endl;
+        cout << "final ShiftRows(): " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
             for(uint8_t column = 0; column < 4; column++ )
@@ -281,9 +335,10 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
         cout << endl << endl;
 
 
-        MixColumns();
+        AddRoundKey(nR);
 
-        cout << "after MixColumns(): " << endl;
+
+        cout << "FINAL: " << endl;
         for(uint8_t row = 0; row < 4; row++)
         {
             for(uint8_t column = 0; column < 4; column++ )
@@ -904,15 +959,15 @@ void AesEncryptObj::AddRoundKey( const uint8_t & round )
         for(uint8_t row = 0; row < 4; row++)
         {
 
-            cout << "byte from state: " << (int)  state[row][column] << endl;
-            cout << "round key word: " << (keySched[(round * nB) + column]) << endl;
-            cout << "byte from round key word: " << ((keySched[(round * nB) + column])[row])->rawData() << endl;
+//            cout << "byte from state: " << (int)  state[row][column] << endl;
+//            cout << "round key word: " << (keySched[(round * nB) + column]) << endl;
+//            cout << "byte from round key word: " << ((keySched[(round * nB) + column])[row])->rawData() << endl;
 
 //            make each byte in state the result of xor with byte from round key
             state[row][column] = state[row][column] ^ ((keySched[(round * nB) + column])[row])->rawData();
 
 
-            cout << "result from addroundkey: " << std::hex << (int) state[row][column] << endl << endl;
+//            cout << "result from addroundkey: " << std::hex << (int) state[row][column] << endl << endl;
         }
     }
 
