@@ -382,7 +382,16 @@ void AESDecryptObj::removePadding(vector<unsigned char> & input) {
       The pre-made InvSBox is passed in instead of calculating the substitution in the function to speed up the decryption process.
 */
 void AESDecryptObj::InvSubBytes() {
+    for(auto & row : state)
+    {
+        for(unsigned char & column : row)
+        {
+//            set value of byte to the mapped value in the sBox
+//            passes in byte as key to find function, then fetches the value from the iterator using "second"
+            column = InvSBox.find(column)->second;
+        }
 
+    }
 }
 
 
@@ -401,7 +410,24 @@ void AESDecryptObj::InvSubBytes() {
 
 */
 void AESDecryptObj::InvShiftRows() {
+    for(uint8_t wordCounter = 0; wordCounter < 4; wordCounter++)
+    {
+        word stateWord;
+        stateWord = state[wordCounter];
 
+
+        for(uint8_t rotateCount = 0; rotateCount < wordCounter; rotateCount++)
+        {
+            stateWord = stateWord.rightRotate();
+        }
+
+        for(uint8_t byteIndex = 0; byteIndex < 4; byteIndex++)
+        {
+            state[wordCounter][byteIndex] = (stateWord[byteIndex])->rawData();
+        }
+
+
+    }
 }
 
 
@@ -434,5 +460,14 @@ void AESDecryptObj::InvMixColumns() {
       an addition within a Galois Field.
 */
 void AESDecryptObj::AddRoundKey(const uint8_t & roundNum) {
+    for(uint8_t column = 0; column < 4; column++)
+    {
+        for(uint8_t row = 0; row < 4; row++)
+        {
 
+//            make each byte in state the result of xor with byte from round key
+            state[row][column] = state[row][column] ^ ((keySched[(round * nB) + column])[row])->rawData();
+
+        }
+    }
 }
