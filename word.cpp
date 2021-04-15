@@ -284,7 +284,7 @@ ostream  & operator<<(ostream & stream, const word & rightWord)
 {
     for(uint8_t i = 0; i < 4; i++)
     {
-        stream << rightWord.getByte(i);
+        stream << std::hex << (int) rightWord.getByte(i).rawData();
     }
     return stream;
 }

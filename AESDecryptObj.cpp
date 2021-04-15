@@ -152,19 +152,19 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-    cout << "cipher key: ";
-    for(uint8_t i = 0; i < nK; i++)
-    {
-        cout << key[i];
-    }
-    cout << endl << endl;
+//    cout << "cipher key: ";
+//    for(uint8_t i = 0; i < nK; i++)
+//    {
+//        cout << key[i];
+//    }
+//    cout << endl << endl;
 
 
 
 
 
 
-    cout << "Beginning plaintext: ";
+    cout << "Beginning ciphertext: ";
     for(uint64_t i = 0; i < inputlength; i++)
     {
         cout << std::hex << (int) data[i];
@@ -198,110 +198,134 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-        cout << "BEGINNING STATE" << endl;
-        for(uint8_t row = 0; row < 4; row++)
+//        cout << "BEGINNING STATE" << endl;
+//        for(uint8_t row = 0; row < 4; row++)
+//        {
+//            for(const auto & column : state)
+//            {
+//                cout << std::hex << (int) column[row];
+//            }
+//        }
+//        cout << endl;
+
+        AddRoundKey(nR);
+
+
+//        cout  << "first AddRoundKey(): " << endl;
+//        for(uint8_t row = 0; row < 4; row++)
+//        {
+//            for(const auto & column : state)
+//            {
+//                cout << std::hex << (int) column[row];
+//            }
+//        }
+//        cout << endl << endl;
+
+
+        for (int roundNum = nR-1; roundNum > 0; roundNum--)
         {
-            for(const auto & column : state)
-            {
-                cout << std::hex << (int) column[row];
-            }
-        }
-        cout << endl;
-
-        AddRoundKey(0);
-
-
-        for (uint8_t roundNum = 1; roundNum < nR; roundNum++)
-        {
-
-            cout << "\n\n***\nround " << (int) (roundNum) << "\n***\n\n";
-
-            cout << (int) (roundNum) << " start: " << endl;
-            for(uint8_t row = 0; row < 4; row++)
-            {
-                for(const auto & column : state)
-                {
-                    cout << std::hex << (int) column[row];
-                }
-            }
-            cout << endl << endl;
-
-
-            InvSubBytes();
-
-            cout << (int) (roundNum) << " SubBytes(): " << endl;
-            for(uint8_t row = 0; row < 4; row++)
-            {
-                for(const auto & column : state)
-                {
-                    cout << std::hex << (int) column[row];
-                }
-            }
-            cout << endl << endl;
 
 
             InvShiftRows();
 
-            cout << (int) (roundNum) << " ShiftRows(): " << endl;
-            for(uint8_t row = 0; row < 4; row++)
-            {
-                for(const auto & column : state)
-                {
-                    cout << std::hex << (int) column[row];
-                }
-            }
-            cout << endl << endl;
+//            cout << (int) (roundNum) << " ShiftRows(): " << endl;
+//            for(uint8_t row = 0; row < 4; row++)
+//            {
+//                for(const auto & column : state)
+//                {
+//                    cout << std::hex << (int) column[row];
+//                }
+//            }
+//            cout << endl << endl;
 
 
-            InvMixColumns();
 
-            cout << (int) (roundNum) << " MixColumns(): " << endl;
-            for(uint8_t row = 0; row < 4; row++)
-            {
-                for(const auto & column : state)
-                {
-                    cout << std::hex << (int) column[row];
-                }
-            }
-            cout << endl << endl;
+
+
+
+            InvSubBytes();
+
+//            cout << (int) (roundNum) << " SubBytes(): " << endl;
+//            for(uint8_t row = 0; row < 4; row++)
+//            {
+//                for(const auto & column : state)
+//                {
+//                    cout << std::hex << (int) column[row];
+//                }
+//            }
+//            cout << endl << endl;
+
+
+
+
+
 
 
 
             AddRoundKey(roundNum);
 
 
+//            cout << (int) (roundNum) << " AddRoundKey(): " << endl;
+//            for(uint8_t row = 0; row < 4; row++)
+//            {
+//                for(const auto & column : state)
+//                {
+//                    cout << std::hex << (int) column[row];
+//                }
+//            }
+//            cout << endl << endl;
+
+
+
+
+            InvMixColumns();
+
+//            cout << (int) (roundNum) << " MixColumns(): " << endl;
+//            for(uint8_t row = 0; row < 4; row++)
+//            {
+//                for(const auto & column : state)
+//                {
+//                    cout << std::hex << (int) column[row];
+//                }
+//            }
+//            cout << endl << endl;
+
+
         }
+
+
+
+        InvShiftRows();
+
+//        cout << "final ShiftRows(): " << endl;
+//        for(uint8_t row = 0; row < 4; row++)
+//        {
+//            for(const auto & column : state)
+//            {
+//                cout << std::hex << (int) column[row];
+//            }
+//        }
+//        cout << endl << endl;
 
 
 
         InvSubBytes();
 
 
-        cout <<  "final SubBytes(): " << endl;
-        for(uint8_t row = 0; row < 4; row++)
-        {
-            for(const auto & column : state)
-            {
-                cout << std::hex << (int) column[row];
-            }
-        }
-        cout << endl << endl;
+//        cout <<  "final SubBytes(): " << endl;
+//        for(uint8_t row = 0; row < 4; row++)
+//        {
+//            for(const auto & column : state)
+//            {
+//                cout << std::hex << (int) column[row];
+//            }
+//        }
+//        cout << endl << endl;
 
 
-        InvShiftRows();
-
-        cout << "final ShiftRows(): " << endl;
-        for(uint8_t row = 0; row < 4; row++)
-        {
-            for(const auto & column : state)
-            {
-                cout << std::hex << (int) column[row];
-            }
-        }
-        cout << endl << endl;
 
 
-        AddRoundKey(nR);
+        AddRoundKey(0);
 
 
         cout << "FINAL: " << endl;
@@ -443,7 +467,8 @@ void AESDecryptObj::removePadding(vector<unsigned char> & input) {
         }
 
 
-//        byte does not have value that it should be, throw error
+//        byte does not have value that it should have, throw error
+//        all bytes of padding should have the same number
         else
         {
             throw RemovePaddingError();
@@ -694,16 +719,52 @@ void AESDecryptObj::InvMixColumns() {
       an addition within a Galois Field.
 */
 void AESDecryptObj::AddRoundKey(const uint8_t & roundNum) {
-    for(uint8_t column = 0; column < 4; column++)
-    {
-        for(uint8_t row = 0; row < 4; row++)
+
+//    if(roundNum == 0)
+//    {
+//        for(uint8_t column = 0; column < 4; column++)
+//        {
+//            for(uint8_t row = 0; row < 4; row++)
+//            {
+//
+//                cout << std::dec << (int) numWordsInKeySched << " words in key schedule" << endl;
+//
+////            make each byte in state the result of xor with byte from round key
+//                cout << "getting word at index position: " << std::dec << (int) (((nR + 1) * nB)-4+column) << endl;
+//                cout << "getting byte " << std::dec << (int) row << " from that word" << endl << endl;
+//                state[row][column] = state[row][column] ^ ((keySched[((nR + 1) * nB)-4+column])[row])->rawData();
+//
+//
+//                cout << endl;
+//
+//            }
+//        }
+//    }
+
+//    else
+//    {
+        for(uint8_t column = 0; column < 4; column++)
         {
+            for(uint8_t row = 0; row < 4; row++)
+            {
+
+//                cout << "getting word at index position: " << std::dec << (int) ((roundNum * nB) + column) << endl;
+//                cout << "getting byte " << std::dec << (int) row << " from that word" << endl << endl;
+
 
 //            make each byte in state the result of xor with byte from round key
-            state[row][column] = state[row][column] ^ ((keySched[(roundNum * nB) + column])[row])->rawData();
+                state[row][column] = state[row][column] ^ ((keySched[(roundNum * nB) + column])[row])->rawData();
 
+
+
+//                word temp = ((keySched[(roundNum * nB) + column]));
+
+//                cout << temp << endl;
+
+            }
         }
-    }
+//    }
+
 }
 
 
@@ -746,7 +807,7 @@ void AESDecryptObj::KeyExpansion() {
 
 
 //            then sub each of the bytes according to InvSBox
-            temp.SubWord(InvSBox);
+            temp.SubWord(sBox);
 
 
 //            then xor each byte with word from round constants
@@ -758,11 +819,13 @@ void AESDecryptObj::KeyExpansion() {
 //        AES-256 and (i-4) is a multiple of nK
         else if (nK == 8 && (i-4) % nK == 0)
         {
-            temp.SubWord(InvSBox);
+            temp.SubWord(sBox);
         }
 
 //        set current word of key schedule equal to XOR with word nK positions before and temp word
         keySched[i] = keySched[i - nK] ^ temp;
+
+
 
 
 
