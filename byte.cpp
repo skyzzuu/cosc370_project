@@ -303,11 +303,13 @@ description:
   The pre-made sBox or InvSBox is passed in instead of calculating the substitution in the function to
   speed up the encryption and decryption processes.
 */
-byte byte::SubByte(const unordered_map<uint8_t, uint8_t> & sBox) const
+void byte::SubByte(const unordered_map<uint8_t, uint8_t> & sBox)
 {
 
 //    return value that has a key of the value stored in the current byte
-    return sBox.find(this->rawData())->second;
+//    return sBox.find(this->rawData())->second;
+
+    *(this) = sBox.find(this->rawData())->second;
 }
 
 

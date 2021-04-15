@@ -196,20 +196,18 @@ word & word::operator=(const word & rightWord) {
 
 
 /*
-return value: word object
+return value: none
 parameters: none
 
 
 description:
-    returns a copy of word object with all bytes rotated one position to the left.
+    all bytes rotate one position to the left.
 
-    E.G. if bytes are currently (0, 1, 2, 3) after this function a word object with bytes (1, 2, 3, 0)
-    will be returned.
+    E.G. if bytes are currently (0, 1, 2, 3) after bytes will be (1, 2, 3, 0)
+
 */
-word word::leftRotate() {
+void word::leftRotate() {
 
-//    word that will be returned
-    word retWord;
 
 //    store copy of the value of first byte
     unsigned char firstByte = this->getByte(0).rawData();
@@ -219,45 +217,66 @@ word word::leftRotate() {
     {
 
 //        make the value, the value of byte on the right
-        *(retWord[i]) = this->getByte(i+1);
+        *(this->operator[](i)) = this->getByte(i+1);
     }
 
-    *(retWord[3]) = firstByte;
+    *(this->operator[](3)) = firstByte;
 
-    return retWord;
 
 
 
 
 }
 
+
+
+// same as leftRotate above, but rotates to the right
+void word::rightRotate() {
+    //    store copy of the value of first byte
+    unsigned char lastByte = this->getByte(3).rawData();
+
+//    for each byte except the first
+    for(uint8_t i = 3; i > 0; i--)
+    {
+
+//        make the value, the value of byte on the left
+        *(this->operator[](i)) = this->getByte(i-1);
+    }
+
+
+//    copy what was the last byte onto the first spot
+    *(this->operator[](0)) = lastByte;
+}
+
+
+
+
 /*
     return value: word object containing all bytes substituted
     parameters:
-      unordered_map uint8_t->uint8_t containing the sBox to use for substitution
+      unordered_map uint8_t->uint8_t containing the sBox or InvSBox to use for substitution
 
     description:
       returns a word object that represents what the current word is with all of the bytes
       substituted using the sBox
 */
-word word::SubWord(const unordered_map<uint8_t, uint8_t> & sBox) {
-    word retWord;
+void word::SubWord(const unordered_map<uint8_t, uint8_t> & sBox) {
+//    word retWord;
 
-//    for(uint8_t i = 0; i < 4; i++)
-//    {
-//        *(retWord[i]) = sBox.find(this->getByte(i).rawData())->second;
-//    }
+
 
     for(uint8_t i = 0; i < 4; i++)
     {
 
 //        make each byte of the retWord have a value of the mapped value for the corresponding byte
-        *(retWord[i]) = this->operator[](i)->SubByte(sBox);
+//        *(retWord[i]) = this->operator[](i)->SubByte(sBox);
+        this->operator[](i)->SubByte(sBox);
+
     }
 
 
 
-    return retWord;
+//    return retWord;
 }
 
 

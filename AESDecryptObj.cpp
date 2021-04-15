@@ -347,9 +347,63 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-void AESDecryptObj::copyInputToState(const unsigned char *) {
 
+void AESDecryptObj::splitInputIntoBlocks(unsigned char blockArray[][16] , uint16_t numBlocks, const vector<unsigned char> & inputVector) {
+    //    for each block that needs to be created
+    for(uint16_t curBlock = 0; curBlock < numBlocks; curBlock++)
+    {
+//        index position where current block begins
+        uint16_t startOfBlock = curBlock * 16;
+
+//        index position where current block ends
+        uint16_t endOfBlock = ((curBlock + 1) * 16);
+
+//        current index within the block being added
+        uint16_t columnIndex = 0;
+
+//        for each byte in the current block, add the byte to the 2d array
+        for(uint16_t curIndex = startOfBlock; curIndex < endOfBlock; curIndex++)
+        {
+            blockArray[curBlock][columnIndex] = inputVector[curIndex];
+            columnIndex++;
+        }
+
+    }
 }
+
+
+
+/*
+
+    return value: none
+    parameters:
+      const unsigned char array containing the input block to copy onto the state
+
+
+    description:
+      copies the bytes from the input data given and copies the data onto the state table
+*/
+void AESDecryptObj::copyInputToState(const unsigned char inputBlock[16])
+{
+    //    for each row of the state
+    for(uint8_t row = 0; row < 4; row++) {
+
+//        for each column of the state
+        for (uint8_t column = 0; column < 4; column++) {
+
+//            formula provided by NIST in AES specification
+//            copies byte 0 to top left spot, byte 4 to the right of that, etc
+            state[row][column] = inputBlock[row + (4 * column)];
+        }
+    }
+}
+
+
+
+
+
+
+
 
 
 
@@ -371,6 +425,32 @@ void AESDecryptObj::copyInputToState(const unsigned char *) {
       If the data given is a multiple of the block size, an extra block exists with 16 bytes of 16's
 */
 void AESDecryptObj::removePadding(vector<unsigned char> & input) {
+
+//    the last number of the last block will contain the number of bytes of padding that were added
+    const unsigned char lastNum = input.at(input.size()-1);
+
+    const uint32_t startSize = input.size();
+
+    for(uint32_t i = startSize - 1; i > (startSize - lastNum); i--)
+    {
+
+//        if the byte matches what it should be
+        if(input.at(i) == lastNum)
+        {
+
+//            remove the byte from the end
+            input.erase(input.begin() + i);
+        }
+
+
+//        byte does not have value that it should be, throw error
+        else
+        {
+            throw RemovePaddingError();
+        }
+    }
+
+
 
 }
 
@@ -425,7 +505,7 @@ void AESDecryptObj::InvShiftRows() {
 
         for(uint8_t rotateCount = 0; rotateCount < wordCounter; rotateCount++)
         {
-            stateWord = stateWord.rightRotate();
+            stateWord.rightRotate();
         }
 
         for(uint8_t byteIndex = 0; byteIndex < 4; byteIndex++)
@@ -449,7 +529,154 @@ void AESDecryptObj::InvShiftRows() {
       The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
 */
 void AESDecryptObj::InvMixColumns() {
+    //    constants of a^-1(x) defined in AES spec 5.1.3
+    const byte firstConst = 0x0b;
+    const byte secondConst = 0x0d;
+    const byte thirdConst = 0x09;
+    const byte fourthConst = 0x0e;
 
+
+    byte firstParen;
+    byte secondParen;
+    byte thirdParen;
+    byte fourthParen;
+
+
+
+
+
+    for(uint8_t column = 0; column < 4; column++)
+    {
+
+//        will be copied over into the column
+        byte curColumn[4];
+
+
+
+
+
+
+        for(uint8_t row = 0; row < 4; row++)
+        {
+
+//            will contain the final value for the byte, starts off as 0
+            byte retByte;
+
+
+//            set each byte object to corresponding byte in the state
+            firstParen = state[0][column];
+            secondParen = state[1][column];
+            thirdParen = state[2][column];
+            fourthParen = state[3][column];
+
+
+
+
+//            all of the following multiplications are defined in AES spec 5.1.3
+            if(row == 0)
+            {
+
+                firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+
+
+
+
+                secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+
+                thirdParen = thirdParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+
+
+
+                fourthParen = fourthParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+
+
+
+
+
+
+            }
+
+            else if(row == 1)
+            {
+
+                firstParen = firstParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+
+
+
+
+                secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+
+
+                thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+
+
+                fourthParen = fourthParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+
+
+            }
+
+            else if(row == 2)
+            {
+
+
+                firstParen = firstParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+
+
+
+
+                secondParen = secondParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+
+
+                thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+
+
+
+                fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+
+            }
+            else
+            {
+
+                firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+
+
+
+
+                secondParen = secondParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+
+
+                thirdParen = thirdParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+
+
+
+                fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+            }
+
+
+//            xor of all the bytes
+            retByte = firstParen + secondParen + thirdParen + fourthParen;
+
+
+//            set the matching element of the column to the final vaule
+            curColumn[row] = retByte;
+
+
+        }
+
+
+
+//        for each row of the current column being worked on
+        for(uint8_t row = 0; row < 4; row++)
+        {
+
+//            copy elements from the column into the column in the state
+            state[row][column] = curColumn[row].rawData();
+        }
+
+    }
 }
 
 
@@ -473,7 +700,7 @@ void AESDecryptObj::AddRoundKey(const uint8_t & roundNum) {
         {
 
 //            make each byte in state the result of xor with byte from round key
-            state[row][column] = state[row][column] ^ ((keySched[(round * nB) + column])[row])->rawData();
+            state[row][column] = state[row][column] ^ ((keySched[(roundNum * nB) + column])[row])->rawData();
 
         }
     }
@@ -515,11 +742,11 @@ void AESDecryptObj::KeyExpansion() {
         if((i % nK) == 0)
         {
 //            rotate temp
-            temp = temp.leftRotate();
+            temp.leftRotate();
 
 
 //            then sub each of the bytes according to InvSBox
-            temp = temp.SubWord(InvSBox);
+            temp.SubWord(InvSBox);
 
 
 //            then xor each byte with word from round constants
@@ -531,7 +758,7 @@ void AESDecryptObj::KeyExpansion() {
 //        AES-256 and (i-4) is a multiple of nK
         else if (nK == 8 && (i-4) % nK == 0)
         {
-            temp = temp.SubWord(InvSBox);
+            temp.SubWord(InvSBox);
         }
 
 //        set current word of key schedule equal to XOR with word nK positions before and temp word

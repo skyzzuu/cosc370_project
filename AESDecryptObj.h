@@ -81,6 +81,10 @@ private:
     word * key = nullptr;
 
 
+    const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
+
+
+
 
     const unordered_map<uint8_t , uint8_t> InvSBox = {
             {0x00, 0x52}, {0x01, 0x09}, {0x02, 0x6a}, {0x03, 0xd5}, {0x04, 0x30}, {0x05, 0x36}, {0x06, 0xa5}, {0x07, 0x38}, {0x08, 0xbf}, {0x09, 0x40}, {0x0a, 0xa3}, {0x0b, 0x9e}, {0x0c, 0x81}, {0x0d, 0xf3}, {0x0e, 0xd7}, {0x0f, 0xfb},
@@ -239,6 +243,14 @@ private:
     {
     public:
         explicit InvalidKeySize(uint16_t size){}
+    };
+
+
+
+    class RemovePaddingError
+    {
+    public:
+        explicit RemovePaddingError(){}
     };
 
 

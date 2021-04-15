@@ -136,7 +136,7 @@ public:
 
 
     /*
-    return value: word object
+    return value: none
     parameters: none
 
 
@@ -146,7 +146,7 @@ public:
         E.G. if bytes are currently (0, 1, 2, 3) after this function a word object with bytes (1, 2, 3, 0)
         will be returned.
     */
-    word leftRotate();
+    void leftRotate();
 
 
     /*
@@ -160,7 +160,7 @@ public:
         E.G. if bytes are currently (0, 1, 2, 3) after this function a word object with bytes (3, 0, 1, 2)
         will be returned.
     */
-    word rightRotate();
+    void rightRotate();
 
 
     /*
@@ -174,7 +174,7 @@ public:
 
         E.G. should be used for SubBytes and SubWord transformations.
     */
-    word SubWord(const unordered_map<uint8_t, uint8_t> & );
+    void SubWord(const unordered_map<uint8_t, uint8_t> & );
 
 
     /*

@@ -51,14 +51,14 @@ int main()
 
 
 
-    AesEncryptObj aes256(256);
-    vector<unsigned char> encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
-
-    cout << endl << endl;
-    for(const unsigned char & byte : encryptedData)
-    {
-        cout << std::hex << (int) byte;
-    }
+//    AesEncryptObj aes256(256);
+//    vector<unsigned char> encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
+//
+//    cout << endl << endl;
+//    for(const unsigned char & byte : encryptedData)
+//    {
+//        cout << std::hex << (int) byte;
+//    }
 
 
 

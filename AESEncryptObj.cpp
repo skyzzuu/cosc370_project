@@ -534,7 +534,7 @@ void AesEncryptObj::ShiftRows()
 
         for(uint8_t rotateCount = 0; rotateCount < wordCounter; rotateCount++)
         {
-            stateWord = stateWord.leftRotate();
+            stateWord.leftRotate();
         }
 
         for(uint8_t byteIndex = 0; byteIndex < 4; byteIndex++)
@@ -783,11 +783,11 @@ void AesEncryptObj::KeyExpansion()
         if((i % nK) == 0)
         {
 //            rotate temp
-            temp = temp.leftRotate();
+            temp.leftRotate();
 
 
 //            then sub each of the bytes according to sBox
-            temp = temp.SubWord(sBox);
+            temp.SubWord(sBox);
 
 
 //            then xor each byte with word from round constants
@@ -799,7 +799,7 @@ void AesEncryptObj::KeyExpansion()
 //        AES-256 and (i-4) is a multiple of nK
         else if (nK == 8 && (i-4) % nK == 0)
         {
-            temp = temp.SubWord(sBox);
+            temp.SubWord(sBox);
         }
 
 //        set current word of key schedule equal to XOR with word nK positions before and temp word

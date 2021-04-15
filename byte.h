@@ -223,7 +223,7 @@ public:
       The pre-made sBox or InvSBox is passed in instead of calculating the substitution in the function to
       speed up the encryption and decryption processes.
     */
-    byte SubByte(const unordered_map<uint8_t, uint8_t> &) const;
+    void SubByte(const unordered_map<uint8_t, uint8_t> &);
 
 
 
