@@ -110,16 +110,7 @@ private:
             {0xf0,0x8c}, {0xf1,0xa1}, {0xf2,0x89}, {0xf3,0x0d}, {0xf4,0xbf}, {0xf5,0xe6}, {0xf6,0x42}, {0xf7,0x68}, {0xf8,0x41}, {0xf9,0x99}, {0xfa,0x2d}, {0xfb,0x0f}, {0xfc,0xb0}, {0xfd,0x54}, {0xfe,0xbb}, {0xff,0x16}
     };
 
-/*
-    return value: unsigned char array of size 12 bytes
-    parameters: none
-    description: this function generates an initialization vector (IV). The
-      IV is a cryptographically securely randomized array of unsigned
-      characters of size 12 bytes. The IV is later used as an input to the
-      encryption algorithm to ensure semantic security (plaintext cannot be
-      derived from a message's cyphertext).
-*/
-unsigned char * generateIV();
+
 
 
 

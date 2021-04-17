@@ -8,7 +8,7 @@
 #include "word.h"
 #include "byte.h"
 #include "FiniteField.h"
-#include "sodium.h"
+//#include "sodium.h"
 
 
 using namespace std;
@@ -112,17 +112,7 @@ aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
 
 
 
-//    byte x = 0x57;
-//    byte y = 0x83;
-//
-//    vector<uint8_t> irreduce = {8, 4, 3, 1, 0};
-//
-//    byte result;
-//    result = x.galoisMultiply(y, irreduce);
-//
-////    result = x + y;
-//
-//    cout << result << endl;
+
 
 
 
@@ -131,17 +121,17 @@ aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
 }
 
 
-
-unsigned char * AesEncryptObj::generateIV()
-{
-    unsigned char initVector[12] = {0};
-
-//    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
-    if(sodium_init() == -1)
-        return nullptr;
-    randombytes_buf(initVector, 12);
-
-    unsigned char *ptr = &initVector[0];
-    return ptr;
-}
-
+//
+//unsigned char * generateIV()
+//{
+//    unsigned char initVector[12] = {0};
+//
+////    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
+//    if(sodium_init() == -1)
+//        return nullptr;
+//    randombytes_buf(initVector, 12);
+//
+//    unsigned char *ptr = &initVector[0];
+//    return ptr;
+//}
+//

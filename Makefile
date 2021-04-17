@@ -1,5 +1,5 @@
 
-cflags="-std=c++11" $(pkg-config --cflags libsodium)
+cflags="-std=c++11"
 ldflags=$(pkg-config --libs libsodium)
 target="project.out"
 
