@@ -242,6 +242,29 @@ private:
 
 
 
+/*
+    return value: none
+    parameters:
+        unsigned char vector containing the previously encrypted data (inputVector from encrypt function should be only parameter passed in)
+        unsigned 8-bit integer containing the current round number
+
+    description:
+      This function will xor the state with the IV object contained in the AESEncryptObj class in the first round,
+      or will find the previous ciphertext block and xor the state with it for every other round.
+
+      This implements the cipher block chaining mode of operation.
+*/
+    void xorBlock(const vector<unsigned char> &, const uint8_t &);
+
+
+
+
+
+
+
+
+
+
 
 
 

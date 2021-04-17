@@ -783,3 +783,30 @@ void AesEncryptObj::KeyExpansion()
 
 
 
+/*
+    return value: none
+    parameters:
+        unsigned char vector containing the previously encrypted data (inputVector from encrypt function should be only parameter passed in)
+        unsigned 8-bit integer containing the current round number
+
+    description:
+      This function will xor the state with the IV object contained in the AESEncryptObj class in the first round,
+      or will find the previous ciphertext block and xor the state with it for every other round.
+
+      This implements the cipher block chaining mode of operation.
+*/
+void AesEncryptObj::xorBlock(const vector<unsigned char> & inputVector, const uint8_t & roundNum)
+{
+
+//    index position where previous ciphertext block starts
+    const uint64_t blockStartPosition = roundNum * 128;
+
+
+//    index position where previous ciphertext block ends
+    const uint64_t blockEndPosition = blockStartPosition + 128;
+
+
+
+
+
+}
