@@ -5,12 +5,7 @@
 
 using namespace std;
 
-/*
-    Sodium is an encryption library. We use it to populate initialization
-    vectors with cryptographically secure random bytes. See function
-    generateIV().
-*/
-//#include <sodium.h>
+
 
 
 
@@ -700,27 +695,6 @@ void AesEncryptObj::AddRoundKey( const uint8_t & round )
 
 
 
-/*
-    return value: unsigned char array of size 12 bytes
-    parameters: none
-    description: this function generates an initialization vector (IV). The
-      IV is a cryptographically securely randomized array of unsigned
-      characters of size 12 bytes. The IV is later used as an input to the
-      encryption algorithm to ensure semantic security (plaintext cannot be
-      derived from a message's cyphertext).
-*/
-//unsigned char * AesEncryptObj::generateIV()
-//{
-//    unsigned char initVector[12] = {0};
-//
-////    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
-//    if(sodium_init() == -1)
-//        return nullptr;
-//    randombytes_buf(initVector, 12);
-//
-//    unsigned char *ptr = &initVector[0];
-//    return ptr;
-//}
 
 
 

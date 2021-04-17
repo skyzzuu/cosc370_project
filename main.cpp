@@ -8,6 +8,7 @@
 #include "word.h"
 #include "byte.h"
 #include "FiniteField.h"
+#include "sodium.h"
 
 
 using namespace std;
@@ -81,7 +82,7 @@ int main()
 
 
     AESDecryptObj aesDecr256(256);
-    aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
+aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
 
 
 //    for(const unsigned char & temp : decryptedData)
@@ -128,3 +129,19 @@ int main()
 
     return 0;
 }
+
+
+
+unsigned char * AesEncryptObj::generateIV()
+{
+    unsigned char initVector[12] = {0};
+
+//    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
+    if(sodium_init() == -1)
+        return nullptr;
+    randombytes_buf(initVector, 12);
+
+    unsigned char *ptr = &initVector[0];
+    return ptr;
+}
+
