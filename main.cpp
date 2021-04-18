@@ -40,16 +40,16 @@ int main()
 //    aes256KeyExpand.encrypt(aes128plaintext, 16, aes256keyExpansionCipherKey);
 
 
-//    vector<unsigned char> encryptedData;
-//
-//
-//    IV iv(2);
-//
-//
-//    AesEncryptObj aes128(128);
-//    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
-//
-//
+    vector<unsigned char> encryptedData;
+
+
+    IV iv(2);
+
+
+    AesEncryptObj aes128(128);
+    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
+
+
 //    for(uint8_t & temp : encryptedData )
 //    {
 //        cout << std::hex << (int) temp;
@@ -66,23 +66,22 @@ int main()
 //
 //
 //
-//    vector<unsigned char> decryptedData;
-//    unsigned char encrData[encryptedData.size()];
-//
-//    for(int i = 0; i < encryptedData.size(); i++)
-//    {
-//        encrData[i] = encryptedData[i];
-////        cout << std::hex << (int) encryptedData[i];
-//    }
-//
-//
-//
-//
-//
-//    unsigned char iv[2] = {0x045, 0x25};
+    vector<unsigned char> decryptedData;
+    unsigned char encrData[encryptedData.size()];
 
-//    AESDecryptObj aesDecr128(128);
-//    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv, 2);
+    for(int i = 0; i < encryptedData.size(); i++)
+    {
+        encrData[i] = encryptedData[i];
+    }
+//
+//
+//
+//
+//
+    unsigned char iv2[2] = {0x045, 0x25};
+
+    AESDecryptObj aesDecr128(128);
+    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv2, 2);
 
 
 
@@ -94,10 +93,11 @@ int main()
 //aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
 
 
-//    for(const unsigned char & temp : decryptedData)
-//    {
-//        cout << std::hex << (int) temp;
-//    }
+cout << endl << "DING DING" << endl << endl;
+    for(const unsigned char & temp : decryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
 
 
 
@@ -117,18 +117,18 @@ int main()
 
 
 
-    const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
-
-
-    byte left = 0x53;
-    byte right = 0x04;
-
-
-    byte result;
-    result = left.galoisMultiply(right, mixColumnsIrreduce);
-
-
-    cout << result;
+//    const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
+//
+//
+//    byte left = 0x53;
+//    byte right = 0x04;
+//
+//
+//    byte result;
+//    result = left.galoisMultiply(right, mixColumnsIrreduce);
+//
+//
+//    cout << result;
 
 
 
