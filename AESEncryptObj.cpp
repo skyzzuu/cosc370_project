@@ -230,7 +230,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 //        xor state with the iv, or previous ciphertext block if not the first round
-        xorBlock(inputVector, i, iv);
+//        xorBlock(inputVector, i, iv);
 
 
 
