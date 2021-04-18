@@ -52,25 +52,25 @@ int main()
 //    encryptedData = aes192.encrypt(aes128plaintext, 16, aes192key);
 
 
-    AesEncryptObj aes256(256);
-    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
-
-
-
-    vector<unsigned char> decryptedData;
-    unsigned char encrData[encryptedData.size()];
-
-    for(int i = 0; i < encryptedData.size(); i++)
-    {
-        encrData[i] = encryptedData[i];
-//        cout << std::hex << (int) encryptedData[i];
-    }
-
-
-
-
-
-    unsigned char iv[2] = {0x045, 0x25};
+//    AesEncryptObj aes256(256);
+//    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
+//
+//
+//
+//    vector<unsigned char> decryptedData;
+//    unsigned char encrData[encryptedData.size()];
+//
+//    for(int i = 0; i < encryptedData.size(); i++)
+//    {
+//        encrData[i] = encryptedData[i];
+////        cout << std::hex << (int) encryptedData[i];
+//    }
+//
+//
+//
+//
+//
+//    unsigned char iv[2] = {0x045, 0x25};
 
 //    AESDecryptObj aesDecr128(128);
 //    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv, 2);
@@ -81,8 +81,8 @@ int main()
 //    decryptedData = aesDecr192.decrypt(encrData, encryptedData.size(), aes192key, iv, 2);
 
 
-    AESDecryptObj aesDecr256(256);
-aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
+//    AESDecryptObj aesDecr256(256);
+//aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
 
 
 //    for(const unsigned char & temp : decryptedData)

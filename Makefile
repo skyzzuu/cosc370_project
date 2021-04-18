@@ -1,11 +1,10 @@
 
 cflags="-std=c++11"
-ldflags=$(pkg-config --libs libsodium)
 target="project.out"
 
 
 # main project file, makes compiled program called project.out
-all: main.o AESEncryptObj.o AESDecryptObj.o byte.o FiniteField.o word.o
+all: main.o AESEncryptObj.o AESDecryptObj.o byte.o FiniteField.o word.o IV.o
 	g++ $(cflags) -g *.o -o $(target)
 
 
@@ -35,6 +34,12 @@ FiniteField.o:
 
 word.o:
 	g++ $(cflags) -g -c  word.cpp -o word.o
+
+
+
+IV.o:
+	g++ $(cflags) -g -c  IV.cpp -o IV.o
+
 
 
 

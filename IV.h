@@ -6,6 +6,17 @@
 #define COSC370_PROJECT_IV_H
 
 #include <cstdint>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+using namespace std;
+
+
+#define DEVURANDOM "/dev/urandom"
+typedef unsigned char TYPE;
+
 
 class IV {
 public:
@@ -35,6 +46,10 @@ public:
     IV(uint64_t);
 
 
+
+
+
+
     /*
     return value: none (destructor)
     parameters: none
@@ -54,13 +69,31 @@ description:
      modify the data. Since the user passes in the length of the IV, they are responsible for making sure they do not read
      beyond the end of the data. They should know how many bytes are in the IV.
 */
-    const unsigned char * getData();
+    const unsigned char * getData() const;
+
+
+
+    /*
+return value:  unsigned 64-bit integer representing the length of the data in the IV
+parameters: none
+
+description:
+This function will return an integer representing how long the data in the IV is.
+*/
+    uint64_t getLength() const;
 
 
 private:
 
-//
+//    actual data within the IV
     unsigned char * data = nullptr;
+
+//    length of the data in the iv
+    uint64_t length;
+
+
+    TYPE getRandU8();
+
 
 };
 

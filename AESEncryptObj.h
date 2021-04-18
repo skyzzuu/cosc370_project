@@ -13,6 +13,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include "IV.h"
 
 
 /*
@@ -37,7 +38,7 @@ public:
       const unsigned char * containing the bytes to encrypt
       unsigned integer representing how many bytes are in the input
       const unsigned char * containing the encryption key to use
-      unsigned integer representing how many bytes are in the key
+      IV object containing IV to use
 
 
     description:
@@ -46,7 +47,27 @@ public:
       encrypts using the cipher block chaining mode of operation.
 
  */
-    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char *);
+    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char *, const IV &);
+
+
+    /*
+return value: unsigned char vector containing encrypted bytes
+parameters:
+  const unsigned char * containing the bytes to encrypt
+  unsigned integer representing how many bytes are in the input
+  const unsigned char * containing the encryption key to use
+  unsigned integer representing how many bytes are in the key
+  unsigned char * pointing to the data to be used as the IV
+  unsigned integer representing the length of the IV data being passed in
+
+
+description:
+  takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
+  of the input data in the form of an unsigned char vector.
+  encrypts using the cipher block chaining mode of operation.
+
+*/
+    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char *, const unsigned char *, uint64_t);
 
 
 
@@ -79,6 +100,7 @@ private:
 
 
     const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
+
 
 
 
@@ -247,15 +269,15 @@ private:
     parameters:
         unsigned char vector containing the previously encrypted data (inputVector from encrypt function should be only parameter passed in)
         unsigned 8-bit integer containing the current round number
+        IV object containing IV to xor with in first round, will not be used after first round.
 
     description:
-      This function will xor the state with the IV object contained in the AESEncryptObj class in the first round,
+      This function will xor the state with the IV object in the first round,
       or will find the previous ciphertext block and xor the state with it for every other round.
 
       This implements the cipher block chaining mode of operation.
 */
-    void xorBlock(const vector<unsigned char> &, const uint8_t &);
-
+    void xorBlock(const vector<unsigned char> &, const uint8_t &, const IV &);
 
 
 

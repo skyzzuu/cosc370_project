@@ -127,7 +127,53 @@ AesEncryptObj::~AesEncryptObj() {
 
 
 
-vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey)
+
+/*
+return value: unsigned char vector containing encrypted bytes
+parameters:
+const unsigned char * containing the bytes to encrypt
+unsigned integer representing how many bytes are in the input
+const unsigned char * containing the encryption key to use
+unsigned integer representing how many bytes are in the key
+unsigned char * pointing to the data to be used as the IV
+unsigned integer representing the length of the IV data being passed in
+
+
+description:
+takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
+of the input data in the form of an unsigned char vector.
+encrypts using the cipher block chaining mode of operation.
+
+*/
+vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey,
+                                             const unsigned char * ivData, uint64_t ivLength) {
+
+//    make iv object from data and length given
+    IV iv(ivData, ivLength);
+
+//    call main encrypt function with previously made iv object and return the result
+    return encrypt(data, inputlength, ciphKey, iv);
+}
+
+
+
+
+/*
+return value: unsigned char vector containing encrypted bytes
+parameters:
+  const unsigned char * containing the bytes to encrypt
+  unsigned integer representing how many bytes are in the input
+  const unsigned char * containing the encryption key to use
+  IV object containing IV to use
+
+
+description:
+  takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
+  of the input data in the form of an unsigned char vector.
+  encrypts using the cipher block chaining mode of operation.
+
+*/
+vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey, const IV & iv)
 {
 
     inputLength = inputlength;
@@ -151,19 +197,8 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
-
-
-
-
-
-
-
-
-
 //    pad up to nearest block (or add full block)
     padInput(inputVector);
-
-
 
 
 
@@ -181,26 +216,21 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
-
-
-
-
+//    generate round keys from cipher key
     KeyExpansion();
 
 
 
 
 
-
-
-
-
-
-
-//    cout << "BLOCKS: " << endl;
     for(uint64_t i = 0; i < numBlocks; i++)
     {
         copyInputToState(blockArray[i], state);
+
+
+
+//        xor state with the iv, or previous ciphertext block if not the first round
+        xorBlock(inputVector, i, iv);
 
 
 
@@ -795,18 +825,53 @@ void AesEncryptObj::KeyExpansion()
 
       This implements the cipher block chaining mode of operation.
 */
-void AesEncryptObj::xorBlock(const vector<unsigned char> & inputVector, const uint8_t & roundNum)
+void AesEncryptObj::xorBlock(const vector<unsigned char> & inputVector, const uint8_t & roundNum, const IV & iv)
 {
 
-//    index position where previous ciphertext block starts
-    const uint64_t blockStartPosition = roundNum * 128;
+
+    if(roundNum == 0)
+    {
+
+        uint64_t curByte = 0;
 
 
-//    index position where previous ciphertext block ends
-    const uint64_t blockEndPosition = blockStartPosition + 128;
+        for(uint8_t column = 0; column < 4; column++)
+        {
+            for(uint8_t row = 0; row < 4; row++)
+            {
 
+//                xor each byte of the state with corresponding byte of the iv
+                state[row][column] = state[row][column] ^ iv.getData()[curByte];
+                curByte++;
+            }
+        }
+
+    }
+    else
+    {
+
+
+//        index position of first byte of the last ciphertext block
+        uint64_t curByte = roundNum * 16;
+
+
+        for(uint8_t column = 0; column < 4; column++)
+        {
+            for(uint8_t row = 0; row < 4; row++)
+            {
+
+//                xor each byte of the state with corresponding byte in the last ciphertext block
+                state[row][column] = state[row][column] ^ inputVector[curByte];
+                curByte++;
+            }
+        }
+    }
 
 
 
 
 }
+
+
+
+
