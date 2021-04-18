@@ -48,8 +48,8 @@ int main()
 
 
 
-//    AesEncryptObj aes128(128);
-//    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
+    AesEncryptObj aes128(128);
+    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
 
 
 
@@ -61,20 +61,19 @@ int main()
 //    encryptedData = aes192.encrypt(aes128plaintext, 16, aes192key, iv);
 
 
-    AesEncryptObj aes256(256);
-    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key, iv);
+//    AesEncryptObj aes256(256);
+//    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key, iv);
 //
 //
 //
-//    vector<unsigned char> decryptedData;
-//    unsigned char encrData[encryptedData.size()];
-//
-//    for(int i = 0; i < encryptedData.size(); i++)
-//    {
-//        encrData[i] = encryptedData[i];
-////        cout << std::hex << (int) encryptedData[i];
-//    }
-//
+    vector<unsigned char> decryptedData;
+    unsigned char encrData[encryptedData.size()];
+
+    for(int i = 0; i < encryptedData.size(); i++)
+    {
+        encrData[i] = encryptedData[i];
+    }
+
 
 
 
@@ -94,8 +93,8 @@ int main()
 //
 //    unsigned char iv[2] = {0x045, 0x25};
 
-//    AESDecryptObj aesDecr128(128);
-//    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv, 2);
+    AESDecryptObj aesDecr128(128);
+    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv);
 
 
 
@@ -107,10 +106,12 @@ int main()
 //aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
 
 
-//    for(const unsigned char & temp : decryptedData)
-//    {
-//        cout << std::hex << (int) temp;
-//    }
+    cout << "DING DING" << endl;
+    for(const unsigned char & temp : decryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl;
 
 
 

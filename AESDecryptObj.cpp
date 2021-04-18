@@ -128,8 +128,22 @@ AESDecryptObj::~AESDecryptObj() {
 
 
 
+
+
+vector<unsigned char> AESDecryptObj::decrypt(const unsigned char * data, const uint16_t & inputLength, const unsigned char * ciphKey, const unsigned char * ivData, const uint64_t & ivLength)
+{
+    IV iv(ivData, ivLength);
+
+
+    return decrypt(data, inputLength, ciphKey, iv);
+}
+
+
+
+
+
 vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const uint16_t & inputlength, const unsigned char * ciphKey,
-                                       const unsigned char * iv, const uint64_t & ivLength) {
+                                       const IV &) {
 
     inputLength = inputlength;
 
@@ -164,12 +178,12 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-    cout << "Beginning ciphertext: ";
-    for(uint64_t i = 0; i < inputlength; i++)
-    {
-        cout << std::hex << (int) data[i];
-    }
-    cout << endl << endl;
+//    cout << "Beginning ciphertext: ";
+//    for(uint64_t i = 0; i < inputlength; i++)
+//    {
+//        cout << std::hex << (int) data[i];
+//    }
+//    cout << endl << endl;
 
 
     //    total number of blocks in padded input
@@ -191,7 +205,7 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-    cout << "BLOCKS: " << endl;
+//    cout << "BLOCKS: " << endl;
     for(uint64_t i = 0; i < numBlocks; i++)
     {
         copyInputToState(blockArray[i]);
@@ -331,15 +345,15 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
         AddRoundKey(0);
 
 
-        cout << "FINAL: " << endl;
-        for(uint8_t row = 0; row < 4; row++)
-        {
-            for(const auto & column : state)
-            {
-                cout << std::hex << (int) column[row];
-            }
-        }
-        cout << endl << endl;
+//        cout << "FINAL: " << endl;
+//        for(uint8_t row = 0; row < 4; row++)
+//        {
+//            for(const auto & column : state)
+//            {
+//                cout << std::hex << (int) column[row];
+//            }
+//        }
+//        cout << endl << endl;
 
 
 
@@ -349,7 +363,7 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
     }
-    cout << endl;
+//    cout << endl;
 
 
     for(uint8_t row = 0; row < 4; row++)
