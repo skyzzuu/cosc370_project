@@ -6,7 +6,6 @@
 
 
 #include "byte.h"
-#include "FiniteField.h"
 #include <unordered_map>
 #include <cmath>
 
@@ -49,36 +48,6 @@ byte& byte::operator=(const unsigned char & rightChar)
 }
 
 
-/*
-return value: byte object reference
-parameters: FiniteField object
-
-
-description:
-  sets value of byte equal to equivalent byte value of FiniteField passed in.
-
-  E.G. FiniteField with elements {5, 0} is 00100001 in binary or 33 in decimal, the value of the byte will
-  be 33.
-
-*/
-byte& byte::operator=(const FiniteField & rightField) {
-    unsigned char retVal = 0;
-
-
-    //    for each value in the field
-    for(uint8_t i = 0; i < rightField.size(); i++)
-    {
-        //        add the value of 2 to that power
-        retVal += pow(2, rightField.getElement(i));
-    }
-
-    data = retVal;
-
-
-    return *this;
-
-
-}
 
 
 /*

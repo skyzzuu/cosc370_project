@@ -14,11 +14,7 @@
 using namespace std;
 
 
-// forward declaration of FiniteField class
-//DO NOT GET RID OF!!!
-//BECAUSE BYTE INCLUDES FiniteField and FiniteField INCLUDES BYTE,
-//WILL PREVENT COMPILATION
-class FiniteField;
+
 
 class byte {
 private:
@@ -114,19 +110,7 @@ public:
     bool operator==(const byte &);
 
 
-    /*
-    return value: byte object reference
-    parameters: FiniteField object
 
-
-    description:
-      sets value of byte equal to equivalent byte value of FiniteField passed in.
-
-      E.G. FiniteField with elements {5, 0} is 00100001 in binary or 33 in decimal, the value of the byte will
-      be 33.
-
-    */
-    byte & operator=(const FiniteField & );
 
 
 

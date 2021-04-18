@@ -4,7 +4,7 @@ target="project.out"
 
 
 # main project file, makes compiled program called project.out
-all: main.o AESEncryptObj.o AESDecryptObj.o byte.o FiniteField.o word.o IV.o
+all: main.o AESEncryptObj.o AESDecryptObj.o byte.o  word.o IV.o
 	g++ $(cflags) -g *.o -o $(target)
 
 
@@ -28,8 +28,8 @@ byte.o:
 	g++ $(cflags) -g -c byte.cpp -o byte.o
 
 
-FiniteField.o:
-	g++ $(cflags) -g -c FiniteField.cpp -o FiniteField.o
+#FiniteField.o:
+	#g++ $(cflags) -g -c FiniteField.cpp -o FiniteField.o
 
 
 word.o:
