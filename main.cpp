@@ -116,15 +116,15 @@ int main()
 //    }
 
 
-//
-//    byte left = 0x57;
-//    byte right = 0x83;
-//
-//
-//    left.galoisMultiply(right);
-//
-//
-//    cout << std::hex << (int) left.rawData() << endl;
+
+    byte left = 0x53;
+    byte right = 0x02;
+
+
+    left.galoisMultiply(right);
+
+
+    cout << std::hex << (int) left.rawData() << endl;
 
 
 

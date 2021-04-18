@@ -253,8 +253,8 @@ void byte::galoisMultiply(byte rightByte)
 
 
 
-    if(this->rawData() * rightByte.rawData() > 255)
-    {
+//    if(this->rawData() * rightByte.rawData() > 255)
+//    {
         vector<uint8_t> intermediateResults;
 
 
@@ -323,24 +323,24 @@ void byte::galoisMultiply(byte rightByte)
 
 
 
-        if(this->rawData() * 2 != intermediateResults[0] || intermediateResults.size() > 1)
-        {
+//        if(this->rawData() * 2 != intermediateResults[0] || intermediateResults.size() > 1)
+//        {
             for(const uint8_t & temp : intermediateResults)
             {
                 this->data = this->rawData() ^ temp;
             }
-        }
+//        }
 
-        else
-        {
-            this->data = intermediateResults[0];
-        }
-    }
+//        else
+//        {
+//            this->data = intermediateResults[0];
+//        }
+//    }
 
-    else
-    {
-        this->data *= rightByte.rawData();
-    }
+//    else
+//    {
+//        this->data *= rightByte.rawData();
+//    }
 
 
 
