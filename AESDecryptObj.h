@@ -14,6 +14,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include "IV.h"
 
 
 using namespace std;
@@ -24,6 +25,26 @@ public:
     AESDecryptObj();
     ~AESDecryptObj();
     AESDecryptObj(uint16_t);
+
+
+
+    /*
+return value: unsigned char array containing decrypted bytes
+parameters:
+unsigned char * containing the bytes to decrypt
+unsigned int representing how many bytes are in the input
+unsigned char * containing the decryption key to use
+unsigned char * pointing to IV to use for decryption
+unsigned int containing number of bytes in IV
+
+description:
+takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
+of the input data.
+
+*/
+    vector<unsigned char > decrypt(const unsigned char * , const uint16_t &, const unsigned char *, const IV &);
+
+
 
 
 

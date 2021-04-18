@@ -234,73 +234,25 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
-//        cout << "BEGINNING STATE" << endl;
-//        for(uint8_t row = 0; row < 4; row++)
-//        {
-//            for(const auto & column : state)
-//            {
-//                cout << std::hex << (int) column[row];
-//            }
-//        }
-//        cout << endl;
+
 
         AddRoundKey(0);
 
 
         for (uint8_t roundNum = 1; roundNum < nR; roundNum++)
         {
-//
-//            cout << "\n\n***\nround " << (int) (roundNum) << "\n***\n\n";
-//
-//            cout << (int) (roundNum) << " start: " << endl;
-//            for(uint8_t row = 0; row < 4; row++)
-//            {
-//                for(const auto & column : state)
-//                {
-//                    cout << std::hex << (int) column[row];
-//                }
-//            }
-//            cout << endl << endl;
+
 
 
             SubBytes();
-//
-//            cout << (int) (roundNum) << " SubBytes(): " << endl;
-//            for(uint8_t row = 0; row < 4; row++)
-//            {
-//                for(const auto & column : state)
-//                {
-//                    cout << std::hex << (int) column[row];
-//                }
-//            }
-//            cout << endl << endl;
-//
+
+
 
             ShiftRows();
-//
-//            cout << (int) (roundNum) << " ShiftRows(): " << endl;
-//            for(uint8_t row = 0; row < 4; row++)
-//            {
-//                for(const auto & column : state)
-//                {
-//                    cout << std::hex << (int) column[row];
-//                }
-//            }
-//            cout << endl << endl;
-//
+
 
             MixColumns();
-//
-//            cout << (int) (roundNum) << " MixColumns(): " << endl;
-//            for(uint8_t row = 0; row < 4; row++)
-//            {
-//                for(const auto & column : state)
-//                {
-//                    cout << std::hex << (int) column[row];
-//                }
-//            }
-//            cout << endl << endl;
-//
+
 
 
             AddRoundKey(roundNum);
@@ -314,44 +266,17 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
         SubBytes();
-//
-//
-//        cout <<  "final SubBytes(): " << endl;
-//        for(uint8_t row = 0; row < 4; row++)
-//        {
-//            for(const auto & column : state)
-//            {
-//                cout << std::hex << (int) column[row];
-//            }
-//        }
-//        cout << endl << endl;
+
 
 
         ShiftRows();
-//
-//        cout << "final ShiftRows(): " << endl;
-//        for(uint8_t row = 0; row < 4; row++)
-//        {
-//            for(const auto & column : state)
-//            {
-//                cout << std::hex << (int) column[row];
-//            }
-//        }
-//        cout << endl << endl;
+
 
 
         AddRoundKey(nR);
 
 
-//        cout << "FINAL: " << endl;
-//        for(uint8_t row = 0; row < 4; row++)
-//        {
-//            for(const auto & column : state)
-//            {
-//                cout << std::hex << (int) column[row];
-//            }
-//        }
-//        cout << endl << endl;
+
 
 
 
@@ -367,7 +292,6 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
     }
-    cout << endl;
 
 
 
@@ -619,11 +543,11 @@ void AesEncryptObj::MixColumns()
             {
 
                 //                finite field multiply with 0x02
-                firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(fourthConst);
 
 
                 //                finite field multiply with 0x03
-                secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(firstConst);
 
 
 
@@ -633,11 +557,11 @@ void AesEncryptObj::MixColumns()
             {
 
 //                finite field multiply with 0x02
-                secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(fourthConst);
 
 
                 //                finite field multiply with 0x03
-                thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(firstConst);
 
 
 
@@ -648,11 +572,11 @@ void AesEncryptObj::MixColumns()
 
 
 //                finite field multiply with 0x02
-                thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(fourthConst);
 
 
                 //                finite field multiply with 0x03
-                fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(firstConst);
 
 
             }
@@ -660,11 +584,11 @@ void AesEncryptObj::MixColumns()
             {
 
 //                finite field multiply with 0x03
-                firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(firstConst);
 
 
 //                finite field multiply with 0x02
-                fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(fourthConst);
             }
 
 

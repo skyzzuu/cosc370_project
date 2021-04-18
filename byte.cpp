@@ -247,27 +247,69 @@ description:
     using irreducible polynomial given
 
 */
-byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irreduce)
+void byte::galoisMultiply(byte rightByte)
 {
 
-//    make version of this as finite field
-    FiniteField leftField = *this;
+//    start with 0
+    byte result = 0;
 
-//    make version of right byte as finite field
-    FiniteField rightField = rightByte;
 
-//    get result of finite field multiplication with given irreducible polynomial
-//    FiniteField object does heavy lifting for multiplication
-    FiniteField retField = leftField.galoisMultiply(rightField, irreduce);
+//    run 8 times, once for each bit in b
+    for(uint8_t i = 0; i < 8; i++)
+    {
 
-//    convert back to byte
-    byte retByte;
-    retByte = retField;
+//        if the rightmost bit of b is currently set.
+//        shifting to the left 7, and then to the right 7
+//        will either leave you with 0 or 1 depending on what the right bit is
+        if(((unsigned char)(rightByte.data << 7)) >> 7)
+        {
+            result.data = result.rawData() ^ this->rawData();
+        }
 
-//    return resulting byte object
-    return retByte;
+
+//        xtime operation
+        this->xtime(*this);
+
+
+//        bitwise shift rightbyte 1 to the right
+        rightByte.data = rightByte.rawData() >> 1;
+
+
+    }
+
+
+
+//    set this byte equal to the result after multiplication
+    this->data = result.rawData();
 }
 
+
+
+
+
+void byte::xtime(byte rightByte) {
+
+    // if msb is set
+    if(rightByte.data >= 128)
+    {
+        // bitwise left shift
+        rightByte.data = rightByte.data << 1;
+
+        // xor with 0x1b to reduce
+        rightByte.data = rightByte.data ^ 0x1b;
+    }
+
+        // msb not set
+    else
+    {
+
+        // left shift
+        rightByte.data  = rightByte.data << 1;
+    }
+
+
+    this->data = rightByte.data;
+}
 
 
 

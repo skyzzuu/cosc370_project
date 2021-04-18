@@ -18,7 +18,6 @@ AESDecryptObj::AESDecryptObj(uint16_t keysize)
 //    AES-128
     if(keySize == 128)
     {
-        cout << "AES-128" << endl;
         nK = 4;
         nR = 10;
 
@@ -128,8 +127,22 @@ AESDecryptObj::~AESDecryptObj() {
 
 
 
+
+
+vector<unsigned char> AESDecryptObj::decrypt(const unsigned char * data, const uint16_t & inputLength, const unsigned char * ciphKey, const unsigned char * ivData, const uint64_t & ivLength)
+{
+    IV iv(ivData, ivLength);
+
+
+    return decrypt(data, inputLength, ciphKey, iv);
+}
+
+
+
+
+
 vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const uint16_t & inputlength, const unsigned char * ciphKey,
-                                       const unsigned char * iv, const uint64_t & ivLength) {
+                                       const IV &) {
 
     inputLength = inputlength;
 
@@ -152,24 +165,14 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-//    cout << "cipher key: ";
-//    for(uint8_t i = 0; i < nK; i++)
-//    {
-//        cout << key[i];
-//    }
-//    cout << endl << endl;
 
 
 
 
 
 
-    cout << "Beginning ciphertext: ";
-    for(uint64_t i = 0; i < inputlength; i++)
-    {
-        cout << std::hex << (int) data[i];
-    }
-    cout << endl << endl;
+
+
 
 
     //    total number of blocks in padded input
@@ -207,6 +210,7 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
+
         for (int roundNum = nR-1; roundNum > 0; roundNum--)
         {
 
@@ -235,13 +239,7 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-
-
-
-
             InvMixColumns();
-
-
 
 
         }
@@ -249,9 +247,6 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
         InvShiftRows();
-
-
-
 
 
         InvSubBytes();
@@ -265,19 +260,6 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
         AddRoundKey(0);
 
 
-        cout << "FINAL: " << endl;
-        for(uint8_t row = 0; row < 4; row++)
-        {
-            for(const auto & column : state)
-            {
-                cout << std::hex << (int) column[row];
-            }
-        }
-        cout << endl << endl;
-
-
-
-
         for(uint8_t row = 0; row < 4; row++)
         {
             for( auto & column : state)
@@ -288,8 +270,8 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
+
     }
-    cout << endl;
 
 
 
@@ -538,19 +520,19 @@ void AESDecryptObj::InvMixColumns() {
             if(row == 0)
             {
 
-                firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(fourthConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(firstConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(secondConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(thirdConst);
 
 
 
@@ -562,19 +544,19 @@ void AESDecryptObj::InvMixColumns() {
             else if(row == 1)
             {
 
-                firstParen = firstParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(thirdConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(fourthConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(firstConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(secondConst);
 
 
             }
@@ -583,38 +565,38 @@ void AESDecryptObj::InvMixColumns() {
             {
 
 
-                firstParen = firstParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(secondConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(thirdConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(fourthConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(firstConst);
 
 
             }
             else
             {
 
-                firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(firstConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(secondConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(thirdConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(fourthConst);
             }
 
 

@@ -16,7 +16,7 @@ using namespace std;
 
 int main()
 {
-    unsigned char aes128plaintext[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
+    unsigned char plaintext[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
     unsigned char aes128key[16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
     unsigned char aes192key[24]=  {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
     unsigned char aes256key[32] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f};
@@ -28,44 +28,44 @@ int main()
 
 //    AesEncryptObj aes128KeyExpand(128);
 //
-//    aes128KeyExpand.encrypt(aes128plaintext, 16, aes128keyExpansionCipherKey);
+//    aes128KeyExpand.encrypt(plaintext, 16, aes128keyExpansionCipherKey);
 
 
 //    AesEncryptObj aes192KeyExpand(192);
 //
-//    aes192KeyExpand.encrypt(aes128plaintext, 16, aes192keyExpansionCipherKey);
+//    aes192KeyExpand.encrypt(plaintext, 16, aes192keyExpansionCipherKey);
 
 
 //    AesEncryptObj aes256KeyExpand(256);
-//    aes256KeyExpand.encrypt(aes128plaintext, 16, aes256keyExpansionCipherKey);
+//    aes256KeyExpand.encrypt(plaintext, 16, aes256keyExpansionCipherKey);
 
 
     vector<unsigned char> encryptedData;
 
-
     IV iv(2);
 
 
-    AesEncryptObj aes128(128);
-    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
 
 
-//    for(uint8_t & temp : encryptedData )
-//    {
-//        cout << std::hex << (int) temp;
-//    }
-//    cout << endl << endl;
+
+//    AesEncryptObj aes128(128);
+//    encryptedData = aes128.encrypt(plaintext, 16, aes128key, iv);
+
+
+
+
+
 
 
 //    AesEncryptObj aes192(192);
-//    encryptedData = aes192.encrypt(aes128plaintext, 16, aes192key);
+//    encryptedData = aes192.encrypt(plaintext, 16, aes192key, iv);
 
 
-//    AesEncryptObj aes256(256);
-//    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
-//
-//
-//
+    AesEncryptObj aes256(256);
+    encryptedData = aes256.encrypt(plaintext, 16, aes256key, iv);
+
+
+
     vector<unsigned char> decryptedData;
     unsigned char encrData[encryptedData.size()];
 
@@ -73,31 +73,45 @@ int main()
     {
         encrData[i] = encryptedData[i];
     }
-//
-//
-//
-//
-//
-    unsigned char iv2[2] = {0x045, 0x25};
 
-    AESDecryptObj aesDecr128(128);
-    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv2, 2);
+
+
+
+
+
+
+    for(const unsigned char & temp : encryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl;
+
+
+
+//
+//
+//
+//    unsigned char iv[2] = {0x045, 0x25};
+
+//    AESDecryptObj aesDecr128(128);
+//    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv);
 
 
 
 //    AESDecryptObj aesDecr192(192);
-//    decryptedData = aesDecr192.decrypt(encrData, encryptedData.size(), aes192key, iv, 2);
+//    decryptedData = aesDecr192.decrypt(encrData, encryptedData.size(), aes192key, iv);
 
 
-//    AESDecryptObj aesDecr256(256);
-//aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv, 2);
+    AESDecryptObj aesDecr256(256);
+    decryptedData = aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv);
 
 
-cout << endl << "DING DING" << endl << endl;
+    cout << "DING DING" << endl;
     for(const unsigned char & temp : decryptedData)
     {
         cout << std::hex << (int) temp;
     }
+    cout << endl << endl;
 
 
 
@@ -107,7 +121,7 @@ cout << endl << "DING DING" << endl << endl;
 
 
 //    AesEncryptObj aes256(256);
-//    vector<unsigned char> encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
+//    vector<unsigned char> encryptedData = aes256.encrypt(plaintext, 16, aes256key);
 //
 //    cout << endl << endl;
 //    for(const unsigned char & byte : encryptedData)
@@ -117,18 +131,15 @@ cout << endl << "DING DING" << endl << endl;
 
 
 
-//    const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
-//
-//
 //    byte left = 0x53;
 //    byte right = 0x04;
 //
 //
-//    byte result;
-//    result = left.galoisMultiply(right, mixColumnsIrreduce);
+//    left.galoisMultiply(right);
 //
 //
-//    cout << result;
+//    cout << std::hex << (int) left.rawData() << endl;
+
 
 
 
