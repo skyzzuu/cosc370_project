@@ -249,106 +249,6 @@ description:
 */
 void byte::galoisMultiply(byte rightByte)
 {
-//    const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
-//
-//
-//
-////    if high bit is set
-//    if(rightByte.rawData() >= 128)
-//    {
-//        vector<uint8_t> intermediateResults;
-//
-//
-//        //    for each power of 2 starting from right
-//        for(int i = 7; i >= 0; i--)
-//        {
-////        value of the current power
-//            uint8_t currentPower = powsOfTwo[i];
-//
-////        if the current power fits into the remaining value of the byte
-//            if (currentPower <= rightByte.data)
-//            {
-////            add the index position to the vector
-////            represents which bits are set
-//                intermediateResults.push_back(currentPower);
-//
-////            subtract the value from the byte
-//                rightByte.data -= currentPower;
-//            }
-//        }
-//
-//
-//
-//        if(intermediateResults.at(intermediateResults.size()-1) == 1)
-//        {
-//            intermediateResults.pop_back();
-//        }
-//
-//
-//
-//        if(intermediateResults.size() == 1 && intermediateResults[0] == 2)
-//        {
-//            this->data *= 2;
-//        }
-//
-//
-//        else {
-//            for (uint8_t &temp : intermediateResults) {
-//
-//                // current power of  2 being evaluated
-//                uint8_t currentPower = powsOfTwo[2];
-//
-//                // will store the result of previous xtime operation
-//                byte result;
-//
-//                result.xtime(*(this));
-//
-//
-//                // counter keeping track of index position of next power of two
-//                uint8_t counter = 3;
-//
-//
-//                // while the current power is less than or equal to the powers of 2 that make up the right byte
-//                while (currentPower <= temp && counter <= 8) {
-//
-//                    // get xtime of previous xtime
-//                    result.xtime(result);
-//
-//                    // move to next power of 2
-//                    currentPower = powsOfTwo[counter];
-//                    counter++;
-//                }
-//
-//
-//                // replace original number with result
-//                temp = result.data;
-//
-//
-//            }
-//
-//
-//
-//            //        if(this->rawData() * 2 != intermediateResults[0] || intermediateResults.size() > 1)
-//            //        {
-//            for (const uint8_t &temp : intermediateResults) {
-//                this->data = this->rawData() ^ temp;
-//            }
-//            //        }
-//
-//            //        else
-//            //        {
-//            //            this->data = intermediateResults[0];
-//            //        }
-//        }
-//    }
-//
-//    else
-//    {
-//        this->data *= rightByte.rawData();
-//    }
-
-
-
 
 //    start with 0
     byte result = 0;
@@ -371,7 +271,7 @@ void byte::galoisMultiply(byte rightByte)
         this->xtime(*this);
 
 
-//        bitwise shift the rightbyte over 1 to the right
+//        bitwise shift rightbyte 1 to the right
         rightByte.data = rightByte.rawData() >> 1;
 
 
