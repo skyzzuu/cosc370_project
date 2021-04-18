@@ -253,86 +253,96 @@ void byte::galoisMultiply(byte rightByte)
 
 
 
-    vector<uint8_t> intermediateResults;
-
-
-    //    for each power of 2 starting from right
-    for(int i = 7; i >= 0; i--)
+    if(this->rawData() * rightByte.rawData() > 255)
     {
+        vector<uint8_t> intermediateResults;
+
+
+        //    for each power of 2 starting from right
+        for(int i = 7; i >= 0; i--)
+        {
 //        value of the current power
-        uint8_t currentPower = powsOfTwo[i];
+            uint8_t currentPower = powsOfTwo[i];
 
 //        if the current power fits into the remaining value of the byte
-        if (currentPower <= rightByte.data)
-        {
+            if (currentPower <= rightByte.data)
+            {
 //            add the index position to the vector
 //            represents which bits are set
-            intermediateResults.push_back(currentPower);
+                intermediateResults.push_back(currentPower);
 
 //            subtract the value from the byte
-            rightByte.data -= currentPower;
-        }
-    }
-
-
-
-    if(intermediateResults.at(intermediateResults.size()-1) == 1)
-    {
-        intermediateResults.pop_back();
-    }
-
-
-    for(uint8_t & temp : intermediateResults)
-    {
-
-        // current power of  2 being evaluated
-        uint8_t currentPower = powsOfTwo[2];
-
-        // will store the result of previous xtime operation
-        byte result;
-
-        result.xtime(*(this));
-
-
-        // counter keeping track of index position of next power of two
-        uint8_t counter = 3;
-
-
-        // while the current power is less than or equal to the powers of 2 that make up the right byte
-        while(currentPower <= temp && counter <= 8)
-        {
-
-            // get xtime of previous xtime
-            result.xtime(result);
-
-            // move to next power of 2
-            currentPower = powsOfTwo[counter];
-            counter++;
+                rightByte.data -= currentPower;
+            }
         }
 
 
-        // replace original number with result
-        temp = result.data;
 
-
-
-
-    }
-
-
-
-    if(this->rawData() * 2 != intermediateResults[0] || intermediateResults.size() > 1)
-    {
-        for(const uint8_t & temp : intermediateResults)
+        if(intermediateResults.at(intermediateResults.size()-1) == 1)
         {
-            this->data = this->rawData() ^ temp;
+            intermediateResults.pop_back();
+        }
+
+
+        for(uint8_t & temp : intermediateResults)
+        {
+
+            // current power of  2 being evaluated
+            uint8_t currentPower = powsOfTwo[2];
+
+            // will store the result of previous xtime operation
+            byte result;
+
+            result.xtime(*(this));
+
+
+            // counter keeping track of index position of next power of two
+            uint8_t counter = 3;
+
+
+            // while the current power is less than or equal to the powers of 2 that make up the right byte
+            while(currentPower <= temp && counter <= 8)
+            {
+
+                // get xtime of previous xtime
+                result.xtime(result);
+
+                // move to next power of 2
+                currentPower = powsOfTwo[counter];
+                counter++;
+            }
+
+
+            // replace original number with result
+            temp = result.data;
+
+
+
+
+        }
+
+
+
+        if(this->rawData() * 2 != intermediateResults[0] || intermediateResults.size() > 1)
+        {
+            for(const uint8_t & temp : intermediateResults)
+            {
+                this->data = this->rawData() ^ temp;
+            }
+        }
+
+        else
+        {
+            this->data = intermediateResults[0];
         }
     }
 
     else
     {
-        this->data = intermediateResults[0];
+        this->data *= rightByte.rawData();
     }
+
+
 
 }
 

@@ -40,20 +40,20 @@ int main()
 //    aes256KeyExpand.encrypt(aes128plaintext, 16, aes256keyExpansionCipherKey);
 
 
-    vector<unsigned char> encryptedData;
-
-    IV iv(2);
-
-    AesEncryptObj aes128(128);
-    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
-
-
-
-    for(const unsigned char & temp : encryptedData)
-    {
-        cout << std::hex << (int) temp;
-    }
-    cout << endl << endl;
+//    vector<unsigned char> encryptedData;
+//
+//    IV iv(2);
+//
+//    AesEncryptObj aes128(128);
+//    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
+//
+//
+//
+//    for(const unsigned char & temp : encryptedData)
+//    {
+//        cout << std::hex << (int) temp;
+//    }
+//    cout << endl << endl;
 
 
 
@@ -117,7 +117,7 @@ int main()
 
 
 
-//    byte left = 0x63;
+//    byte left = 0x03;
 //    byte right = 0x02;
 //
 //
