@@ -28,8 +28,6 @@ byte.o:
 	g++ $(cflags) -g -c byte.cpp -o byte.o
 
 
-#FiniteField.o:
-	#g++ $(cflags) -g -c FiniteField.cpp -o FiniteField.o
 
 
 word.o:

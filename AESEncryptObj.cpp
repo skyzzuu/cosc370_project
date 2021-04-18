@@ -20,7 +20,6 @@ AesEncryptObj::AesEncryptObj(uint16_t keysize)
 //    AES-128
     if(keySize == 128)
     {
-        cout << "AES-128" << endl;
         nK = 4;
         nR = 10;
 

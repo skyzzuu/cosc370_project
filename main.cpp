@@ -26,88 +26,103 @@ int main()
     unsigned char aes256keyExpansionCipherKey[32] = {0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe, 0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77, 0x81, 0x1f, 0x35, 0x2c, 0x07, 0x3b, 0x61, 0x08, 0xd7, 0x2d, 0x98, 0x10, 0xa3, 0x09, 0x14, 0xdf, 0xf4};
 
 
-//    AesEncryptObj aes128KeyExpand(128);
-//
-//    aes128KeyExpand.encrypt(plaintext, 16, aes128keyExpansionCipherKey);
-
-
-//    AesEncryptObj aes192KeyExpand(192);
-//
-//    aes192KeyExpand.encrypt(plaintext, 16, aes192keyExpansionCipherKey);
-
-
-//    AesEncryptObj aes256KeyExpand(256);
-//    aes256KeyExpand.encrypt(plaintext, 16, aes256keyExpansionCipherKey);
-
-
-    vector<unsigned char> encryptedData;
-
     IV iv(2);
 
 
 
+//    AesEncryptObj aes128KeyExpand(128);
+//
+//    aes128KeyExpand.encrypt(plaintext, 16, aes128keyExpansionCipherKey);
+//
+//
+//    AesEncryptObj aes192KeyExpand(192);
+//
+//    aes192KeyExpand.encrypt(plaintext, 16, aes192keyExpansionCipherKey);
+//
+//
+//    AesEncryptObj aes256KeyExpand(256);
+//    aes256KeyExpand.encrypt(plaintext, 16, aes256keyExpansionCipherKey);
 
+
+
+
+
+
+    vector<unsigned char> aes128EncryptedData;
 
     AesEncryptObj aes128(128);
-    encryptedData = aes128.encrypt(plaintext, 16, aes128key, iv);
+    aes128EncryptedData = aes128.encrypt(plaintext, 16, aes128key, iv);
+
+
+
+    vector<unsigned char> aes192EncryptedData;
+
+    AesEncryptObj aes192(192);
+    aes192EncryptedData = aes192.encrypt(plaintext, 16, aes192key, iv);
+
+
+
+    vector<unsigned char> aes256EncryptedData;
+
+    AesEncryptObj aes256(256);
+    aes256EncryptedData = aes256.encrypt(plaintext, 16, aes256key, iv);
 
 
 
 
 
 
+    unsigned char aes128EncrData[aes128EncryptedData.size()];
 
-//    AesEncryptObj aes192(192);
-//    encryptedData = aes192.encrypt(plaintext, 16, aes192key, iv);
-
-
-//    AesEncryptObj aes256(256);
-//    encryptedData = aes256.encrypt(plaintext, 16, aes256key, iv);
-
-
-
-    vector<unsigned char> decryptedData;
-    unsigned char encrData[encryptedData.size()];
-
-    for(int i = 0; i < encryptedData.size(); i++)
+    for(int i = 0; i < aes128EncryptedData.size(); i++)
     {
-        encrData[i] = encryptedData[i];
+        aes128EncrData[i] = aes128EncryptedData[i];
+    }
+
+
+
+    unsigned char aes192EncrData[aes192EncryptedData.size()];
+
+    for(int i = 0; i < aes192EncryptedData.size(); i++)
+    {
+        aes192EncrData[i] = aes192EncryptedData[i];
+    }
+
+
+
+    unsigned char aes256EncrData[aes256EncryptedData.size()];
+
+    for(int i = 0; i < aes256EncryptedData.size(); i++)
+    {
+        aes256EncrData[i] = aes256EncryptedData[i];
     }
 
 
 
 
 
-
-
-    for(const unsigned char & temp : encryptedData)
-    {
-        cout << std::hex << (int) temp;
-    }
-    cout << endl << endl;
-
-
-
-//
-//
-//
-//    unsigned char iv[2] = {0x045, 0x25};
+    vector<unsigned char> aes128DecryptedData;
 
     AESDecryptObj aesDecr128(128);
-    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv);
+    aes128DecryptedData = aesDecr128.decrypt(aes128EncrData, aes128EncryptedData.size(), aes128key, iv);
 
 
 
-//    AESDecryptObj aesDecr192(192);
-//    decryptedData = aesDecr192.decrypt(encrData, encryptedData.size(), aes192key, iv);
+    vector<unsigned char> aes192DecryptedData;
+
+    AESDecryptObj aesDecr192(192);
+    aes192DecryptedData = aesDecr192.decrypt(aes192EncrData, aes192EncryptedData.size(), aes192key, iv);
 
 
-//    AESDecryptObj aesDecr256(256);
-//    decryptedData = aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv);
+    vector<unsigned char> aes256DecryptedData;
+
+    AESDecryptObj aesDecr256(256);
+    aes256DecryptedData = aesDecr256.decrypt(aes256EncrData, aes256EncryptedData.size(), aes256key, iv);
 
 
-    cout << "DING DING" << endl;
-    for(const unsigned char & temp : decryptedData)
+
+    cout << "AES-128 encrypted data" << endl;
+    for(const unsigned char & temp : aes128EncryptedData)
     {
         cout << std::hex << (int) temp;
     }
@@ -115,6 +130,50 @@ int main()
 
 
 
+    cout << "AES-128 decrypted data" << endl;
+    for(const unsigned char & temp : aes128DecryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl << endl;
+
+
+
+
+
+    cout << "AES-192 encrypted data" << endl;
+    for(const unsigned char & temp : aes192EncryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl;
+
+
+    cout << "AES-192 decrypted data" << endl;
+    for(const unsigned char & temp : aes192DecryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl << endl;
+
+
+
+
+
+    cout << "AES-256 encrypted data" << endl;
+    for(const unsigned char & temp : aes256EncryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl;
+
+
+    cout << "AES-256 decrypted data" << endl;
+    for(const unsigned char & temp : aes256DecryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl << endl;
 
 
 
