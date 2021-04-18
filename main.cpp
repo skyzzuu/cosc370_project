@@ -118,7 +118,7 @@ int main()
 
 
     byte left = 0x53;
-    byte right = 0x02;
+    byte right = 0x04;
 
 
     left.galoisMultiply(right);
