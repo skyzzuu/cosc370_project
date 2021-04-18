@@ -48,8 +48,8 @@ int main()
 
 
 
-//    AesEncryptObj aes128(128);
-//    encryptedData = aes128.encrypt(plaintext, 16, aes128key, iv);
+    AesEncryptObj aes128(128);
+    encryptedData = aes128.encrypt(plaintext, 16, aes128key, iv);
 
 
 
@@ -61,8 +61,8 @@ int main()
 //    encryptedData = aes192.encrypt(plaintext, 16, aes192key, iv);
 
 
-    AesEncryptObj aes256(256);
-    encryptedData = aes256.encrypt(plaintext, 16, aes256key, iv);
+//    AesEncryptObj aes256(256);
+//    encryptedData = aes256.encrypt(plaintext, 16, aes256key, iv);
 
 
 
@@ -93,8 +93,8 @@ int main()
 //
 //    unsigned char iv[2] = {0x045, 0x25};
 
-//    AESDecryptObj aesDecr128(128);
-//    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv);
+    AESDecryptObj aesDecr128(128);
+    decryptedData = aesDecr128.decrypt(encrData, encryptedData.size(), aes128key, iv);
 
 
 
@@ -102,8 +102,8 @@ int main()
 //    decryptedData = aesDecr192.decrypt(encrData, encryptedData.size(), aes192key, iv);
 
 
-    AESDecryptObj aesDecr256(256);
-    decryptedData = aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv);
+//    AESDecryptObj aesDecr256(256);
+//    decryptedData = aesDecr256.decrypt(encrData, encryptedData.size(), aes256key, iv);
 
 
     cout << "DING DING" << endl;
