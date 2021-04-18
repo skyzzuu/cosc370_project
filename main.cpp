@@ -121,7 +121,7 @@ int main()
 
 
     byte left = 0x53;
-    byte right = 0x03;
+    byte right = 0x02;
 
 
     byte result;
