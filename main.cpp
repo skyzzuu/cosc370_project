@@ -44,25 +44,25 @@ int main()
 
     IV iv(2);
 
-    AesEncryptObj aes128(128);
-    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
 
 
 
-    for(const unsigned char & temp : encryptedData)
-    {
-        cout << std::hex << (int) temp;
-    }
-    cout << endl << endl;
+
+//    AesEncryptObj aes128(128);
+//    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
+
+
+
+
 
 
 
 //    AesEncryptObj aes192(192);
-//    encryptedData = aes192.encrypt(aes128plaintext, 16, aes192key);
+//    encryptedData = aes192.encrypt(aes128plaintext, 16, aes192key, iv);
 
 
-//    AesEncryptObj aes256(256);
-//    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key);
+    AesEncryptObj aes256(256);
+    encryptedData = aes256.encrypt(aes128plaintext, 16, aes256key, iv);
 //
 //
 //
@@ -75,7 +75,20 @@ int main()
 ////        cout << std::hex << (int) encryptedData[i];
 //    }
 //
-//
+
+
+
+
+
+
+    for(const unsigned char & temp : encryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl;
+
+
+
 //
 //
 //
@@ -117,14 +130,14 @@ int main()
 
 
 
-    byte left = 0x53;
-    byte right = 0x04;
-
-
-    left.galoisMultiply(right);
-
-
-    cout << std::hex << (int) left.rawData() << endl;
+//    byte left = 0x53;
+//    byte right = 0x04;
+//
+//
+//    left.galoisMultiply(right);
+//
+//
+//    cout << std::hex << (int) left.rawData() << endl;
 
 
 

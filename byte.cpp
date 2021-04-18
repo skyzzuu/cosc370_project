@@ -350,12 +350,37 @@ void byte::galoisMultiply(byte rightByte)
 
 
 
-    if(rightByte.rawData() >= 128)
+//    start with 0
+    byte result = 0;
+
+
+//    run 8 times, once for each bit in b
+    for(uint8_t i = 0; i < 8; i++)
     {
+
+//        if the rightmost bit of b is currently set.
+//        shifting to the left 7, and then to the right 7
+//        will either leave you with 0 or 1 depending on what the right bit is
+        if(((unsigned char)(rightByte.data << 7)) >> 7)
+        {
+            result.data = result.rawData() ^ this->rawData();
+        }
+
+
+//        xtime operation
+        this->xtime(*this);
+
+
+//        bitwise shift the rightbyte over 1 to the right
+        rightByte.data = rightByte.rawData() >> 1;
+
 
     }
 
 
+
+//    set this byte equal to the result after multiplication
+    this->data = result.rawData();
 }
 
 
