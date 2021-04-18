@@ -321,9 +321,17 @@ void byte::galoisMultiply(byte rightByte)
 
 
 
-    for(const uint8_t & temp : intermediateResults)
+    if(this->rawData() * 2 != intermediateResults[0] || intermediateResults.size() > 1)
     {
-        this->data = this->rawData() ^ temp;
+        for(const uint8_t & temp : intermediateResults)
+        {
+            this->data = this->rawData() ^ temp;
+        }
+    }
+
+    else
+    {
+        this->data = intermediateResults[0];
     }
 
 }
