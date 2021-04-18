@@ -40,21 +40,21 @@ int main()
 //    aes256KeyExpand.encrypt(aes128plaintext, 16, aes256keyExpansionCipherKey);
 
 
-    vector<unsigned char> encryptedData;
-
-
-    IV iv(2);
-
-
-    AesEncryptObj aes128(128);
-    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
-
-
-    for(uint8_t & temp : encryptedData )
-    {
-        cout << std::hex << (int) temp;
-    }
-    cout << endl << endl;
+//    vector<unsigned char> encryptedData;
+//
+//
+//    IV iv(2);
+//
+//
+//    AesEncryptObj aes128(128);
+//    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
+//
+//
+//    for(uint8_t & temp : encryptedData )
+//    {
+//        cout << std::hex << (int) temp;
+//    }
+//    cout << endl << endl;
 
 
 //    AesEncryptObj aes192(192);
@@ -117,8 +117,18 @@ int main()
 
 
 
+    const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
 
 
+    byte left = 0x53;
+    byte right = 0x03;
+
+
+    byte result;
+    result = left.galoisMultiply(right, mixColumnsIrreduce);
+
+
+    cout << result;
 
 
 
