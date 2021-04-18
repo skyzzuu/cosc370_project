@@ -247,27 +247,114 @@ description:
     using irreducible polynomial given
 
 */
-byte byte::galoisMultiply(const byte & rightByte, const vector<uint8_t> & irreduce)
+void byte::galoisMultiply(byte rightByte)
 {
+    const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
 
-//    make version of this as finite field
-    FiniteField leftField = *this;
 
-//    make version of right byte as finite field
-    FiniteField rightField = rightByte;
 
-//    get result of finite field multiplication with given irreducible polynomial
-//    FiniteField object does heavy lifting for multiplication
-    FiniteField retField = leftField.galoisMultiply(rightField, irreduce);
+    vector<uint8_t> intermediateResults;
 
-//    convert back to byte
-    byte retByte;
-    retByte = retField;
 
-//    return resulting byte object
-    return retByte;
+    //    for each power of 2 starting from right
+    for(int i = 7; i >= 0; i--)
+    {
+//        value of the current power
+        uint8_t currentPower = powsOfTwo[i];
+
+//        if the current power fits into the remaining value of the byte
+        if (currentPower <= rightByte.data)
+        {
+//            add the index position to the vector
+//            represents which bits are set
+            intermediateResults.push_back(currentPower);
+
+//            subtract the value from the byte
+            rightByte.data -= currentPower;
+        }
+    }
+
+
+
+    if(intermediateResults.at(intermediateResults.size()-1) == 1)
+    {
+        intermediateResults.pop_back();
+    }
+
+
+    for(uint8_t & temp : intermediateResults)
+    {
+
+        // current power of  2 being evaluated
+        uint8_t currentPower = powsOfTwo[2];
+
+        // will store the result of previous xtime operation
+        byte result;
+
+        result.xtime(*(this));
+
+
+        // counter keeping track of index position of next power of two
+        uint8_t counter = 3;
+
+
+        // while the current power is less than or equal to the powers of 2 that make up the right byte
+        while(currentPower <= temp && counter <= 8)
+        {
+
+            // get xtime of previous xtime
+            result.xtime(result);
+
+            // move to next power of 2
+            currentPower = powsOfTwo[counter];
+            counter++;
+        }
+
+
+        // replace original number with result
+        temp = result.data;
+
+
+
+
+    }
+
+
+
+    for(const uint8_t & temp : intermediateResults)
+    {
+        this->data = this->rawData() ^ temp;
+    }
+
 }
 
+
+
+
+
+void byte::xtime(byte rightByte) {
+
+    // if msb is set
+    if(rightByte.data >= 128)
+    {
+        // bitwise left shift
+        rightByte.data = rightByte.data << 1;
+
+        // xor with 0x1b to reduce
+        rightByte.data = rightByte.data ^ 0x1b;
+    }
+
+        // msb not set
+    else
+    {
+
+        // left shift
+        rightByte.data  = rightByte.data << 1;
+    }
+
+
+    this->data = rightByte.data;
+}
 
 
 

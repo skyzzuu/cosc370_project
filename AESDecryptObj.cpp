@@ -604,19 +604,19 @@ void AESDecryptObj::InvMixColumns() {
             if(row == 0)
             {
 
-                firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(fourthConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(firstConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(secondConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(thirdConst);
 
 
 
@@ -628,19 +628,19 @@ void AESDecryptObj::InvMixColumns() {
             else if(row == 1)
             {
 
-                firstParen = firstParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(thirdConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(fourthConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(firstConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(secondConst);
 
 
             }
@@ -649,38 +649,38 @@ void AESDecryptObj::InvMixColumns() {
             {
 
 
-                firstParen = firstParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(secondConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(thirdConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(fourthConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(firstConst);
 
 
             }
             else
             {
 
-                firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(firstConst);
 
 
 
 
-                secondParen = secondParen.galoisMultiply(secondConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(secondConst);
 
 
-                thirdParen = thirdParen.galoisMultiply(thirdConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(thirdConst);
 
 
 
-                fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(fourthConst);
             }
 
 

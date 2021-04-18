@@ -8,7 +8,7 @@
 #include "word.h"
 #include "byte.h"
 #include "FiniteField.h"
-//#include "sodium.h"
+#include "IV.h"
 
 
 using namespace std;
@@ -42,9 +42,18 @@ int main()
 
     vector<unsigned char> encryptedData;
 
+    IV iv(2);
 
-//    AesEncryptObj aes128(128);
-//    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key);
+    AesEncryptObj aes128(128);
+    encryptedData = aes128.encrypt(aes128plaintext, 16, aes128key, iv);
+
+
+
+    for(const unsigned char & temp : encryptedData)
+    {
+        cout << std::hex << (int) temp;
+    }
+    cout << endl << endl;
 
 
 

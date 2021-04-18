@@ -230,7 +230,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 //        xor state with the iv, or previous ciphertext block if not the first round
-        xorBlock(inputVector, i, iv);
+//        xorBlock(inputVector, i, iv);
 
 
 
@@ -619,11 +619,11 @@ void AesEncryptObj::MixColumns()
             {
 
                 //                finite field multiply with 0x02
-                firstParen = firstParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(fourthConst);
 
 
                 //                finite field multiply with 0x03
-                secondParen = secondParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(firstConst);
 
 
 
@@ -633,11 +633,11 @@ void AesEncryptObj::MixColumns()
             {
 
 //                finite field multiply with 0x02
-                secondParen = secondParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                secondParen.galoisMultiply(fourthConst);
 
 
                 //                finite field multiply with 0x03
-                thirdParen = thirdParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(firstConst);
 
 
 
@@ -648,11 +648,11 @@ void AesEncryptObj::MixColumns()
 
 
 //                finite field multiply with 0x02
-                thirdParen = thirdParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                thirdParen.galoisMultiply(fourthConst);
 
 
                 //                finite field multiply with 0x03
-                fourthParen = fourthParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(firstConst);
 
 
             }
@@ -660,11 +660,11 @@ void AesEncryptObj::MixColumns()
             {
 
 //                finite field multiply with 0x03
-                firstParen = firstParen.galoisMultiply(firstConst, mixColumnsIrreduce);
+                firstParen.galoisMultiply(firstConst);
 
 
 //                finite field multiply with 0x02
-                fourthParen = fourthParen.galoisMultiply(fourthConst, mixColumnsIrreduce);
+                fourthParen.galoisMultiply(fourthConst);
             }
 
 

@@ -182,18 +182,31 @@ public:
 
 
     /*
-    return value: byte object
+    return value: none
     parameters:
         byte object to perform multiplication with
-        uint8_t vector representing irreducible polynomial to use for multiplication operation
 
 
     description:
         performs multiplication on byte treating them as finite field elements by performing modular reduction
-        using irreducible polynomial given
+        using irreducible polynomial given and modifies the byte to contain the new result.
 
     */
-    byte galoisMultiply(const byte &, const vector<uint8_t> &);
+    void galoisMultiply(byte);
+
+
+
+    /*
+    return value: none
+    parameters:
+        byte object
+
+
+    description:
+        performs xtime operation on copy of byte passed in and makes this equal to result.
+
+    */
+        void xtime(byte);
 
 
 
