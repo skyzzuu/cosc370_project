@@ -58,18 +58,20 @@ int main()
     };
 
 
-//    AesEncryptObj aes128KeyExpand(128);
-//
-//    aes128KeyExpand.encrypt(plaintext, 16, aes128keyExpansionCipherKey);
-//
-//
-//    AesEncryptObj aes192KeyExpand(192);
-//
-//    aes192KeyExpand.encrypt(plaintext, 16, aes192keyExpansionCipherKey);
-//
-//
-//    AesEncryptObj aes256KeyExpand(256);
-//    aes256KeyExpand.encrypt(plaintext, 16, aes256keyExpansionCipherKey);
+
+
+    unsigned char cbcaes256Key[32] = {0x60, 0x3d, 0xeb, 0x10, 0x15, 0xca, 0x71, 0xbe, 0x2b, 0x73, 0xae, 0xf0, 0x85, 0x7d, 0x77, 0x81};
+
+    unsigned char cbcaes256Plaintext[64] = {
+            0x6b, 0xc1, 0xbe, 0xe2, 0x2e, 0x40, 0x9f, 0x96, 0xe9, 0x3d, 0x7e, 0x11, 0x73, 0x93, 0x17, 0x2a,
+            0xae, 0x2d, 0x8a, 0x57, 0x1e, 0x03, 0xac, 0x9c, 0x9e, 0xb7, 0x6f, 0xac, 0x45, 0xaf, 0x8e, 0x51,
+            0x30, 0xc8, 0x1c, 0x46, 0xa3, 0x5c, 0xe4, 0x11, 0xe5, 0xfb, 0xc1, 0x19, 0x1a, 0x0a, 0x52, 0xef,
+            0xf6, 0x9f, 0x24, 0x45, 0xdf, 0x4f, 0x9b, 0x17, 0xad, 0x2b, 0x41, 0x7b, 0xe6, 0x6c, 0x37, 0x10
+    };
+
+
+
+
 
 
 
@@ -93,7 +95,7 @@ int main()
     vector<unsigned char> aes256EncryptedData;
 
     AesEncryptObj aes256(256);
-    aes256EncryptedData = aes256.encrypt(plaintext, 16, aes256key, iv);
+    aes256EncryptedData = aes256.encrypt(cbcaes256Plaintext, 64, cbcaes256Key, iv);
 
 
 
@@ -145,7 +147,7 @@ int main()
     vector<unsigned char> aes256DecryptedData;
 
     AESDecryptObj aesDecr256(256);
-    aes256DecryptedData = aesDecr256.decrypt(aes256EncrData, aes256EncryptedData.size(), aes256key, iv);
+    aes256DecryptedData = aesDecr256.decrypt(aes256EncrData, aes256EncryptedData.size(), cbcaes256Key, iv);
 
 
 
@@ -207,48 +209,7 @@ int main()
 
 
 
-//    AesEncryptObj aes256(256);
-//    vector<unsigned char> encryptedData = aes256.encrypt(plaintext, 16, aes256key);
-//
-//    cout << endl << endl;
-//    for(const unsigned char & byte : encryptedData)
-//    {
-//        cout << std::hex << (int) byte;
-//    }
-
-
-
-//    byte left = 0x53;
-//    byte right = 0x04;
-//
-//
-//    left.galoisMultiply(right);
-//
-//
-//    cout << std::hex << (int) left.rawData() << endl;
-
-
-
-
-
-
 
 
     return 0;
 }
-
-
-//
-//unsigned char * generateIV()
-//{
-//    unsigned char initVector[12] = {0};
-//
-////    initialize Sodium and populate IV. randombytes_buf() is a Sodium library function
-//    if(sodium_init() == -1)
-//        return nullptr;
-//    randombytes_buf(initVector, 12);
-//
-//    unsigned char *ptr = &initVector[0];
-//    return ptr;
-//}
-//
