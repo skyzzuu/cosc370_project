@@ -142,7 +142,7 @@ vector<unsigned char> AESDecryptObj::decrypt(const unsigned char * data, const u
 
 
 vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const uint16_t & inputlength, const unsigned char * ciphKey,
-                                       const IV &) {
+                                       const IV & iv) {
 
     inputLength = inputlength;
 
@@ -168,13 +168,6 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-
-
-
-
-
-
-
     //    total number of blocks in padded input
     uint16_t numBlocks = inputVector.size() / 16;
 
@@ -189,20 +182,17 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
+    vector<vector<unsigned char>> returnVector(numBlocks);
+
 
     KeyExpansion();
 
 
-
-    for(uint64_t i = 0; i < numBlocks; i++)
+//    for each block starting from right
+    for(int blockNum = numBlocks - 1; blockNum >= 0; blockNum--)
     {
-        copyInputToState(blockArray[i]);
 
-
-
-
-
-
+        copyInputToState(blockArray[blockNum]);
 
 
         AddRoundKey(nR);
@@ -210,7 +200,7 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-
+//        for each round
         for (int roundNum = nR-1; roundNum > 0; roundNum--)
         {
 
@@ -219,20 +209,7 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-
-
-
-
-
             InvSubBytes();
-
-
-
-
-
-
-
-
 
 
             AddRoundKey(roundNum);
@@ -253,18 +230,22 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
-
-
-
-
         AddRoundKey(0);
+
+
+
+//        after all decryption operations, xor with ciphertext block to the left
+        xorBlock(blockArray[blockNum-1], blockNum, iv);
+
 
 
         for(uint8_t row = 0; row < 4; row++)
         {
             for( auto & column : state)
             {
-                inputVector.push_back(column[row]);
+//                inputVector.push_back(column[row]);
+
+                returnVector[blockNum].push_back(column[row]);
             }
         }
 
@@ -275,11 +256,24 @@ vector<unsigned char > AESDecryptObj::decrypt(const unsigned char * data, const 
 
 
 
+//    for each block of decrypted data
+    for( const vector<unsigned char> & block : returnVector)
+    {
+
+//        for each byte in the block
+        for( const unsigned char & byteValue : block)
+        {
+//            add to inputVector
+            inputVector.push_back(byteValue);
+        }
+    }
 
 
 
 
 
+//    remove padding from last block of decrypted data, (or entire block if the entire last block is just padding)
+    removePadding(inputVector);
 
 
     return inputVector;
@@ -374,7 +368,7 @@ void AESDecryptObj::removePadding(vector<unsigned char> & input) {
 
     const uint32_t startSize = input.size();
 
-    for(uint32_t i = startSize - 1; i > (startSize - lastNum); i--)
+    for(uint32_t i = startSize - 1; i > (startSize - 1 - lastNum); i--)
     {
 
 //        if the byte matches what it should be
@@ -753,4 +747,76 @@ void AESDecryptObj::KeyExpansion() {
     }
 
 
+}
+
+
+
+
+
+void AESDecryptObj::xorBlock(const unsigned char blockArray[16]  , const uint8_t & blockNumber, const IV & iv)
+{
+
+
+
+//    first block (last one to be decrypted) is xor'd with the iv
+    if(blockNumber == 0)
+    {
+
+//        if iv is a full block (128 bits)
+        if(iv.getLength() == 16)
+        {
+            //        stores index position of current byte of the iv being used for xor
+            uint64_t curByte = 0;
+
+
+            for(uint8_t column = 0; column < 4; column++)
+            {
+                for(uint8_t row = 0; row < 4; row++)
+                {
+
+//                xor each byte of the state with corresponding byte of the iv
+                    state[row][column] ^= iv.getData()[curByte];
+                    curByte++;
+
+                }
+            }
+        }
+
+
+//        iv has incorrect length
+        else
+        {
+            string errMsg = "IV has incorrect length, should be 16 bytes, actual length is " + to_string((long) iv.getLength());
+
+            throw runtime_error(errMsg);
+
+        }
+    }
+
+
+        //    in every round except the first, the state is xor'd with the previous ciphertext block
+    else
+    {
+
+//        index position of first byte of the last ciphertext block
+        uint64_t curByte = 0;
+
+
+//        for each column of the state
+        for(uint8_t column = 0; column < 4; column++)
+        {
+
+//            for each row of the current column
+            for(uint8_t row = 0; row < 4; row++)
+            {
+
+//                xor each byte of the state with corresponding byte in the last ciphertext block
+//                state[row][column] = state[row][column] ^ inputVector.at(curByte);
+
+                state[row][column] ^= blockArray[curByte];
+
+                curByte++;
+            }
+        }
+    }
 }

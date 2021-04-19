@@ -67,18 +67,19 @@ parameters: none
 description:
   This function will return a pointer to the data contained within the IV. It is const so that the user cannot accidentally
      modify the data. Since the user passes in the length of the IV, they are responsible for making sure they do not read
-     beyond the end of the data. They should know how many bytes are in the IV.
+     beyond the end of the data, however the iv objects do allow seeing how many bytes are in the IV with getlength().
+
 */
     const unsigned char * getData() const;
 
 
 
     /*
-return value:  unsigned 64-bit integer representing the length of the data in the IV
+return value:  unsigned 64-bit integer
 parameters: none
 
 description:
-This function will return an integer representing how long the data in the IV is.
+This function will return an integer representing how long the data in the IV is in bytes.
 */
     uint64_t getLength() const;
 
@@ -88,11 +89,19 @@ private:
 //    actual data within the IV
     unsigned char * data = nullptr;
 
-//    length of the data in the iv
+//    length of the data in the iv in bytes
     uint64_t length;
 
 
-    TYPE getRandU8();
+    /*
+return value:  unsigned char
+parameters: none
+
+description:
+This function will return a cryptographically secure random byte by reading from the urandom device.
+     static because it does not change based on which object it is called on.
+*/
+    static TYPE getRandU8();
 
 
 };

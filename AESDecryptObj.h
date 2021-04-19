@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <iostream>
 #include "IV.h"
+#include <string>
 
 
 using namespace std;
@@ -276,6 +277,28 @@ private:
       and puts them into the keySched array.
 */
     void KeyExpansion();
+
+
+
+
+
+    /*
+    return value: none
+    parameters:
+        2d unsigned char array containing all the ciphertext blocks (should be blockArray passed in)
+        unsigned 8-bit integer containing the current round number
+
+    description:
+      This function will xor the state with the IV object passed in, in the first round,
+      or will find the previous ciphertext block and xor the state with it for every other round.
+
+      will xor state with ciphertext block before it after decrypting to restore to original plaintext.
+
+      This implements the cipher block chaining mode of operation.
+*/
+    void xorBlock(const unsigned char[16] , const uint8_t & , const IV & );
+
+
 
 
 

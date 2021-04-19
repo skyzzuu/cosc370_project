@@ -11,7 +11,7 @@
 /*
     return value: none (constructor)
     parameters:
-        unsigned char array containing the IV you want to use
+        unsigned char array containing the data for the IV you want to use
         unsigned 64-bit integer containing the length of the IV in bytes
 
     description:
@@ -21,8 +21,10 @@ IV::IV(const unsigned char * rawData, uint64_t Length) {
     length = Length;
 
 
+//    reserve memory needed for data
     data = new unsigned char[length];
 
+//    copy data passed in into data array
     for(uint64_t i = 0; i < length; i++)
     {
         data[i] = rawData[i];
@@ -43,7 +45,18 @@ IV::IV(uint64_t Length) {
     length = Length;
 
 
-//    generate IV here
+
+//    reserve memory needed for data
+    data  = new unsigned char[length];
+
+
+//        in each loop get a new byte from /dev/urandom and store it in array
+    for(uint64_t i = 0; i < length; i++)
+    {
+        data[i] = getRandU8();
+    }
+
+
 }
 
 
@@ -89,25 +102,41 @@ description:
 This function will return an integer representing how long the data in the IV is.
 */
 uint64_t IV::getLength() const {
+
+
+//    return length of IV  in bytes
     return length;
 }
 
 
 
 /*
-    return value: one value of type TYPE
+    return value: unsigned char
     parameters: none
-    description: this function returns one randomly generated value of type
-      TYPE using /dev/urandom. The returned value is used in generateIV().
+    description: this function returns one randomly generated unsigned char
+      using /dev/urandom. The returned value is used in generateIV().
 */
 TYPE IV::getRandU8()
 {
+
+//    start byte off as 0
     TYPE rnum = 0;
+
+//    open /dev/urandom for reading
     int fd = open(DEVURANDOM, O_RDONLY);
+
+//    if the file was opened correctly
     if (fd != -1)
     {
+
+//        read one byte and store in rnum
         (void) read(fd, (void *)&rnum, sizeof(TYPE));
+
+//        close /dev/urandom
         (void) close(fd);
     }
+
+
+//    return the byte
     return rnum;
 }

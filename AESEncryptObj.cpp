@@ -229,7 +229,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 //        xor state with the iv, or previous ciphertext block if not the first round
-//        xorBlock(inputVector, i, iv);
+        xorBlock(inputVector, i, iv);
 
 
 
@@ -743,48 +743,75 @@ void AesEncryptObj::KeyExpansion()
         unsigned 8-bit integer containing the current round number
 
     description:
-      This function will xor the state with the IV object contained in the AESEncryptObj class in the first round,
+      This function will xor the state with the IV object passed in, in the first round,
       or will find the previous ciphertext block and xor the state with it for every other round.
 
       This implements the cipher block chaining mode of operation.
 */
-void AesEncryptObj::xorBlock(const vector<unsigned char> & inputVector, const uint8_t & roundNum, const IV & iv)
+void AesEncryptObj::xorBlock(const vector<unsigned char> & inputVector, const uint8_t & blockNumber, const IV & iv)
 {
 
 
-    if(roundNum == 0)
+//    for first block, state is xor'd with the IV
+    if(blockNumber == 0)
     {
 
-        uint64_t curByte = 0;
-
-
-        for(uint8_t column = 0; column < 4; column++)
+//        if iv is a full block (128 bits)
+        if(iv.getLength() == 16)
         {
-            for(uint8_t row = 0; row < 4; row++)
+            //        stores index position of current byte of the iv being used for xor
+            uint64_t curByte = 0;
+
+
+            for(uint8_t column = 0; column < 4; column++)
             {
+                for(uint8_t row = 0; row < 4; row++)
+                {
 
 //                xor each byte of the state with corresponding byte of the iv
-                state[row][column] = state[row][column] ^ iv.getData()[curByte];
-                curByte++;
+                    state[row][column] ^= iv.getData()[curByte];
+                    curByte++;
+
+                }
             }
         }
 
+
+//        iv has incorrect length
+        else
+        {
+            string errMsg = "IV has incorrect length, should be 16 bytes, actual length is " + to_string((long) iv.getLength());
+
+
+            throw runtime_error(errMsg);
+
+        }
+
+
+
+
     }
+
+
+//    in every round except the first, the state is xor'd with the previous ciphertext block
     else
     {
 
 
 //        index position of first byte of the last ciphertext block
-        uint64_t curByte = roundNum * 16;
+        uint64_t curByte = (blockNumber - 1) * 16;
 
 
+//        for each column of the state
         for(uint8_t column = 0; column < 4; column++)
         {
+
+//            for each row of the current column
             for(uint8_t row = 0; row < 4; row++)
             {
 
 //                xor each byte of the state with corresponding byte in the last ciphertext block
-                state[row][column] = state[row][column] ^ inputVector[curByte];
+                state[row][column] = state[row][column] ^ inputVector.at(curByte);
                 curByte++;
             }
         }
