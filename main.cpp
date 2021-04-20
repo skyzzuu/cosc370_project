@@ -153,9 +153,23 @@ int main()
 
 
     cout << "AES-128 encrypted data" << endl;
-    for(const unsigned char & temp : aes128EncryptedData)
+    for(uint16_t i = 0; i < aes128EncryptedData.size(); i++)
     {
-        cout << std::hex << (int) temp;
+//        cout << std::hex << (int) temp;
+
+
+        if(i % 16 == 0)
+        {
+            cout << endl;
+            cout << std::hex << (int) aes128EncryptedData[i];
+        } else
+        {
+            cout << std::hex << (int) aes128EncryptedData[i];
+
+        }
+
+
+
     }
     cout << endl << endl;
 
