@@ -226,6 +226,7 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
 
 
 
+
     for(uint64_t i = 0; i < numBlocks; i++)
     {
         copyInputToState(blockArray[i], state);
