@@ -830,3 +830,71 @@ void AesEncryptObj::xorBlock(const vector<unsigned char> & inputVector, const ui
 
 
 
+
+
+/*
+return value: unsigned long long integer
+
+parameters:
+    unsigned char vector containing byte string
+    unsigned integer containing how many bits starting from msb to get
+
+description:
+    returns an unsigned long long representing what is contained in the specified number of
+    most significant bits.
+
+
+*/
+ unsigned long long AesEncryptObj::lsb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
+
+      unsigned long long returnValue = 0;
+
+
+//      get numerical representation of rightmost bits
+      unsigned long long numericalRepresentation = getLongRepresentation(bytes, (numBits / 8));
+
+    for( unsigned long long i = 0; i < numBits; i++)
+    {
+
+//        current power being evaluated
+         unsigned long long curPower = pow(2, i);
+
+
+
+//         if the current bit is set
+        if((numericalRepresentation & curPower) > 0)
+        {
+//            add to running total
+            returnValue += numericalRepresentation & curPower;
+        }
+    }
+
+
+    return returnValue;
+}
+
+
+
+
+
+ unsigned long long AesEncryptObj::getLongRepresentation(const vector<unsigned char> & bytes, uint64_t numBytes) {
+
+//    running total
+    unsigned long long returnValue = 0;
+
+//    counter keeping track of index position if you were starting at the right
+    uint32_t counter = 0;
+
+
+//    for each byte in bytes
+    for( int byteNum = bytes.size() - 1; byteNum >= bytes.size() - numBytes && byteNum >= 0; byteNum--)
+    {
+
+//        256^counter is to weigh the bytes significance when adding to the total
+        returnValue += pow(256, counter) * bytes.at(byteNum);
+        counter++;
+    }
+
+
+    return returnValue;
+}

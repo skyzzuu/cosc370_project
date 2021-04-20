@@ -88,6 +88,7 @@ description:
 
 
 
+
     /*
     return value:
         unsigned char vector containing plaintext corresponding to ciphertext given, \
@@ -119,32 +120,151 @@ description:
 
 
     */
-    void increment(vector<unsigned char> &, uint64_t);
+    static void increment(vector<unsigned char> &, uint64_t);
+
+
+
+
+
+//    /*
+//    return value: unsigned 32-bit integer
+//
+//    parameters:
+//        unsigned char vector containing bytes that you want to get 32-bit int representation of
+//        unsigned integer containing how many bytes are involved (essentially always 4)
+//
+//    description:
+//        takes the number of bytes requested and returns the 32-bit integer representation of the bytes.
+//
+//
+//    */
+//    static uint32_t get32BitRepresentation(const vector<unsigned char> &, uint8_t );
 
 
 
 
 
     /*
-    return value: unsigned 32-bit integer
+    return value: unsigned long long
 
     parameters:
-        pointer to bytes that you want to get 32-bit int representation of
+        unsigned char vector containing bytes that you want to get 32-bit int representation of
         unsigned integer containing how many bytes are involved (essentially always 4)
 
     description:
-        takes the number of bytes requested and returns the 32-bit integer representation of the bytes.
+        takes the number of bytes requested and returns the unsigned long long integer representation of the bytes.
 
 
     */
-    uint32_t get32BitRepresentation(unsigned char *, uint8_t );
+     unsigned long long getLongRepresentation(const vector<unsigned char> &, uint64_t);
 
 
 
 
+
+
+    /*
+    return value: unsigned char vector
+
+    parameters:
+        2 unsigned char vectors containing the blocks you want to multiply
+
+    description:
+        performs the multiplication operation on 2 blocks and returns the result
+
+
+    */
+    static vector<unsigned char> blockMultiply(const vector<unsigned char> &, const vector<unsigned char > &);
+
+
+
+
+    /*
+    return value: unsigned long long integer
+
+    parameters:
+        unsigned char vector containing byte string
+        unsigned integer containing how many bits starting from msb to get
+
+    description:
+        returns an unsigned long long representing what is contained in the specified number of
+        most significant bits.
+
+
+    */
+     unsigned long long msb(const vector<unsigned char> &, const uint64_t &);
+
+
+
+
+    /*
+    return value: unsigned long long integer
+
+    parameters:
+        unsigned char vector containing byte string
+        unsigned integer containing how many bits starting from lsb to get
+
+    description:
+        returns an unsigned long long representing what is contained in the specified number of
+        least significant bits.
+
+
+    */
+     unsigned long long lsb(const vector<unsigned char> &, const uint64_t &);
+
+
+
+
+
+    /*
+    return value: none
+
+    parameters: none
+
+    description:
+        generates the hash subkey by applying the block cipher to the zero block and stores the result in
+        the hashSubkey member variable.
+
+    */
+    void generateHashSubkey();
+
+
+
+
+    /*
+    return value: unsigned char vector, should be 16 bytes
+
+    parameters: bit string x that is a multiple of 128 bits
+
+    description:
+        takes the bit string given and the hashSubKey, and generates the block GHASH.
+
+    */
+    vector<unsigned char> GHASH(const vector<unsigned char> &);
+
+
+
+
+
+    /*
+    return value: unsigned char vector
+
+    parameters:
+        unsigned char vector containing the ICB
+        unsigned char vector containing a bit string
+
+    description:
+        takes the ICB and bit string given and returns a sequence of counter blocks.
+
+    */
+    vector<unsigned char> GCTR(const vector<unsigned char> &, const vector<unsigned char> &);
 
 
 private:
+
+
+    unsigned char hashSubkey[16] = {0};
+
 
 
 //    a byte of 1100001 followed by 120 zero bits

@@ -298,6 +298,17 @@ int main()
 
 
 
+    vector<unsigned char> x = {0x01, 0x02, 0x01};
+
+
+
+    AesEncryptObj longRepresent(128);
+    unsigned long long y = longRepresent.getLongRepresentation(x, 3);
+    cout << endl << (int) y << endl;
+
+
+    int y2 = longRepresent.lsb(x, 8);
+
 
 
 
