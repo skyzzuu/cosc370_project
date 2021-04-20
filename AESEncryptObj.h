@@ -68,7 +68,87 @@ description:
 
 
 
+
+    /*
+    return value:
+        2d vector containing the ciphertext in the first vector and the authentication tag in the second vector
+
+    parameters:
+        unsigned char vector containing the plaintext
+        unsigned char vector containing the additional authenticated data
+        96 bit IV object containing the iv to use
+
+    description:
+
+
+    */
+    vector<vector<unsigned char>> authenticatedEncryption(vector<unsigned char> &, vector<unsigned char> &, const IV &);
+
+
+
+
+
+    /*
+    return value:
+        unsigned char vector containing plaintext corresponding to ciphertext given, \
+        or throws the runtime error denoted FAIL
+
+    parameters:
+        96 bit IV object containing the iv to use
+        unsigned char vector containing the additional authenticated data
+        unsigned char vector containing the ciphertext
+        unsigned char vector containing authentication tag
+
+    description:
+
+
+    */
+    vector<unsigned char> authenticatedDecryption(const IV &, vector<unsigned char> &, vector<unsigned char > &, vector<unsigned char > &);
+
+
+
+    /*
+    return value: none
+
+    parameters:
+        vector of bytes (bit string x)
+        positive integer (s)
+
+    description:
+        increments the rightmost s bits in x mod (2^s)
+
+
+    */
+    void increment(vector<unsigned char> &, uint64_t);
+
+
+
+
+
+    /*
+    return value: unsigned 32-bit integer
+
+    parameters:
+        pointer to bytes that you want to get 32-bit int representation of
+        unsigned integer containing how many bytes are involved (essentially always 4)
+
+    description:
+        takes the number of bytes requested and returns the 32-bit integer representation of the bytes.
+
+
+    */
+    uint32_t get32BitRepresentation(unsigned char *, uint8_t );
+
+
+
+
+
+
 private:
+
+
+//    a byte of 1100001 followed by 120 zero bits
+    const byte multiplicationBlockConstant[16] = {byte(0xE1), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte(), byte() };
 
 
     uint16_t keySize = 0;
