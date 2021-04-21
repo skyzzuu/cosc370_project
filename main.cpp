@@ -302,27 +302,10 @@ int main()
     vector<unsigned char> x = {0xEC, 0x02, 0x01, 0x05, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04};
 
 
-
-    AesEncryptObj longRepresent(128);
-    unsigned long long y = longRepresent.getLongRepresentation(x, 3);
-    cout << endl << (int) y << endl;
+    AesEncryptObj aes(128);
 
 
-    unsigned long long y2 = longRepresent.lsb(x, 1);
-
-
-    cout << y2 << endl;
-    cout << y2+1 << endl;
-
-
-
-    cout << AesEncryptObj::bitSet(1, 1) << endl;
-
-
-
-
-
-
+    bitset<128> set1 = aes.getLongRepresentation(x, 1);
 
 
 

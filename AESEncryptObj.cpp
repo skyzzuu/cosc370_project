@@ -815,7 +815,24 @@ description:
 */
 bitset<128> AesEncryptObj::lsb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
 
-    return getLongRepresentation(bytes, (numBits / 8));
+    bitset<128> bitRepresentation =  getLongRepresentation(bytes, ceil(numBits / 8.0));
+
+
+    bitset<128> returnSet(0);
+
+
+    for(uint64_t i = 0; i < numBits; i++)
+    {
+
+        if(bitRepresentation.test(i))
+        {
+            returnSet.set(i);
+        }
+    }
+
+
+
+    return returnSet;
 }
 
 
@@ -835,16 +852,18 @@ description:
 
 
 */
-unsigned long long AesEncryptObj::msb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
-     unsigned long long returnValue = 0;
+bitset<128> AesEncryptObj::msb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
 
 
 //     copy leftmost bytes into new vector
-     vector<unsigned char> leftMostBytes(bytes.begin(), bytes.begin() + (numBits / 8));
+     vector<unsigned char> leftMostBytes(bytes.begin(), bytes.begin() + ceil(numBits / 8.0));
 
 
 //     get numerical representation of most significant bytes taking into account where they are
-     unsigned long long numericalRepresentation = getLongRepresentation(leftMostBytes, leftMostBytes.size());
+     bitset<128> bitRepresentation = getLongRepresentation(leftMostBytes, leftMostBytes.size());
+
+
+     bitset<128> returnSet(0);
 
 
 //     not needed anymore
@@ -852,26 +871,22 @@ unsigned long long AesEncryptObj::msb(const vector<unsigned char> & bytes, const
 
 
 
-    for( unsigned long long i = 0; i < numBits; i++)
+    for( uint64_t i = 0; i < numBits; i++)
     {
 
-//        current power being evaluated
-        unsigned long long curPower = pow(2, i);
-
-
-
 //         if the current bit is set
-        if((numericalRepresentation & curPower) > 0)
+        if(bitRepresentation.test(i))
         {
-//            add to running total
-            returnValue += numericalRepresentation & curPower;
+
+//            set in the return bitset
+            returnSet.set(i);
         }
     }
 
 
 
 
-    return returnValue;
+    return returnSet;
 
  }
 
@@ -898,23 +913,59 @@ description:
 
     const int numBits = numBytes * 8;
 
-    bitset<128> returnSet(0);
 
 //    counter keeping track of index position if you were starting at the right
     uint32_t counter = 0;
 
+    bitset<128> returnSet(0);
+
+
+    unsigned char const * curByte = nullptr;
 
 //    for each byte in bytes
-    for( int byteNum = bytes.size() - 1; byteNum >= bytes.size() - numBytes && byteNum >= 0; byteNum--)
+    for( uint64_t byteNum = bytes.size() - 1; byteNum >= bytes.size() - numBytes && byteNum >= 0; byteNum--)
     {
 
 //        256^counter is to weigh the bytes significance when adding to the total
-        returnValue += pow(256, counter) * bytes.at(byteNum);
+//        returnValue += pow(256, counter) * bytes.at(byteNum);
+//        counter++;
+
+
+//        unsigned char curByte = bytes.at(byteNum);
+
+        curByte = & bytes[byteNum];
+
+
+        uint16_t startOfByteInBitSet = 128 - ((counter+1) * 8);
+
+
+
+//        for each bit in the current byte
+        for(uint8_t bitNum = 0; bitNum < 8; bitNum++)
+        {
+
+//  TODO: need to case bitNum to an int type and use pow, not number directly
+
+//            if current bit is set
+            if((curByte & bitNum) > 0)
+            {
+                returnSet.set(startOfByteInBitSet);
+            }
+
+            startOfByteInBitSet++;
+        }
+
+
         counter++;
+
+
     }
 
 
-    return returnValue;
+
+
+
+    return returnSet;
 }
 
 
@@ -971,10 +1022,10 @@ description:
    takes the bit string given and the hashSubKey, and generates the block GHASH.
 
 */
-vector<unsigned char> AesEncryptObj::GHASH(const vector<unsigned char> & byteString)
-{
-
-}
+//vector<unsigned char> AesEncryptObj::GHASH(const vector<unsigned char> & byteString)
+//{
+//
+//}
 
 
 
