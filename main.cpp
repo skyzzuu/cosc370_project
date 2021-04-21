@@ -78,222 +78,222 @@ int main()
 
 
 
-
-    vector<unsigned char> aes128EncryptedData;
-
-    AesEncryptObj aes128(128);
-    aes128EncryptedData = aes128.encrypt(cbcaes128Plaintext, 64, cbcaes128Key, iv);
-
-
-
-    vector<unsigned char> aes192EncryptedData;
-
-    AesEncryptObj aes192(192);
-    aes192EncryptedData = aes192.encrypt(cbcaes192Plaintext, 64, cbcaes192Key, iv);
-
-
-
-    vector<unsigned char> aes256EncryptedData;
-
-    AesEncryptObj aes256(256);
-    aes256EncryptedData = aes256.encrypt(cbcaes256Plaintext, 64, cbcaes256Key, iv);
-
-
-
-
-
-
-    unsigned char aes128EncrData[aes128EncryptedData.size()];
-
-    for(int i = 0; i < aes128EncryptedData.size(); i++)
-    {
-        aes128EncrData[i] = aes128EncryptedData[i];
-    }
-
-
-
-    unsigned char aes192EncrData[aes192EncryptedData.size()];
-
-    for(int i = 0; i < aes192EncryptedData.size(); i++)
-    {
-        aes192EncrData[i] = aes192EncryptedData[i];
-    }
-
-
-
-    unsigned char aes256EncrData[aes256EncryptedData.size()];
-
-    for(int i = 0; i < aes256EncryptedData.size(); i++)
-    {
-        aes256EncrData[i] = aes256EncryptedData[i];
-    }
-
-
-
-
-
-    vector<unsigned char> aes128DecryptedData;
-
-    AESDecryptObj aesDecr128(128);
-    aes128DecryptedData = aesDecr128.decrypt(aes128EncrData, aes128EncryptedData.size(), cbcaes128Key, iv);
-
-
-
-    vector<unsigned char> aes192DecryptedData;
-
-    AESDecryptObj aesDecr192(192);
-    aes192DecryptedData = aesDecr192.decrypt(aes192EncrData, aes192EncryptedData.size(), cbcaes192Key, iv);
-
-
-    vector<unsigned char> aes256DecryptedData;
-
-    AESDecryptObj aesDecr256(256);
-    aes256DecryptedData = aesDecr256.decrypt(aes256EncrData, aes256EncryptedData.size(), cbcaes256Key, iv);
-
-
-
-    cout << "AES-128 encrypted data" << endl;
-    for(uint16_t i = 0; i < aes128EncryptedData.size(); i++)
-    {
-//        cout << std::hex << (int) temp;
-
-
-        if(i % 16 == 0)
-        {
-            cout << endl;
-            cout << std::hex << (int) aes128EncryptedData[i];
-        } else
-        {
-            cout << std::hex << (int) aes128EncryptedData[i];
-
-        }
-
-
-
-    }
-    cout << endl << endl << endl;
-
-
-    cout << "AES-128 decrypted data" << endl;
-    for(uint16_t i = 0; i < aes128DecryptedData.size(); i++)
-    {
-//        cout << std::hex << (int) temp;
-
-
-        if(i % 16 == 0)
-        {
-            cout << endl;
-            cout << std::hex << (int) aes128DecryptedData[i];
-        } else
-        {
-            cout << std::hex << (int) aes128DecryptedData[i];
-
-        }
-
-
-
-    }
-    cout << endl << endl << endl;
-
-
-
-
-
-
-    cout << "AES-192 encrypted data" << endl;
-    for(uint16_t i = 0; i < aes192EncryptedData.size(); i++)
-    {
-//        cout << std::hex << (int) temp;
-
-
-        if(i % 16 == 0)
-        {
-            cout << endl;
-            cout << std::hex << (int) aes192EncryptedData[i];
-        } else
-        {
-            cout << std::hex << (int) aes192EncryptedData[i];
-
-        }
-
-
-
-    }
-    cout << endl << endl << endl;
-
-
-
-
-    cout << "AES-192 decrypted data" << endl;
-    for(uint16_t i = 0; i < aes192DecryptedData.size(); i++)
-    {
-//        cout << std::hex << (int) temp;
-
-
-        if(i % 16 == 0)
-        {
-            cout << endl;
-            cout << std::hex << (int) aes192DecryptedData[i];
-        } else
-        {
-            cout << std::hex << (int) aes192DecryptedData[i];
-
-        }
-
-
-
-    }
-    cout << endl << endl << endl;
-
-
-
-
-
-
-    cout << "AES-256 encrypted data" << endl;
-    for(uint16_t i = 0; i < aes256EncryptedData.size(); i++)
-    {
-//        cout << std::hex << (int) temp;
-
-
-        if(i % 16 == 0)
-        {
-            cout << endl;
-            cout << std::hex << (int) aes256EncryptedData[i];
-        } else
-        {
-            cout << std::hex << (int) aes256EncryptedData[i];
-
-        }
-
-
-
-    }
-    cout << endl << endl << endl;
-
-
-
-
-    cout << "AES-256 decrypted data" << endl;
-    for(uint16_t i = 0; i < aes256DecryptedData.size(); i++)
-    {
-//        cout << std::hex << (int) temp;
-
-
-        if(i % 16 == 0)
-        {
-            cout << endl;
-            cout << std::hex << (int) aes256DecryptedData[i];
-        } else
-        {
-            cout << std::hex << (int) aes256DecryptedData[i];
-
-        }
-
-
-
-    }
-    cout << endl << endl << endl;
+//
+//    vector<unsigned char> aes128EncryptedData;
+//
+//    AesEncryptObj aes128(128);
+//    aes128EncryptedData = aes128.encrypt(cbcaes128Plaintext, 64, cbcaes128Key, iv);
+//
+//
+//
+//    vector<unsigned char> aes192EncryptedData;
+//
+//    AesEncryptObj aes192(192);
+//    aes192EncryptedData = aes192.encrypt(cbcaes192Plaintext, 64, cbcaes192Key, iv);
+//
+//
+//
+//    vector<unsigned char> aes256EncryptedData;
+//
+//    AesEncryptObj aes256(256);
+//    aes256EncryptedData = aes256.encrypt(cbcaes256Plaintext, 64, cbcaes256Key, iv);
+//
+//
+//
+//
+//
+//
+//    unsigned char aes128EncrData[aes128EncryptedData.size()];
+//
+//    for(int i = 0; i < aes128EncryptedData.size(); i++)
+//    {
+//        aes128EncrData[i] = aes128EncryptedData[i];
+//    }
+//
+//
+//
+//    unsigned char aes192EncrData[aes192EncryptedData.size()];
+//
+//    for(int i = 0; i < aes192EncryptedData.size(); i++)
+//    {
+//        aes192EncrData[i] = aes192EncryptedData[i];
+//    }
+//
+//
+//
+//    unsigned char aes256EncrData[aes256EncryptedData.size()];
+//
+//    for(int i = 0; i < aes256EncryptedData.size(); i++)
+//    {
+//        aes256EncrData[i] = aes256EncryptedData[i];
+//    }
+//
+//
+//
+//
+//
+//    vector<unsigned char> aes128DecryptedData;
+//
+//    AESDecryptObj aesDecr128(128);
+//    aes128DecryptedData = aesDecr128.decrypt(aes128EncrData, aes128EncryptedData.size(), cbcaes128Key, iv);
+//
+//
+//
+//    vector<unsigned char> aes192DecryptedData;
+//
+//    AESDecryptObj aesDecr192(192);
+//    aes192DecryptedData = aesDecr192.decrypt(aes192EncrData, aes192EncryptedData.size(), cbcaes192Key, iv);
+//
+//
+//    vector<unsigned char> aes256DecryptedData;
+//
+//    AESDecryptObj aesDecr256(256);
+//    aes256DecryptedData = aesDecr256.decrypt(aes256EncrData, aes256EncryptedData.size(), cbcaes256Key, iv);
+//
+//
+//
+//    cout << "AES-128 encrypted data" << endl;
+//    for(uint16_t i = 0; i < aes128EncryptedData.size(); i++)
+//    {
+////        cout << std::hex << (int) temp;
+//
+//
+//        if(i % 16 == 0)
+//        {
+//            cout << endl;
+//            cout << std::hex << (int) aes128EncryptedData[i];
+//        } else
+//        {
+//            cout << std::hex << (int) aes128EncryptedData[i];
+//
+//        }
+//
+//
+//
+//    }
+//    cout << endl << endl << endl;
+//
+//
+//    cout << "AES-128 decrypted data" << endl;
+//    for(uint16_t i = 0; i < aes128DecryptedData.size(); i++)
+//    {
+////        cout << std::hex << (int) temp;
+//
+//
+//        if(i % 16 == 0)
+//        {
+//            cout << endl;
+//            cout << std::hex << (int) aes128DecryptedData[i];
+//        } else
+//        {
+//            cout << std::hex << (int) aes128DecryptedData[i];
+//
+//        }
+//
+//
+//
+//    }
+//    cout << endl << endl << endl;
+//
+//
+//
+//
+//
+//
+//    cout << "AES-192 encrypted data" << endl;
+//    for(uint16_t i = 0; i < aes192EncryptedData.size(); i++)
+//    {
+////        cout << std::hex << (int) temp;
+//
+//
+//        if(i % 16 == 0)
+//        {
+//            cout << endl;
+//            cout << std::hex << (int) aes192EncryptedData[i];
+//        } else
+//        {
+//            cout << std::hex << (int) aes192EncryptedData[i];
+//
+//        }
+//
+//
+//
+//    }
+//    cout << endl << endl << endl;
+//
+//
+//
+//
+//    cout << "AES-192 decrypted data" << endl;
+//    for(uint16_t i = 0; i < aes192DecryptedData.size(); i++)
+//    {
+////        cout << std::hex << (int) temp;
+//
+//
+//        if(i % 16 == 0)
+//        {
+//            cout << endl;
+//            cout << std::hex << (int) aes192DecryptedData[i];
+//        } else
+//        {
+//            cout << std::hex << (int) aes192DecryptedData[i];
+//
+//        }
+//
+//
+//
+//    }
+//    cout << endl << endl << endl;
+//
+//
+//
+//
+//
+//
+//    cout << "AES-256 encrypted data" << endl;
+//    for(uint16_t i = 0; i < aes256EncryptedData.size(); i++)
+//    {
+////        cout << std::hex << (int) temp;
+//
+//
+//        if(i % 16 == 0)
+//        {
+//            cout << endl;
+//            cout << std::hex << (int) aes256EncryptedData[i];
+//        } else
+//        {
+//            cout << std::hex << (int) aes256EncryptedData[i];
+//
+//        }
+//
+//
+//
+//    }
+//    cout << endl << endl << endl;
+//
+//
+//
+//
+//    cout << "AES-256 decrypted data" << endl;
+//    for(uint16_t i = 0; i < aes256DecryptedData.size(); i++)
+//    {
+////        cout << std::hex << (int) temp;
+//
+//
+//        if(i % 16 == 0)
+//        {
+//            cout << endl;
+//            cout << std::hex << (int) aes256DecryptedData[i];
+//        } else
+//        {
+//            cout << std::hex << (int) aes256DecryptedData[i];
+//
+//        }
+//
+//
+//
+//    }
+//    cout << endl << endl << endl;
 
 
 
@@ -307,7 +307,11 @@ int main()
     cout << endl << (int) y << endl;
 
 
-    int y2 = longRepresent.lsb(x, 8);
+    int y2 = longRepresent.lsb(x, 16);
+
+
+    cout << y2 << endl;
+    cout << y2+1 << endl;
 
 
 

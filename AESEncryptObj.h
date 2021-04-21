@@ -28,13 +28,15 @@ public:
     AesEncryptObj(uint16_t);
     ~AesEncryptObj();
 
+
+
+
     /*
     return value: unsigned char vector containing encrypted bytes
     parameters:
       const unsigned char * containing the bytes to encrypt
       unsigned integer representing how many bytes are in the input
       const unsigned char * containing the encryption key to use
-      IV object containing IV to use
 
 
     description:
@@ -42,46 +44,28 @@ public:
       of the input data in the form of an unsigned char vector.
       encrypts using the cipher block chaining mode of operation.
 
- */
-    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char *, const IV &);
+    */
+    vector<unsigned char> cipher(const unsigned char * , uint64_t , const unsigned char *);
+
+
+
 
 
     /*
-return value: unsigned char vector containing encrypted bytes
-parameters:
-  const unsigned char * containing the bytes to encrypt
-  unsigned integer representing how many bytes are in the input
-  const unsigned char * containing the encryption key to use
-  unsigned integer representing how many bytes are in the key
-  unsigned char * pointing to the data to be used as the IV
-  unsigned integer representing the length of the IV data being passed in
+return value:
+    unsigned char vector containing plaintext corresponding to ciphertext given, \
+    or throws the runtime error denoted FAIL
 
+parameters:
+    96 bit IV object containing the iv to use
+    unsigned char vector containing the additional authenticated data
+    unsigned char vector containing the ciphertext
+    unsigned char vector containing authentication tag
 
 description:
-  takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
-  of the input data in the form of an unsigned char vector.
-  encrypts using the cipher block chaining mode of operation.
+
 
 */
-    vector<unsigned char> encrypt(const unsigned char * , uint64_t , const unsigned char *, const unsigned char *, uint64_t);
-
-
-
-
-
-    /*
-    return value:
-        2d vector containing the ciphertext in the first vector and the authentication tag in the second vector
-
-    parameters:
-        unsigned char vector containing the plaintext
-        unsigned char vector containing the additional authenticated data
-        96 bit IV object containing the iv to use
-
-    description:
-
-
-    */
     vector<vector<unsigned char>> authenticatedEncryption(vector<unsigned char> &, vector<unsigned char> &, const IV &);
 
 
@@ -89,21 +73,21 @@ description:
 
 
 
+
+
     /*
-    return value:
-        unsigned char vector containing plaintext corresponding to ciphertext given, \
-        or throws the runtime error denoted FAIL
+return value:
+    2d vector containing the ciphertext in the first vector and the authentication tag in the second vector
 
-    parameters:
-        96 bit IV object containing the iv to use
-        unsigned char vector containing the additional authenticated data
-        unsigned char vector containing the ciphertext
-        unsigned char vector containing authentication tag
+parameters:
+    unsigned char vector containing the plaintext
+    unsigned char vector containing the additional authenticated data
+    96 bit IV object containing the iv to use
 
-    description:
+description:
 
 
-    */
+*/
     vector<unsigned char> authenticatedDecryption(const IV &, vector<unsigned char> &, vector<unsigned char > &, vector<unsigned char > &);
 
 
@@ -123,22 +107,6 @@ description:
     static void increment(vector<unsigned char> &, uint64_t);
 
 
-
-
-
-//    /*
-//    return value: unsigned 32-bit integer
-//
-//    parameters:
-//        unsigned char vector containing bytes that you want to get 32-bit int representation of
-//        unsigned integer containing how many bytes are involved (essentially always 4)
-//
-//    description:
-//        takes the number of bytes requested and returns the 32-bit integer representation of the bytes.
-//
-//
-//    */
-//    static uint32_t get32BitRepresentation(const vector<unsigned char> &, uint8_t );
 
 
 
@@ -219,14 +187,14 @@ description:
     /*
     return value: none
 
-    parameters: none
+    parameters: unsigned char pointer pointing to cipher key
 
     description:
         generates the hash subkey by applying the block cipher to the zero block and stores the result in
         the hashSubkey member variable.
 
     */
-    void generateHashSubkey();
+    void generateHashSubkey(const unsigned char *);
 
 
 
@@ -234,7 +202,7 @@ description:
     /*
     return value: unsigned char vector, should be 16 bytes
 
-    parameters: bit string x that is a multiple of 128 bits
+    parameters: bytes string x that is a multiple of 128 bits
 
     description:
         takes the bit string given and the hashSubKey, and generates the block GHASH.

@@ -127,32 +127,6 @@ AesEncryptObj::~AesEncryptObj() {
 
 
 
-/*
-return value: unsigned char vector containing encrypted bytes
-parameters:
-const unsigned char * containing the bytes to encrypt
-unsigned integer representing how many bytes are in the input
-const unsigned char * containing the encryption key to use
-unsigned integer representing how many bytes are in the key
-unsigned char * pointing to the data to be used as the IV
-unsigned integer representing the length of the IV data being passed in
-
-
-description:
-takes the bytes from the input data given, uses the bytes from the key given, and returns the encrypted version
-of the input data in the form of an unsigned char vector.
-encrypts using the cipher block chaining mode of operation.
-
-*/
-vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey,
-                                             const unsigned char * ivData, uint64_t ivLength) {
-
-//    make iv object from data and length given
-    IV iv(ivData, ivLength);
-
-//    call main encrypt function with previously made iv object and return the result
-    return encrypt(data, inputlength, ciphKey, iv);
-}
 
 
 
@@ -163,7 +137,6 @@ parameters:
   const unsigned char * containing the bytes to encrypt
   unsigned integer representing how many bytes are in the input
   const unsigned char * containing the encryption key to use
-  IV object containing IV to use
 
 
 description:
@@ -172,7 +145,7 @@ description:
   encrypts using the cipher block chaining mode of operation.
 
 */
-vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey, const IV & iv)
+vector<unsigned char> AesEncryptObj::cipher(const unsigned char * data, uint64_t inputlength, const unsigned char * ciphKey)
 {
 
     inputLength = inputlength;
@@ -230,11 +203,6 @@ vector<unsigned char> AesEncryptObj::encrypt(const unsigned char * data, uint64_
     for(uint64_t i = 0; i < numBlocks; i++)
     {
         copyInputToState(blockArray[i], state);
-
-
-
-//        xor state with the iv, or previous ciphertext block if not the first round
-        xorBlock(inputVector, i, iv);
 
 
 
@@ -877,6 +845,75 @@ description:
 
 
 
+/*
+return value: unsigned long long integer
+
+parameters:
+    unsigned char vector containing byte string
+    unsigned integer containing how many bits starting from msb to get
+
+description:
+    returns an unsigned long long representing what is contained in the specified number of
+    most significant bits.
+
+
+*/
+unsigned long long AesEncryptObj::msb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
+     unsigned long long returnValue = 0;
+
+
+//     copy leftmost bytes into new vector
+     vector<unsigned char> leftMostBytes(bytes.begin(), bytes.begin() + (numBits / 8));
+
+
+//     get numerical representation of most significant bytes taking into account where they are
+     unsigned long long numericalRepresentation = getLongRepresentation(leftMostBytes, leftMostBytes.size());
+
+
+//     not needed anymore
+     leftMostBytes.clear();
+
+
+
+    for( unsigned long long i = 0; i < numBits; i++)
+    {
+
+//        current power being evaluated
+        unsigned long long curPower = pow(2, i);
+
+
+
+//         if the current bit is set
+        if((numericalRepresentation & curPower) > 0)
+        {
+//            add to running total
+            returnValue += numericalRepresentation & curPower;
+        }
+    }
+
+
+
+
+    return returnValue;
+
+ }
+
+
+
+
+/*
+return value: unsigned long long
+
+parameters:
+    unsigned char vector containing bytes that you want to get 32-bit int representation of
+    unsigned integer containing how many bytes are involved (essentially always 4)
+
+description:
+    takes the number of bytes requested and returns the unsigned long long integer representation of the bytes.
+
+
+
+*/
  unsigned long long AesEncryptObj::getLongRepresentation(const vector<unsigned char> & bytes, uint64_t numBytes) {
 
 //    running total
@@ -898,3 +935,65 @@ description:
 
     return returnValue;
 }
+
+
+
+
+
+/*
+return value: none
+
+parameters: unsigned char pointer pointing to cipher key
+
+description:
+    generates the hash subkey by applying the block cipher to the zero block and stores the result in
+    the hashSubkey member variable.
+
+*/
+void AesEncryptObj::generateHashSubkey(const unsigned char * ciphKey) {
+
+//     zero block is a 128-bit block of all zeros
+     const unsigned char zeroBlock[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+//     apply cipher to zeroBlock
+     vector<unsigned char > subkey = cipher(zeroBlock, 16, ciphKey);
+
+
+//     should only return 16 bytes
+     if(subkey.size() == 16)
+     {
+
+//         copy bytes from subkey into member variable
+         for(uint8_t i = 0; i < 16; i++)
+         {
+             hashSubkey[i] = subkey.at(i);
+         }
+     }
+
+
+     else
+     {
+//         throw cipher error here
+     }
+
+
+ }
+
+
+
+
+/*
+return value: unsigned char vector, should be 16 bytes
+
+parameters: bytes string x that is a multiple of 128 bits
+
+description:
+   takes the bit string given and the hashSubKey, and generates the block GHASH.
+
+*/
+vector<unsigned char> AesEncryptObj::GHASH(const vector<unsigned char> & byteString)
+{
+
+}
+
+
