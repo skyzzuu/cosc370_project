@@ -813,32 +813,9 @@ description:
 
 
 */
- unsigned long long AesEncryptObj::lsb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
+bitset<128> AesEncryptObj::lsb(const vector<unsigned char> & bytes, const uint64_t & numBits) {
 
-      unsigned long long returnValue = 0;
-
-
-//      get numerical representation of rightmost bits
-      unsigned long long numericalRepresentation = getLongRepresentation(bytes, (numBits / 8));
-
-    for( unsigned long long i = 0; i < numBits; i++)
-    {
-
-//        current power being evaluated
-         unsigned long long curPower = pow(2, i);
-
-
-
-//         if the current bit is set
-        if((numericalRepresentation & curPower) > 0)
-        {
-//            add to running total
-            returnValue += numericalRepresentation & curPower;
-        }
-    }
-
-
-    return returnValue;
+    return getLongRepresentation(bytes, (numBits / 8));
 }
 
 
@@ -914,10 +891,14 @@ description:
 
 
 */
- unsigned long long AesEncryptObj::getLongRepresentation(const vector<unsigned char> & bytes, uint64_t numBytes) {
+ bitset<128> AesEncryptObj::getLongRepresentation(const vector<unsigned char> & bytes, uint64_t numBytes) {
 
 //    running total
     unsigned long long returnValue = 0;
+
+    const int numBits = numBytes * 8;
+
+    bitset<128> returnSet(0);
 
 //    counter keeping track of index position if you were starting at the right
     uint32_t counter = 0;
@@ -952,8 +933,7 @@ description:
 */
 void AesEncryptObj::generateHashSubkey(const unsigned char * ciphKey) {
 
-//     zero block is a 128-bit block of all zeros
-     const unsigned char zeroBlock[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
 //     apply cipher to zeroBlock
      vector<unsigned char > subkey = cipher(zeroBlock, 16, ciphKey);
@@ -997,3 +977,95 @@ vector<unsigned char> AesEncryptObj::GHASH(const vector<unsigned char> & byteStr
 }
 
 
+
+
+
+/*
+return value: unsigned char vector
+
+parameters:
+    2 unsigned char vectors containing the blocks you want to multiply
+
+description:
+    performs the multiplication operation on 2 blocks and returns the result
+
+
+*/
+vector<unsigned char > AesEncryptObj::blockMultiply(const vector<unsigned char> & leftBlock,
+                                                           const vector<unsigned char> & rightBlock) {
+
+
+//    129 blocks, the last block will be copied into a vector and returned
+//    auto * zBLock = new unsigned char[129][16];
+
+    //    129 blocks
+//    auto * vBlocks = new unsigned char[129][16];
+
+
+//    starts off as block of zeros
+    unsigned char curZBlock[16] = {0};
+
+
+    unsigned char curVBlock[16] = {0};
+
+
+
+//    copy block y into V
+    for(uint8_t i = 0; i < 16; i++)
+    {
+        curVBlock[i] = rightBlock.at(i);
+    }
+
+
+
+
+////    in each loop, set curBlock equal to next block
+//    for(uint8_t i = 0; i <= 127; i++)
+//    {
+//
+//
+//
+//
+//
+//    }
+
+
+
+
+
+
+
+
+    vector<unsigned char > returnBlock(16, 0);
+
+
+    for(uint8_t i = 0; i < 16; i++)
+    {
+
+//        add bytes from final zBlock to return vector
+        returnBlock[i] = curZBlock[i];
+    }
+
+
+
+
+
+    return returnBlock;
+}
+
+
+
+//
+//
+//bool AesEncryptObj::bitSet(const unsigned long long int & number, uint16_t bitNumber) {
+//
+////    get the value of 2 to
+//    uint16_t curPower = pow(2, (128 - bitNumber));
+//
+//
+////    0 if the bit is not set
+////    will be the value at that particular bit if it is set (E.G. it will be greater than 0)
+////    for example if evaluating 00000010 (2) and seeing if bit 7 is set, will return true
+//    return (number & curPower) > 0;
+//
+//}

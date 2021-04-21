@@ -9,6 +9,7 @@
 #include "byte.h"
 #include "FiniteField.h"
 #include "IV.h"
+#include <bitset>
 
 
 using namespace std;
@@ -298,7 +299,7 @@ int main()
 
 
 
-    vector<unsigned char> x = {0x01, 0x02, 0x01};
+    vector<unsigned char> x = {0xEC, 0x02, 0x01, 0x05, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04};
 
 
 
@@ -307,11 +308,17 @@ int main()
     cout << endl << (int) y << endl;
 
 
-    int y2 = longRepresent.lsb(x, 16);
+    unsigned long long y2 = longRepresent.lsb(x, 1);
 
 
     cout << y2 << endl;
     cout << y2+1 << endl;
+
+
+
+    cout << AesEncryptObj::bitSet(1, 1) << endl;
+
+
 
 
 

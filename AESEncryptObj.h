@@ -15,6 +15,7 @@
 #include <iostream>
 #include "IV.h"
 #include <string>
+#include <bitset>
 
 
 
@@ -124,7 +125,7 @@ description:
 
 
     */
-     unsigned long long getLongRepresentation(const vector<unsigned char> &, uint64_t);
+     bitset<128> getLongRepresentation(const vector<unsigned char> &, uint64_t);
 
 
 
@@ -148,37 +149,37 @@ description:
 
 
     /*
-    return value: unsigned long long integer
+    return value: bitset with 128 bits
 
     parameters:
         unsigned char vector containing byte string
         unsigned integer containing how many bits starting from msb to get
 
     description:
-        returns an unsigned long long representing what is contained in the specified number of
+        returns bitset representing what is contained in the specified number of
         most significant bits.
 
 
     */
-     unsigned long long msb(const vector<unsigned char> &, const uint64_t &);
+     bitset<128> msb(const vector<unsigned char> &, const uint64_t &);
 
 
 
 
     /*
-    return value: unsigned long long integer
+    return value: bitset with 128 bits
 
     parameters:
         unsigned char vector containing byte string
         unsigned integer containing how many bits starting from lsb to get
 
     description:
-        returns an unsigned long long representing what is contained in the specified number of
+        returns an bitset representing what is contained in the specified number of
         least significant bits.
 
 
     */
-     unsigned long long lsb(const vector<unsigned char> &, const uint64_t &);
+     bitset<128> lsb(const vector<unsigned char> &, const uint64_t &);
 
 
 
@@ -228,7 +229,31 @@ description:
     vector<unsigned char> GCTR(const vector<unsigned char> &, const vector<unsigned char> &);
 
 
+
+
+//    /*
+//    return value: bool
+//
+//    parameters:
+//        unsigned long long integer containing number to check
+//        unsigned integer containing the bit number to check  (0 is leftmost bit)
+//
+//    description:
+//        checks to see if the bit specified is set in the number passed in.
+//
+//        E.G. if the number passed in is 01101100, and the bit number passed in is 0, false will be returned since
+//        the leftmost bit is not set.
+//
+//    */
+//    static bool bitSet(const unsigned long long &, uint16_t);
+
+
+
 private:
+
+
+
+    const unsigned char zeroBlock[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 
     unsigned char hashSubkey[16] = {0};
