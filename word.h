@@ -13,6 +13,7 @@
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
+#include <exception>
 
 using namespace std;
 
@@ -20,7 +21,6 @@ using namespace std;
 class word
 {
 public:
-
 
     /*
     return value: word object (constructor for word object)
@@ -201,13 +201,7 @@ private:
 
 
 
-    /* EXCEPTION CLASS */
 
-    //    used when index position that isn't in the range 0-3 is given
-    class OutOfBounds {
-    public:
-        OutOfBounds() {}
-    };
 };
 
 

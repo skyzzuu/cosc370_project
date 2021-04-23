@@ -122,7 +122,7 @@ byte * word::operator[](uint8_t i) {
 //    invalid index position in word
     else
     {
-        throw OutOfBounds();
+        throw runtime_error("parameter passed to index operator on word object is out of bounds. Range: 0 <= i <= 3");
     }
 }
 
