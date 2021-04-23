@@ -279,7 +279,8 @@ void AesEncryptObj::padInput(vector<unsigned char> & inputVector)
 /*
    return value: none
    parameters:
-     2d unsigned char vector that will hold the blocks of input data
+     2d array that will contain the individual blocks in a separated format
+     unsigned integer representing how many blocks are in the input data
      unsigned char vector that contains the input data
 
    description:

@@ -160,11 +160,11 @@ int main()
 
         if(i % 16 == 0)
         {
-            cout << endl;
-            cout << std::hex << (int) aes128EncryptedData[i];
+            cout << endl << endl;
+            cout << std::hex << (int) aes128EncryptedData.at(i);
         } else
         {
-            cout << std::hex << (int) aes128EncryptedData[i];
+            cout << std::hex << (int) aes128EncryptedData.at(i);
 
         }
 
@@ -176,28 +176,78 @@ int main()
 
 
     cout << "AES-128 decrypted data" << endl;
-    for(const unsigned char & temp : aes128DecryptedData)
+    for(uint16_t i = 0; i < aes128DecryptedData.size(); i++)
     {
-        cout << std::hex << (int) temp;
+        if(i % 16 == 0)
+        {
+            cout << endl << endl;
+            cout << std::hex << (int) aes128DecryptedData.at(i);
+        } else
+        {
+            cout << std::hex << (int) aes128DecryptedData.at(i);
+
+        }
+
+
     }
     cout << endl << endl << endl;
 
 
 
+
+
+//    cout << "AES-192 encrypted data" << endl;
+//    for(const unsigned char & temp : aes192EncryptedData)
+//    {
+//        cout << std::hex << (int) temp;
+//    }
+//    cout << endl << endl;
 
 
     cout << "AES-192 encrypted data" << endl;
-    for(const unsigned char & temp : aes192EncryptedData)
+    for(uint16_t i = 0; i < aes192EncryptedData.size(); i++)
     {
-        cout << std::hex << (int) temp;
+        if(i % 16 == 0)
+        {
+            cout << endl << endl;
+            cout << std::hex << (int) aes192EncryptedData.at(i);
+        } else
+        {
+            cout << std::hex << (int) aes192EncryptedData.at(i);
+
+        }
+
+
     }
-    cout << endl << endl;
+    cout << endl << endl << endl;
+
+
+
+
+
+//    cout << "AES-192 decrypted data" << endl;
+//    for(const unsigned char & temp : aes192DecryptedData)
+//    {
+//        cout << std::hex << (int) temp;
+//    }
+//    cout << endl << endl << endl;
+
 
 
     cout << "AES-192 decrypted data" << endl;
-    for(const unsigned char & temp : aes192DecryptedData)
+    for(uint16_t i = 0; i < aes192DecryptedData.size(); i++)
     {
-        cout << std::hex << (int) temp;
+        if(i % 16 == 0)
+        {
+            cout << endl;
+            cout << std::hex << (int) aes192DecryptedData.at(i);
+        } else
+        {
+            cout << std::hex << (int) aes192DecryptedData.at(i);
+
+        }
+
+
     }
     cout << endl << endl << endl;
 
@@ -205,20 +255,28 @@ int main()
 
 
 
-    cout << "AES-256 encrypted data" << endl;
-    for(const unsigned char & temp : aes256EncryptedData)
-    {
-        cout << std::hex << (int) temp;
-    }
-    cout << endl << endl;
+//    cout << "AES-256 encrypted data" << endl;
+//    for(const unsigned char & temp : aes256EncryptedData)
+//    {
+//        cout << std::hex << (int) temp;
+//    }
+//    cout << endl << endl;
 
 
-    cout << "AES-256 decrypted data" << endl;
-    for(const unsigned char & temp : aes256DecryptedData)
-    {
-        cout << std::hex << (int) temp;
-    }
-    cout << endl << endl << endl;
+
+
+
+
+
+
+//
+//
+//    cout << "AES-256 decrypted data" << endl;
+//    for(const unsigned char & temp : aes256DecryptedData)
+//    {
+//        cout << std::hex << (int) temp;
+//    }
+//    cout << endl << endl << endl;
 
 
 
