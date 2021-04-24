@@ -78,7 +78,7 @@ private:
     uint8_t numWordsInKeySched = 0;
 
 //  state table
-    unsigned char state[4][4] = {0};
+    unsigned char state[4][4];
 
 //  original input data
     unsigned char * input = nullptr;

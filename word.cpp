@@ -94,7 +94,7 @@ byte word::getByte(const uint8_t & i) const {
         return bytes[i];
     } else
     {
-        throw OutOfBounds();
+        throw runtime_error("Out Of Bounds");
     }
 }
 
