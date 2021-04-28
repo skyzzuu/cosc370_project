@@ -9,6 +9,7 @@ Joshua Cobb, Luke Engle, Everett Gally
 //#include "byte.h"
 #include "IV.h"
 #include <iomanip>
+#include <string.h>
 
 using namespace std;
 
@@ -229,6 +230,107 @@ int main()
 
         }
     }
+
+    cout << endl << endl << endl;
+
+
+
+
+
+
+
+
+
+
+
+/* Enter up to 64 bytes of text to be encoded and decoded with AES-128 */
+
+/*
+    vector<unsigned char> aes128EncryptedDataInput;
+    unsigned char cbcaes128PlaintextInput[64] = {0};
+    char input[64];
+
+//  get input text to be encoded and decoded
+    cout << endl << endl;
+    cout << "Enter text to be encrypted:" << endl;
+    cin.getline(input, sizeof(input));
+    int inputSize = strlen(input);
+    memcpy(cbcaes128PlaintextInput, input, inputSize);
+
+
+
+//  encrypt and display user input
+    aes128EncryptedDataInput = aes128.encrypt(cbcaes128PlaintextInput, 64, cbcaes128Key, iv);
+
+    unsigned char aes128EncrDataInput[aes128EncryptedDataInput.size()];
+
+    for(int i = 0; i < aes128EncryptedDataInput.size(); i++)
+    {
+        aes128EncrDataInput[i] = aes128EncryptedDataInput[i];
+    }
+
+    cout << endl << endl;
+    cout << "AES-128 input encrypted data";
+    for(uint16_t i = 0; i < aes128EncryptedDataInput.size(); i++)
+    {
+
+//      cout << std::hex << (int) temp;
+
+        if(i % 16 == 0)
+        {
+            cout << endl << endl;
+            cout << setw(2) << setfill('0')   << std::hex << (int) aes128EncryptedDataInput.at(i);
+        }
+
+        else
+        {
+            cout << setw(2) << setfill('0') << std::hex << (int) aes128EncryptedDataInput.at(i);
+
+        }
+    }
+
+    cout << endl << endl;
+
+
+
+//  decrypt and display user input
+    vector<unsigned char> aes128DecryptedDataInput;
+    AESDecryptObj aesDecr128Input(128);
+    aes128DecryptedDataInput = aesDecr128Input.decrypt(aes128EncrDataInput, aes128EncryptedDataInput.size(), cbcaes128Key, iv);
+    cout << endl << endl << endl;
+
+    cout << "AES-128 input decrypted data (hex)";
+    for(uint16_t i = 0; i < aes128DecryptedDataInput.size(); i++)
+    {
+        if(i % 16 == 0)
+        {
+            cout << endl << endl;
+            cout << setw(2) << setfill('0')  << std::hex << (int) aes128DecryptedDataInput.at(i);
+        }
+
+        else
+        {
+            cout << setw(2) << setfill('0')  << std::hex << (int) aes128DecryptedDataInput.at(i);
+        }
+    }
+
+    cout << endl << endl << endl;
+
+    cout << "AES-128 input decrypted data (characters)" << endl;
+    for(uint16_t i = 0; i < aes128DecryptedDataInput.size(); i++)
+    {
+        if(i % 16 == 0)
+        {
+            cout << endl;
+            cout << aes128DecryptedDataInput.at(i);
+        }
+
+        else
+        {
+            cout << aes128DecryptedDataInput.at(i);
+        }
+    }
+*/
 
     cout << endl << endl << endl;
 
