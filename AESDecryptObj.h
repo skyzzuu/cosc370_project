@@ -1,10 +1,10 @@
-//
-// Created by guy on 4/3/21.
-//
+/*
+AESEncryptObj.h
+Joshua Cobb, Luke Engle, Everett Gally
+*/
 
 #ifndef COSC370_PROJECT_AESDECRYPTOBJ_H
 #define COSC370_PROJECT_AESDECRYPTOBJ_H
-
 
 #include <unordered_map>
 #include <cstdint>
@@ -17,8 +17,8 @@
 #include "IV.h"
 #include <string>
 
-
 using namespace std;
+
 
 
 class AESDecryptObj {
@@ -27,46 +27,37 @@ public:
     ~AESDecryptObj();
     AESDecryptObj(uint16_t);
 
+/*
+  return value: unsigned char array containing decrypted bytes
+  parameters:
+    unsigned char * containing the bytes to decrypt
+    unsigned int representing how many bytes are in the input
+    unsigned char * containing the decryption key to use
+    unsigned char * pointing to IV to use for decryption
+    unsigned int containing number of bytes in IV
 
-
-    /*
-return value: unsigned char array containing decrypted bytes
-parameters:
-unsigned char * containing the bytes to decrypt
-unsigned int representing how many bytes are in the input
-unsigned char * containing the decryption key to use
-unsigned char * pointing to IV to use for decryption
-unsigned int containing number of bytes in IV
-
-description:
-takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
-of the input data.
-
+    description:
+      takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
+      of the input data.
 */
     vector<unsigned char > decrypt(const unsigned char * , const uint16_t &, const unsigned char *, const IV &);
 
 
 
+/*
+  return value: unsigned char array containing decrypted bytes
+  parameters:
+    unsigned char * containing the bytes to decrypt
+    unsigned int representing how many bytes are in the input
+    unsigned char * containing the decryption key to use
+    unsigned char * pointing to IV to use for decryption
+    unsigned int containing number of bytes in IV
 
-
-
-    /*
-return value: unsigned char array containing decrypted bytes
-parameters:
-  unsigned char * containing the bytes to decrypt
-  unsigned int representing how many bytes are in the input
-  unsigned char * containing the decryption key to use
-  unsigned char * pointing to IV to use for decryption
-  unsigned int containing number of bytes in IV
-
-description:
-  takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
-  of the input data.
-
+  description:
+    takes the bytes from the input data given, uses the bytes from the key given, and returns the decrypted version
+    of the input data.
 */
     vector<unsigned char > decrypt(const unsigned char * , const uint16_t &, const unsigned char *, const unsigned char *, const uint64_t &);
-
-
 
 
 
@@ -74,40 +65,30 @@ private:
 
     uint16_t keySize = 0;
 
-//    number of words in the key
+//  number of words in the key
     uint8_t nK = 0;
 
-//    number of words in a block, always 4 regardless of key size
+//  number of words in a block, always 4 regardless of key size
     const uint8_t nB = 4;
 
-//    number of rounds, depends on keysize
+//  number of rounds, depends on keysize
     uint8_t nR = 0;
     uint8_t numWordsInKeySched = 0;
 
-
-
-//    state table
+//  state table
     unsigned char state[4][4];
 
-//    original input data
+//  original input data
     unsigned char * input = nullptr;
 
     uint8_t numRoundConstants = 0;
     word * roundConstants = nullptr;
 
-
-//    how many bytes are in the input
+//  how many bytes are in the input
     uint16_t inputLength = 0;
 
-
     word * key = nullptr;
-
-
     const vector<uint8_t> mixColumnsIrreduce = {8, 4, 3, 1, 0};
-
-
-
-
     const unordered_map<uint8_t , uint8_t> InvSBox = {
             {0x00, 0x52}, {0x01, 0x09}, {0x02, 0x6a}, {0x03, 0xd5}, {0x04, 0x30}, {0x05, 0x36}, {0x06, 0xa5}, {0x07, 0x38}, {0x08, 0xbf}, {0x09, 0x40}, {0x0a, 0xa3}, {0x0b, 0x9e}, {0x0c, 0x81}, {0x0d, 0xf3}, {0x0e, 0xd7}, {0x0f, 0xfb},
             {0x10, 0x7c}, {0x11, 0xe3}, {0x12, 0x39}, {0x13, 0x82}, {0x14, 0x9b}, {0x15, 0x2f}, {0x16, 0xff}, {0x17, 0x87}, {0x18, 0x34}, {0x19, 0x8e}, {0x1a, 0x43}, {0x1b, 0x44}, {0x1c, 0xc4}, {0x1d, 0xde}, {0x1e, 0xe9}, {0x1f, 0xcb},
@@ -127,9 +108,7 @@ private:
             {0xf0, 0x17}, {0xf1, 0x2b}, {0xf2, 0x04}, {0xf3, 0x7e}, {0xf4, 0xba}, {0xf5, 0x77}, {0xf6, 0xd6}, {0xf7, 0x26}, {0xf8, 0xe1}, {0xf9, 0x69}, {0xfa, 0x14}, {0xfb, 0x63}, {0xfc, 0x55}, {0xfd, 0x21}, {0xfe, 0x0c}, {0xff, 0x7d}
     };
 
-
-
-    //    sBox, can pass in the number you have, and it will give you the number that it should be substituted with in the SubBytes section
+//  sBox, can pass in the number you have, and it will give you the number that it should be substituted with in the SubBytes section
     const unordered_map<uint8_t , uint8_t> sBox = {
             {0x00,0x63}, {0x01,0x7c}, {0x02,0x77}, {0x03,0x7b}, {0x04,0xf2}, {0x05,0x6b}, {0x06,0x6f}, {0x07,0xc5}, {0x08,0x30}, {0x09,0x01}, {0x0a,0x67}, {0x0b,0x2b}, {0x0c,0xfe}, {0x0d,0xd7}, {0x0e,0xab}, {0x0f,0x76},
             {0x10,0xca}, {0x11,0x82}, {0x12,0xc9}, {0x13,0x7d}, {0x14,0xfa}, {0x15,0x59}, {0x16,0x47}, {0x17,0xf0}, {0x18,0xad}, {0x19,0xd4}, {0x1a,0xa2}, {0x1b,0xaf}, {0x1c,0x9c}, {0x1d,0xa4}, {0x1e,0x72}, {0x1f,0xc0},
@@ -151,13 +130,10 @@ private:
 
 
 
-
 /*
-
     return value: none
     parameters:
       const unsigned char array containing the input block to copy onto the state
-
 
     description:
       copies the bytes from the input data given and copies the data onto the state table
@@ -166,9 +142,7 @@ private:
 
 
 
-
-    /*
-
+/*
    return value: none
    parameters:
      2d unsigned char vector that will hold the blocks of input data
@@ -183,13 +157,8 @@ private:
 
 
 /*
- *
- *
- *
-
     return value: none
     parameters: unsigned char vector containing data that needs to have padding removed
-
 
     description:
       This function will remove the padding from the input using the PKCS# 7
@@ -198,16 +167,13 @@ private:
       06 06 06 06 06 06
       If the data given is a multiple of the block size, an extra block exists with 16 bytes of 16's
 */
-
     void removePadding(vector<unsigned char > &);
 
 
 
 /*
-
     return value: none
     parameters: none
-
 
     description:
       This function takes the state that you pass in and will perform the InvSubBytes transformation on the table.
@@ -222,14 +188,12 @@ private:
     return value: none
     parameters: none
 
-
     description:
       This function takes the state and shifts the rows within it according to the schema identified by NIST.
       The top row will not be shifted.
       The second row will be shifted to the right 1 space.
       The third row will be shifted to the right 2 spaces.
       The fourth row will be shifted to the right 3 spaces.
-
 */
     void InvShiftRows();
 
@@ -239,7 +203,6 @@ private:
     return value: none
     parameters: none
 
-
     description:
       This function operates on each column treating each column in the state as a 4-term polynomial over GF(2^8).
       The columns are multiplied modulo (x^4) + 1 with a fixed polynomial defined by NIST.
@@ -248,12 +211,10 @@ private:
 
 
 
-
 /*
     return value: none
     parameters:
         unsigned integer containing the current round number
-
 
     description:
       This function will take the round key passed in and perform a bitwise XOR on the state, essentially performing
@@ -280,9 +241,7 @@ private:
 
 
 
-
-
-    /*
+/*
     return value: none
     parameters:
         2d unsigned char array containing all the ciphertext blocks (should be blockArray passed in)
@@ -300,9 +259,7 @@ private:
 
 
 
-
-
-    /* EXCEPTION CLASSES */
+/* EXCEPTION CLASSES */
 
     class InvalidKeySize
     {
@@ -317,10 +274,6 @@ private:
     public:
         explicit RemovePaddingError(){}
     };
-
-
-
 };
-
 
 #endif //COSC370_PROJECT_AESDECRYPTOBJ_H

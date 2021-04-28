@@ -1,22 +1,21 @@
-//
-// Created by guy on 4/7/21.
-//
-
+/*
+word.cpp
+Joshua Cobb, Luke Engle, Everett Gally
+*/
 
 #include "word.h"
 
 using namespace std;
 
 
+
 /*
-return value: word object (constructor for word object)
-parameters: pointer to first byte of the 4 bytes you want made into a word.
+  return value: word object (constructor for word object)
+  parameters: pointer to first byte of the 4 bytes you want made into a word.
 
-
-description:
-  Goes to the unsigned char pointer you pass in, grabs that byte and the next 3 after it and makes
-  a word object with the data from the four bytes stored as a 4 element array of byte objects.
-
+  description:
+    Goes to the unsigned char pointer you pass in, grabs that byte and the next 3 after it and makes
+    a word object with the data from the four bytes stored as a 4 element array of byte objects.
 */
 word::word(const unsigned char * wordBytes ) {
     for(uint8_t i = 0; i < 4; i++)
@@ -26,14 +25,13 @@ word::word(const unsigned char * wordBytes ) {
 }
 
 
+
 /*
-return value: word object (constructor for word object)
-parameters: none, default constructor
+  return value: word object (constructor for word object)
+  parameters: none, default constructor
 
-
-description:
-  Creates a word object with a 4 byte object array with all bytes set to 0;
-
+  description:
+    Creates a word object with a 4 byte object array with all bytes set to 0;
 */
 word::word() {
     for(uint8_t i = 0; i < 4; i++)
@@ -43,15 +41,14 @@ word::word() {
 }
 
 
+
 /*
-return value: word object (constructor for word object)
-parameters: word object
+  return value: word object (constructor for word object)
+  parameters: word object
 
-
-description:
-  Creates a word object that is a copy of the word object passed in to constructor.
-  (bytes array will end up with same values for all byte objects)
-
+  description:
+    Creates a word object that is a copy of the word object passed in to constructor.
+    (bytes array will end up with same values for all byte objects)
 */
 word::word(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
@@ -61,14 +58,13 @@ word::word(const word & rightWord) {
 }
 
 
+
 /*
-return value: none (destructor)
-parameters: none
+  return value: none (destructor)
+  parameters: none
 
-
-description:
-  Destroys the word object.
-
+  description:
+    Destroys the word object.
 */
 word::~word() {
 
@@ -76,15 +72,12 @@ word::~word() {
 
 
 
-
 /*
-return value: byte object
-parameters: index position of byte to get
+  return value: byte object
+  parameters: index position of byte to get
 
-
-description:
+  description:
     returns a copy of byte object at given index position in the word.
-
     E.G. passing in 0 returns a copy of the byte at position 0 in the word.
 */
 byte word::getByte(const uint8_t & i) const {
@@ -92,34 +85,35 @@ byte word::getByte(const uint8_t & i) const {
     if(i <= 3 && i >= 0) {
 
         return bytes[i];
-    } else
+    }
+
+    else
     {
         throw runtime_error("Out Of Bounds");
     }
 }
 
 
+
 /*
-return value: pointer to byte object
-parameters: index position of byte you want a pointer to. (should be in the range of 0-3)
+  return value: pointer to byte object
+  parameters: index position of byte you want a pointer to. (should be in the range of 0-3)
 
-
-description:
-  Returns pointer to a specific byte object in the word based on index position you pass in.
-  E.G. wordObj[0] returns a pointer to the first byte object in the wordObj object
-
+  description:
+    Returns pointer to a specific byte object in the word based on index position you pass in.
+    E.G. wordObj[0] returns a pointer to the first byte object in the wordObj object
 */
 byte * word::operator[](uint8_t i) {
 
-//    valid index position in the word
+//  valid index position in the word
     if(i <= 3 && i >= 0)
     {
 
-//        return reference to specific byte in the word
+//      return reference to specific byte in the word
         return & bytes[i];
     }
 
-//    invalid index position in word
+//  invalid index position in word
     else
     {
         throw runtime_error("parameter passed to index operator on word object is out of bounds. Range: 0 <= i <= 3");
@@ -127,22 +121,22 @@ byte * word::operator[](uint8_t i) {
 }
 
 
+
 /*
-return value: word object
-parameters: word object to perform xor operation with
+  return value: word object
+  parameters: word object to perform xor operation with
 
-
-description:
-  performs xor operation on each byte of the 2 words passed in and returns a word object that contains the result.
-  E.G. byte 0 in the left word is xor'd with byte 0 in the right word, byte 1 with byte 1, and so on.
+  description:
+    performs xor operation on each byte of the 2 words passed in and returns a word object that contains the result.
+    E.G. byte 0 in the left word is xor'd with byte 0 in the right word, byte 1 with byte 1, and so on.
 */
 word word::operator^(const word & rightWord) {
     word retWord;
 
-//    for each byte in the words
+//  for each byte in the words
     for(uint8_t i = 0; i < 4; i++)
     {
-//        put in the value of the matching words xor'd with each other
+//      put in the value of the matching words xor'd with each other
         *(retWord[i]) = this->getByte(i) ^ rightWord.getByte(i);
     }
 
@@ -150,16 +144,15 @@ word word::operator^(const word & rightWord) {
 }
 
 
+
 /*
-return value: reference to current word object (allows for chaining)
-parameters: word object to perform xor operation with
+  return value: reference to current word object (allows for chaining)
+  parameters: word object to perform xor operation with
 
-
-description:
-  performs xor operation on each byte of the 2 words passed in and sets each byte of the word on the left equal to
-  the result of the xor operation with the matching byte.
-
-  E.G. byte 0 in the left word is xor'd with byte 0 in the right word set to result, byte 1 with byte 1, and so on.
+  description:
+    performs xor operation on each byte of the 2 words passed in and sets each byte of the word on the left equal to
+    the result of the xor operation with the matching byte.
+    E.G. byte 0 in the left word is xor'd with byte 0 in the right word set to result, byte 1 with byte 1, and so on.
 */
 word & word::operator^=(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
@@ -172,13 +165,11 @@ word & word::operator^=(const word & rightWord) {
 
 
 
-
 /*
-return value: reference to current word object (allows for chaining)
-parameters: word object to set current word equal to
+  return value: reference to current word object (allows for chaining)
+  parameters: word object to set current word equal to
 
-
-description:
+  description:
     sets the current word equal to the word passed in on the right. Returns reference to current word object.
 */
 word & word::operator=(const word & rightWord) {
@@ -186,68 +177,59 @@ word & word::operator=(const word & rightWord) {
     for(uint8_t i = 0; i < 4; i++)
     {
 
-//        set each matching byte equal to each other
+//      set each matching byte equal to each other
         *(this->operator[](i)) = rightWord.getByte(i);
     }
 
-//    return pointer to current word object
+//  return pointer to current word object
     return *this;
 }
 
 
 /*
-return value: none
-parameters: none
+  return value: none
+  parameters: none
 
-
-description:
+  description:
     all bytes rotate one position to the left.
-
     E.G. if bytes are currently (0, 1, 2, 3) after bytes will be (1, 2, 3, 0)
-
 */
 void word::leftRotate() {
 
-
-//    store copy of the value of first byte
+//  store copy of the value of first byte
     unsigned char firstByte = this->getByte(0).rawData();
 
-//    for each byte except the last
+//  for each byte except the last
     for(uint8_t i = 0; i < 3; i++)
     {
 
-//        make the value, the value of byte on the right
+//      make the value, the value of byte on the right
         *(this->operator[](i)) = this->getByte(i+1);
     }
 
     *(this->operator[](3)) = firstByte;
 
-
-
-
-
 }
 
 
-
-// same as leftRotate above, but rotates to the right
+/*
+same as leftRotate above, but rotates to the right
+*/
 void word::rightRotate() {
-    //    store copy of the value of first byte
+//  store copy of the value of first byte
     unsigned char lastByte = this->getByte(3).rawData();
 
-//    for each byte except the first
+//  for each byte except the first
     for(uint8_t i = 3; i > 0; i--)
     {
 
-//        make the value, the value of byte on the left
+//      make the value, the value of byte on the left
         *(this->operator[](i)) = this->getByte(i-1);
     }
 
-
-//    copy what was the last byte onto the first spot
+//  copy what was the last byte onto the first spot
     *(this->operator[](0)) = lastByte;
 }
-
 
 
 
@@ -261,26 +243,22 @@ void word::rightRotate() {
       substituted using the sBox
 */
 void word::SubWord(const unordered_map<uint8_t, uint8_t> & sBox) {
-//    word retWord;
-
-
+//  word retWord;
 
     for(uint8_t i = 0; i < 4; i++)
     {
 
-//        make each byte of the retWord have a value of the mapped value for the corresponding byte
-//        *(retWord[i]) = this->operator[](i)->SubByte(sBox);
+//      make each byte of the retWord have a value of the mapped value for the corresponding byte
+//      *(retWord[i]) = this->operator[](i)->SubByte(sBox);
         this->operator[](i)->SubByte(sBox);
 
     }
 
-
-
-//    return retWord;
+//  return retWord;
 }
 
 
-ostream  & operator<<(ostream & stream, const word & rightWord)
+ostream & operator<<(ostream & stream, const word & rightWord)
 {
     for(uint8_t i = 0; i < 4; i++)
     {

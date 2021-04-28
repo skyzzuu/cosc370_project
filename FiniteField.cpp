@@ -1,50 +1,54 @@
-//
-// Created by guy on 4/8/21.
-//
+/*
+FiniteField.cpp
+Joshua Cobb, Luke Engle, Everett Gally
+*/
 
 #include "FiniteField.h"
 
 
+
 FiniteField::FiniteField()
 {
-//    start off with empty vector
+
+//  start off with empty vector
     elements.clear();
+
 }
+
 
 
 FiniteField::FiniteField(const byte & rightByte)
 {
     elements.clear();
 
-    //    powers of 2
+//  powers of 2
     const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
 
-
-    //    make a copy of the original byte
+//  make a copy of the original byte
     unsigned char temp = rightByte.rawData();
 
-
-
-    //    will contain the exponents of the bits that are set in the byte
+//  will contain the exponents of the bits that are set in the byte
     vector<uint8_t> returnVector;
     returnVector.clear();
 
-
-    //    for each power of 2 starting from right
+//  for each power of 2 starting from right
     for(int i = 7; i >= 0; i--)
     {
-//        value of the current power
+
+//      value of the current power
         uint8_t currentPower = powsOfTwo[i];
 
-//        if the current power fits into the remaining value of the byte
+//      if the current power fits into the remaining value of the byte
         if (currentPower <= temp)
         {
-//            add the index position to the vector
-//            represents which bits are set
+
+//          add the index position to the vector
+//          represents which bits are set
             returnVector.push_back(i);
 
-//            subtract the value from the byte
+//          subtract the value from the byte
             temp -= currentPower;
+
         }
     }
 
@@ -52,11 +56,13 @@ FiniteField::FiniteField(const byte & rightByte)
 }
 
 
+
 void FiniteField::operator=(const vector<uint8_t> & rightVect)
 {
     elements.clear();
     elements = rightVect;
 }
+
 
 
 void FiniteField::operator=(const FiniteField & rightField)
@@ -67,60 +73,58 @@ void FiniteField::operator=(const FiniteField & rightField)
 }
 
 
+
 void FiniteField::operator=(const byte & rightByte)
 {
     cout << "DING DING" << endl;
 
     elements.clear();
 
-    //    powers of 2
+//  powers of 2
     const uint8_t powsOfTwo[8] = {1, 2, 4, 8 ,16 , 32, 64, 128};
 
-
-    //    make a copy of the original byte
+//  make a copy of the original byte
     unsigned char temp = rightByte.rawData();
 
-
-
-    //    for each power of 2 starting from right
+//  for each power of 2 starting from right
     for(int i = 7; i >= 0; i--)
     {
-//        value of the current power
+
+//      value of the current power
         uint8_t currentPower = powsOfTwo[i];
 
-//        if the current power fits into the remaining value of the byte
+//      if the current power fits into the remaining value of the byte
         if (currentPower <= temp)
         {
-//            add the index position to the vector
-//            represents which bits are set
+
+//          add the index position to the vector
+//          represents which bits are set
             elements.push_back(i);
 
-//            subtract the value from the byte
+//          subtract the value from the byte
             temp -= currentPower;
         }
     }
-
 }
 
 FiniteField FiniteField::operator+(const FiniteField & rightField) const
 {
 
-//    make a byte object copy of this FiniteField
+//  make a byte object copy of this FiniteField
     byte leftByte;
     leftByte = *this;
 
-//    make a byte object copy of rightField
+//  make a byte object copy of rightField
     byte rightByte;
     rightByte = rightField;
 
-//    add bytes (xor)
+//  add bytes (xor)
     byte retByte = leftByte + rightByte;
 
-//    make FiniteField object containing the result
+//  make FiniteField object containing the result
     FiniteField retField = retByte;
 
     sort(retField.elements.begin(), retField.elements.end());
-
     return retField;
 }
 
@@ -134,39 +138,34 @@ void FiniteField::operator+=(const FiniteField & rightField)
 
 
 
-
 FiniteField FiniteField::galoisMultiply(const FiniteField & rightField, const vector <uint8_t> & irreduce) {
 
-//    copy elements from this finite field into return field
+//  copy elements from this finite field into return field
     FiniteField retField;
 
     for(uint8_t outer = 0; outer < this->size(); outer++)
     {
-        //    copy elements from rightField into return field
+
+//      copy elements from rightField into return field
         for(uint8_t inner = 0; inner < rightField.size(); inner++)
         {
-//            retField.addElement(rightField.getElement(i));
 
+//          retField.addElement(rightField.getElement(i));
             retField.addElement(this->getElement(outer) + rightField.getElement(inner));
         }
     }
 
 
 
-
-
-
-//    remove elements that appear an even number of times, and remove duplicates of elements
-//    that appear an odd number of times
+//  remove elements that appear an even number of times, and remove duplicates of elements
+//  that appear an odd number of times
     retField.xorSelf();
 
-//    sort the vector
+//  sort the vector
     sort(retField.elements.begin(), retField.elements.end());
 
-//    modular reduction
+//  modular reduction
     retField.mod_reduce(irreduce);
-
-
 
     return retField;
 }
@@ -174,64 +173,62 @@ FiniteField FiniteField::galoisMultiply(const FiniteField & rightField, const ve
 
 
 void FiniteField::explode(const vector <uint8_t> & irreduce) {
-    // how many polynomial elements were exploded in current loop
+//  how many polynomial elements were exploded in current loop
     uint8_t numExploded = 0;
-
-
 
     do
     {
         numExploded = 0;
 
-        // will store the numbers from irreducible polynomial + what needs to be added to them
+//      will store the numbers from irreducible polynomial + what needs to be added to them
         vector<uint8_t> numsToAdd;
         numsToAdd.clear();
 
         int i = 0;
 
-        // iterate through each number
+//      iterate through each number
         while(i < size())
         {
 
-            // if larger than allowed
+//          if larger than allowed
             if(this->getElement(i) >= irreduce[0])
             {
-                // how many numbers were exploded in current loop
+
+//              how many numbers were exploded in current loop
                 numExploded++;
 
-                // store temporary value
+//              store temporary value
                 uint8_t temp = this->getElement(i);
 
-                // remove the element that is too large
+//              remove the element that is too large
                 removeElement(i);
-
 
                 for(uint8_t j = 1; j < irreduce.size(); j++)
                 {
-                    // push back numbers from irreducible polynomial plus the difference
+
+//                  push back numbers from irreducible polynomial plus the difference
                     numsToAdd.push_back(irreduce[j] + temp - irreduce[0]);
+
                 }
 
-                // if an item was removed, decrement index
+//              if an item was removed, decrement index
                 i--;
-
 
             }
 
-            // increment index to move to next element
+//          increment index to move to next element
             i++;
         }
 
-//        add in all of the numbers after explosion
+//      add in all of the numbers after explosion
         for(const uint8_t & x : numsToAdd)
         {
             addElement(x);
         }
 
-//    end only when an entire loop is done without any elements exploded
+//  end only when an entire loop is done without any elements exploded
     } while (numExploded > 0);
 }
-
 
 
 
@@ -244,50 +241,42 @@ void FiniteField::mod_reduce(const vector <uint8_t> & irreduce) {
 
 void FiniteField::xorSelf() {
 
-    // positions of numbers where there is an even quantity of the number
+//  positions of numbers where there is an even quantity of the number
     vector<uint8_t> even_removes;
-
-
-
 
     for(uint8_t i = 0; i < this->size(); i++)
     {
         uint8_t x = this->getElement(i);
 
-        // how many times the number is in the polynomial
+//      how many times the number is in the polynomial
         uint8_t count = 0;
 
-        // positions of the number that match what is being search for
+//      positions of the number that match what is being search for
         vector<uint8_t> positions;
         positions.clear();
-
 
         for(uint8_t inner = 0; inner < this->size(); inner++)
         {
 
             uint8_t y = this->getElement(inner);
 
-            // if there is a match
+//          if there is a match
             if(x == y)
             {
 
-
-
-                // add the position to the list of positions
-                positions.push_back(inner);
-                count++;
-
+//            add the position to the list of positions
+              positions.push_back(inner);
+              count++;
 
             }
         }
 
-
-        // if there is an even number of the element
+//      if there is an even number of the element
         if((count % 2) == 0)
         {
             sort(positions.begin(), positions.end());
 
-            // for each position
+//          for each position
             for(uint8_t pos : positions)
             {
                 bool already_in = false;
@@ -303,80 +292,72 @@ void FiniteField::xorSelf() {
 
                 if(!already_in)
                 {
-                    // add positions of elements that need to be removed
+//                  add positions of elements that need to be removed
                     even_removes.push_back(pos);
                 }
-
-
             }
         }
-
-
     }
 
-
-//    sort the positions of the elements that need to be removed
+//  sort the positions of the elements that need to be removed
     sort(even_removes.begin(), even_removes.end());
 
-//    count of how many elements have been removed
+//  count of how many elements have been removed
     uint8_t removed = 0;
 
     const uint8_t evenRemovesStartSize = even_removes.size();
 
-
-    // for each of the numbers where there is an even count
+//  for each of the numbers where there is an even count
     for(uint8_t pos : even_removes)
     {
-//        remove the element
-        this->removeElement((pos - removed));
 
+//      remove the element
+        this->removeElement((pos - removed));
 
         removed++;
     }
 
-
-//    put elements into a set to remove duplicates
+//  put elements into a set to remove duplicates
     set<uint8_t> Set(this->elements.begin(), this->elements.end());
 
-//    remove all elements
+//  remove all elements
     this->elements.clear();
 
-//    add back elements with duplicates removed
+//  add back elements with duplicates removed
     for(uint8_t x : Set)
     {
         this->addElement(x);
     }
-
-
-
-
 }
 
 
 
 uint8_t & FiniteField::operator[](const uint8_t & i)  {
-
     if(i >= 0 && i < size())
     {
         return elements[i];
-    } else
+    }
+
+    else
     {
         throw OutOfBounds();
     }
-
 }
+
 
 
 uint8_t  FiniteField::getElement(const uint8_t & i) const {
-
     if(i >= 0 && i < size())
     {
         return  elements[i];
-    } else
+    }
+
+    else
     {
         throw OutOfBounds();
     }
 }
+
 
 
 uint8_t FiniteField::size() const {
@@ -385,13 +366,11 @@ uint8_t FiniteField::size() const {
 
 
 
-
-
-
 void FiniteField::addElement(const uint8_t & element) {
     elements.push_back(element);
     sort(elements.begin(), elements.end());
 }
+
 
 
 void FiniteField::removeElement(const uint8_t & position) {
